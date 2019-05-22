@@ -18,6 +18,7 @@
   "homepage": "https://github.com/badgerloop-software/new-bom#readme",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "dotenv": "^8.0.0",
     "express": "^4.1.2",
     "express-flash": "0.0.2",
     "express-handlebars": "^3.1.0",

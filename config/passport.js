@@ -2,9 +2,9 @@ const SlackStragety = require('passport-slack').Strategy;
 const passport = require('passport');
 
 const User = require('../models/user');
-const clientID = '620517521232.629589755299';
-const clientSecret = '0f855ab739874722a4ea1992c186c620';
-const redirectURI = 'http://localhost:7000/slack/auth/redirect';
+const clientID = process.env.CLIENT_ID;
+const clientSecret = process.env.CLIENT_SECRET;
+const redirectURI = process.env.REDIRECT_URI;
 
   passport.serializeUser((user, done) => {
     done(null, user.id);
