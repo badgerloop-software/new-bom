@@ -1,0 +1,42 @@
+<h1>Make Purchase</h1>
+<form id="orderForm" action="/" method="POST">
+<label>Requestor:</label>
+<input name="requestor" type="text" value="{{user.name}}" disabled>
+<br>
+<label>Item</label>
+<input name="item" type="text">
+<br>
+<label>Subteam</label>
+<select id="chooseSubteam" name="subteam">
+  <option value="analysis">Analysis</option>
+  <option value="battery">Battery</option>
+  <option value="braking">Braking</option>
+  <option value="controls">Controls</option>
+  <option value="ereliablilty">Electrical Reliability</option>
+  <option value="ehardware">Electrical Hardware</option>
+  <option value="exec">Executitive</option>
+  <option value="powertrain">Powertrain</option>
+  <option value="propulsion">Propulsion</option>
+  <option value="software">Software</option>
+  <option value="stability">Stability</option>
+  <option value="structural">Structural</option>
+</select>
+<br>
+<label>Supplier</label>
+<input name="supplier" type="text">
+<br>
+<label>Product Number</label>
+<input name="Product#">
+<br>
+<label>Estimated Quantity</label>
+<input name="quantity" type="number">
+<br>
+<label>Estimated <b>Individual</b> Cost</label>
+<input name="cost" type="number">
+<br>
+<br>
+<label>I have double checked that I need this item and all information is correct</label>
+<input type="checkbox" name="confirm">
+<br>
+<button type="submit">Submit Order</button>
+</form>

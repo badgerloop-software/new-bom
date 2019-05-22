@@ -1,0 +1,12 @@
+{{#unless user}}
+<a href="/slack/auth"><button>Click here to login with Slack!</button></a>
+{{/unless}}
+{{#if user}}
+<h2>Welcome {{user.name}}</h2>
+<a href='/logout'><button>Logout</button></a>
+<a href="/orders/purchase"><button>Make a Purchase</button></a>
+<a href="/orders/track"><button>Track an Order</button></a>
+{{#if user.admin}}
+<a href="/admin/dashboard"><button>Administration Access</button></a>
+{{/if}}
+{{/if}}

@@ -1,0 +1,30 @@
+{
+  "name": "new-bom",
+  "version": "0.0.1",
+  "description": "The Repository for the new FSC Bill of Materials!",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/badgerloop-software/new-bom.git"
+  },
+  "author": "Eric Udlis",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/badgerloop-software/new-bom/issues"
+  },
+  "homepage": "https://github.com/badgerloop-software/new-bom#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.1.2",
+    "express-flash": "0.0.2",
+    "express-handlebars": "^3.1.0",
+    "express-session": "^1.16.1",
+    "mongoose": "^5.5.10",
+    "passport": "^0.4.0",
+    "passport-slack": "0.0.7",
+    "request": "^2.88.0"
+  }
+}
