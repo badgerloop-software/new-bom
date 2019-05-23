@@ -1,5 +1,5 @@
 <h1>Make Purchase</h1>
-<form id="orderForm" action="/" method="POST">
+<form id="orderForm" action="/orders/purchase" method="POST">
 <label>Requestor:</label>
 <input name="requestor" type="text" value="{{user.name}}" disabled>
 <br>
@@ -26,7 +26,7 @@
 <input name="supplier" type="text">
 <br>
 <label>Product Number</label>
-<input name="Product#">
+<input name="productNum">
 <br>
 <label>Estimated Quantity</label>
 <input name="quantity" type="number">
@@ -36,7 +36,7 @@
 <br>
 <br>
 <label>I have double checked that I need this item and all information is correct</label>
-<input type="checkbox" name="confirm">
+<input type="checkbox" name="confirm" required>
 <br>
 <button type="submit">Submit Order</button>
 </form>

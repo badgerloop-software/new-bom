@@ -49,6 +49,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/orders/purchase', passportConfig.isAuthenticated,  ordersController.getMakeOrder);
+app.post('/orders/purchase', ordersController.postMakeOrder);
 
 app.get('/slack/auth', passport.authenticate('slack'));
 app.get('/slack/auth/redirect', passport.authenticate('slack'), (req, res) => res.redirect('/'));
