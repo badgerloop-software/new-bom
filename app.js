@@ -9,6 +9,7 @@ const mongoose = require('mongoose');
 
 const ordersController = require('./controllers/orders');
 const authController = require('./controllers/auth');
+const eventsController = require('./controllers/events');
 const mongoConfig = require('./config/mongo');
 
 passportConfig = require('./config/passport');
@@ -48,10 +49,15 @@ app.get('/', (req, res) => {
   });
 });
 
-app.get('/orders/purchase', passportConfig.isAuthenticated,  ordersController.getMakeOrder);
+app.get('/orders/purchase',  ordersController.getMakeOrder);
 app.post('/orders/purchase', ordersController.postMakeOrder);
+app.get('/orders/view', ordersController.getViewOrders);
+app.get('/orders/edit/:id', ordersController.getEditOrders);
+app.post('/orders/edit', ordersController.postEditOrder);
 
 app.get('/slack/auth', passport.authenticate('slack'));
 app.get('/slack/auth/redirect', passport.authenticate('slack'), (req, res) => res.redirect('/'));
 app.get('/logout', authController.getLogout);
+
+app.get('/slack/reaction?challenge=:event', eventsController.getEvent);
 

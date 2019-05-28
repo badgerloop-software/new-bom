@@ -32,7 +32,7 @@ const redirectURI = process.env.REDIRECT_URI;
        });
        newUser.save().then((newUser) => {
          console.log('New User Created' + newUser);
-         requestAnimationFrame.logIn(newUser, (err) => {
+         req.logIn(newUser, (err) => {
            return next(err);
          })
          done(null, newUser);
