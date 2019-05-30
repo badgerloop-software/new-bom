@@ -54,6 +54,7 @@ app.post('/orders/purchase', ordersController.postMakeOrder);
 app.get('/orders/view', ordersController.getViewOrders);
 app.get('/orders/edit/:id', ordersController.getEditOrders);
 app.post('/orders/edit', ordersController.postEditOrder);
+app.get('/orders/place/:id', ordersController.getOrdering);
 
 app.get('/slack/auth', passport.authenticate('slack'));
 app.get('/slack/auth/redirect', passport.authenticate('slack'), (req, res) => res.redirect('/'));

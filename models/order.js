@@ -13,7 +13,8 @@ const OrderSchema = new mongoose.Schema({
   dateRequested: {type: Date, default: Date.now},
   isOrdered: {type: Boolean, default: false},
   dateOrdered: Date,
-  purchaser: String
+  purchaser: String,
+  comments: String,
 });
 
 module.exports = mongoose.model('Orders', OrderSchema);

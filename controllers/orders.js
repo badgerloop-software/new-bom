@@ -63,6 +63,10 @@ exports.getViewOrders = (req, res) => {
 }
 
 exports.getEditOrders = (req, res) => {
+  if(!req.user) {
+    req.flash('errors', {msg: 'You are not authorized to view that!'});
+    res.redirect('/');
+  }
   let orderID = req.params.id;
   Order.findById(orderID, (err, order) => {
     if(err) { 
@@ -71,10 +75,10 @@ exports.getEditOrders = (req, res) => {
       });
       res.redirect('/');
     }
-    console.log(`Order ${order._id} selected`)
+    console.log(`Order ${order._id} selected`);
     res.render('editOrder' , {
       user: req.user,
-      order: order
+      order: order,
     })
   });
 }
@@ -90,6 +94,33 @@ exports.postEditOrder = (req, res) => {
     order.productNum = req.body.productNum;
     order.quantity = req.body.quantity;
     order.cost = req.body.cost;
+    order.save((err) => {
+      if(err) throw err;
+    });
+    console.log('All Done')
   });
   req.flash('success', {msg: 'Order Sucessfully Updated'});
+  res.redirect('back')
+}
+
+exports.getOrdering = (req, res) => {
+  let user = req.user;
+  let orderID = req.params.id;
+  if(!user || !user.isFSC) {
+    req.flash('errors', {msg: 'You are not authorized to place an order'});
+    res.redirect('/');
+  }
+  Order.findById(orderID, (err, order) => {
+    if (err) throw err;
+    if (!order) {
+      req.flash('errors', {msg :'Order ID does not exist'});
+      res.redirect('back');
+    }
+    order.purchaser = user.name;
+    order.dateOrdered = new Date();
+    order.isOrdered = true;
+    order.save((err) => {
+      if(err) throw err;
+    });
+  });
 }

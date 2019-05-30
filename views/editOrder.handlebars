@@ -40,11 +40,11 @@
 <br>
 <label>Comments:</label>
 <input type="text" name="comments">
+<input style="display: none" name="id" value="{{order._id}}">
 <br>
 <button type="submit">Edit Order</button>
-<input style="display: none" name="id" value="{{order._id}}".
 </form>
-
+<div id="status">
 <h3>Status</h3>
 {{#if order.isApproved}}
 <h3><small>Order Approved</small></h3>
@@ -56,3 +56,12 @@
 {{else}}
 <h3><small>Order pending approval</small></h3>
 {{/if}}
+</div>
+<div id="adminButtons">
+{{#if user.isFSC}}
+<a href="/orders/place/{{order._id}}"><button>I am ordering this</button></a>
+{{/if}}
+{{#if user.isAdmin}}
+<a href="/orders/approve"><button>Approve Order</button></a>
+{{/if}}
+</div>

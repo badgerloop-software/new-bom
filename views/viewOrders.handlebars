@@ -11,13 +11,20 @@
       <li><b>Product Number</b>: {{this.productNum}}</li>
       <li><b>Quantity</b>: {{this.quantity}}</li>
       <li><b>Cost</b>: ${{this.cost}}</li>
+      {{#if this.trackingNum}}
+      <li><b>Tracking Number</b>: {{this.trackingNum}}</li>
+      {{/if}}
     </ul>
+    {{#if this.comments}}
+    <h2><small>Comments</small></h2>
+    <p>{{this.comments}}</p>
+    {{/if}}
     <h3>Status</h3>
     <ul>
     {{#if this.isApproved}}
     <li>Order Approved</li>
     {{#if this.isOrdered}}
-    <li>Item(s) Ordered</li>
+    <li>Item(s) Ordered by {{this.purchaser}} on {{this.dateOrdered}}</li>
     {{else}}
     <li>Item(s) need to be ordered</li>
     {{/if}}
