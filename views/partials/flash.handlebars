@@ -1,52 +1,32 @@
 {{#if messages.errors}}
-  <div class="alert error">
-    <input type="checkbox" />
-    <label class="close" title="close">
-      <i class="icon-remove"></i>
-    </label>
-    <p class="inner">
+  <div class="alert alert-danger">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
     {{#messages.errors}}
       {{{msg}}}
     {{/messages.errors}}
-  </p>
   </div>
 {{/if}}
 {{#if messages.info}}
-  <div class="alert info">
-    <input type="checkbox" />
-    <label class="close" title="close">
-      <i class="icon-remove"></i>
-    </label>
-    <p class="inner">
+  <div class="alert alert-info">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
     {{#messages.info}}
       {{{msg}}}
     {{/messages.info}}
-  </p>
   </div>
 {{/if}}
 {{#if messages.success}}
-  <div class="alert success">
-    <input type="checkbox" />
-    <label class="close" title="close">
-      <i class="icon-remove"></i>
-    </label>
-    <p class="inner">
+  <div class="alert alert-success">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
     {{#messages.success}}
       {{{msg}}}
     {{/messages.success}}
-  </p>
   </div>
 {{/if}}
 {{#if messages.warning}}
-  <div class="alert warning">
-    <input type="checkbox" />
-    <label class="close" title="close">
-      <i class="icon-remove"></i>
-    </label>
-    <p class="inner">
+  <div class="alert alert-warning">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
     {{#messages.warning}}
       {{{msg}}}
     {{/messages.warning}}
-  </p>
   </div>
 {{/if}}

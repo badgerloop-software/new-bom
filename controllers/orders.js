@@ -18,7 +18,8 @@ function createSlackMessage(order) {
 }
 exports.getMakeOrder = (req, res) => {
   res.render('makeOrder', {
-    user: req.user
+    user: req.user,
+    activePurchase: true
   })
 }
 
@@ -57,7 +58,8 @@ exports.getViewOrders = (req, res) => {
     if(err) throw err;
     res.render('viewOrders', {
       user: req.user,
-      orders: orders
+      orders: orders,
+      activeView: true
     })
   });
 }
