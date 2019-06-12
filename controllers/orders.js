@@ -71,7 +71,7 @@ exports.getEditOrders = (req, res) => {
   }
   let orderID = req.params.id;
   Order.findById(orderID, (err, order) => {
-    if(err) { 
+    if(err || !(order)) { 
       req.flash('errors', {
         msg: 'Order ID Not Found'
       });
