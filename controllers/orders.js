@@ -2,6 +2,7 @@ const Order = require('../models/order');
 const webhookURL = process.env.WEBHOOK_URL;
 const request = require('request');
 
+
 function createSlackMessage(order) {
   let options = {
     uri: webhookURL,
@@ -11,7 +12,7 @@ function createSlackMessage(order) {
     }
   };
   request(options, (err, res, body) => {
-    if(!err && res.statusCode == 200) {
+    if (!err && res.statusCode == 200) {
       console.log(body.id);
     }
   })
@@ -53,32 +54,54 @@ exports.postMakeOrder = (req, res, next) => {
 }
 
 exports.getViewOrders = (req, res) => {
-  console.log(req.user)
-  Order.find({}, (err, orders) => {
-    if(err) throw err;
-    res.render('viewOrders', {
-      user: req.user,
-      orders: orders,
-      activeView: true
-    })
-  });
+  if (req.query.search) {
+    console.log(`Recieved serch term ${req.query.search}`);
+    Order.find(
+      { $text : {$search : req.query.search} },
+      { score: {$meta: "textScore"} },
+    ).sort({score: {$meta : 'textScore'}}).exec((err, results) => {
+      if (err) throw err;
+      console.log(results);
+      res.render('viewOrders', {
+        user: req.user,
+        orders: results,
+        activeView: true
+      });
+    });
+  } else {
+    console.log(req.user);
+    Order.find({}, (err, orders) => {
+      if (err) throw err;
+      res.render('viewOrders', {
+        user: req.user,
+        orders: orders,
+        activeView: true
+      })
+    });
+  }
+}
+
+exports.postViewOrders = (req, res) => {
+  let searchQuery = req.body.search;
+  console.log(`searching for ${req.body.search}`);
+  res.redirect(`/orders/view?search=${searchQuery}`);
 }
 
 exports.getEditOrders = (req, res) => {
-  if(!req.user) {
-    req.flash('errors', {msg: 'You are not authorized to view that!'});
+  if (!req.user) {
+    req.flash('errors', { msg: 'You are not authorized to view that!' });
     res.redirect('/');
   }
   let orderID = req.params.id;
   Order.findById(orderID, (err, order) => {
-    if(err || !(order)) { 
+    if (err || !(order)) {
       req.flash('errors', {
         msg: 'Order ID Not Found'
       });
       res.redirect('/');
     }
     console.log(`Order ${order._id} selected`);
-    res.render('editOrder' , {
+    res.render('editOrder', {
       user: req.user,
       order: order,
     })
@@ -97,32 +120,32 @@ exports.postEditOrder = (req, res) => {
     order.quantity = req.body.quantity;
     order.cost = req.body.cost;
     order.save((err) => {
-      if(err) throw err;
+      if (err) throw err;
     });
     console.log('All Done')
   });
-  req.flash('success', {msg: 'Order Sucessfully Updated'});
+  req.flash('success', { msg: 'Order Sucessfully Updated' });
   res.redirect('back')
 }
 
 exports.getOrdering = (req, res) => {
   let user = req.user;
   let orderID = req.params.id;
-  if(!user || !user.isFSC) {
-    req.flash('errors', {msg: 'You are not authorized to place an order'});
+  if (!user || !user.isFSC) {
+    req.flash('errors', { msg: 'You are not authorized to place an order' });
     res.redirect('/');
   }
   Order.findById(orderID, (err, order) => {
     if (err) throw err;
     if (!order) {
-      req.flash('errors', {msg :'Order ID does not exist'});
+      req.flash('errors', { msg: 'Order ID does not exist' });
       res.redirect('back');
     }
     order.purchaser = user.name;
     order.dateOrdered = new Date();
     order.isOrdered = true;
     order.save((err) => {
-      if(err) throw err;
+      if (err) throw err;
     });
   });
 }

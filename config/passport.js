@@ -45,5 +45,6 @@ const redirectURI = process.env.REDIRECT_URI;
    if(req.isAuthenticated()) {
      return next();
    }
-   req.flash('error', 'Not Logged In!')
+   req.flash('error', 'Not Logged In!');
+   res.redirect('/');
  }

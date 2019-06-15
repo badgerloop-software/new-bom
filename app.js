@@ -52,7 +52,8 @@ app.get('/', (req, res) => {
 
 app.get('/orders/purchase',  ordersController.getMakeOrder);
 app.post('/orders/purchase', ordersController.postMakeOrder);
-app.get('/orders/view', ordersController.getViewOrders);
+app.get('/orders/view', passportConfig.isAuthenticated, ordersController.getViewOrders);
+app.post('/orders/view', passportConfig.isAuthenticated, ordersController.postViewOrders);
 app.get('/orders/edit/:id', ordersController.getEditOrders);
 app.post('/orders/edit', ordersController.postEditOrder);
 app.get('/orders/place/:id', ordersController.getOrdering);
