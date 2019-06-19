@@ -1,0 +1,12 @@
+.order-footer {
+  border: 3px solid #282728;
+  width: 50%;
+  margin: auto;
+  align-items: center;
+  text-align: center;
+}
+
+.order-card {
+  min-height: 700px;
+  min-width: 365px;
+}

@@ -25,6 +25,7 @@ exports.getMakeOrder = (req, res) => {
 }
 
 exports.postMakeOrder = (req, res, next) => {
+  let totalCost = req.body.cost * req.body.quantity;
   let order = new Order({
     requestor: req.body.requestor,
     item: req.body.item,
@@ -32,14 +33,14 @@ exports.postMakeOrder = (req, res, next) => {
     supplier: req.body.supplier,
     productNum: req.body.productNum,
     quantity: req.body.quantity,
-    cost: req.body.cost
+    cost: totalCost
   });
 
   let orderObj = {
     requestor: req.body.requestor,
     item: req.body.item,
     subteam: req.body.subteam,
-    cost: req.body.cost
+    cost: totalCost
   }
 
   order.save((err) => {
@@ -93,23 +94,26 @@ exports.getEditOrders = (req, res) => {
     res.redirect('/');
   }
   let orderID = req.params.id;
-  Order.findById(orderID, (err, order) => {
-    if (err || !(order)) {
-      req.flash('errors', {
-        msg: 'Order ID Not Found'
-      });
+  Order.findById(orderID, (err, selectedOrder) => {
+    if (err || selectedOrder === undefined) {
+      // req.flash('errors', {
+      //   msg: 'Order ID Not Found'
+      // });
       res.redirect('/');
+    } else {
+      // console.log(`Order ${order._id} selected`);
+      res.render('editOrder', {
+        user: req.user,
+        order: selectedOrder,
+        activeView: true
+      });
     }
-    console.log(`Order ${order._id} selected`);
-    res.render('editOrder', {
-      user: req.user,
-      order: order,
-    })
   });
 }
 
 exports.postEditOrder = (req, res) => {
   let orderID = req.body.id;
+  let totalCost = req.body.cost * req.body.quantity;
   Order.findById(orderID, (err, order) => {
     if (err) throw err;
     order.requestor = req.body.requestor;
@@ -118,7 +122,9 @@ exports.postEditOrder = (req, res) => {
     order.supplier = req.body.supplier;
     order.productNum = req.body.productNum;
     order.quantity = req.body.quantity;
-    order.cost = req.body.cost;
+    order.cost = totalCost,
+    order.trackingNum = req.body.trackingNum;
+    order.comments = req.body.comments;
     order.save((err) => {
       if (err) throw err;
     });
@@ -146,6 +152,24 @@ exports.getOrdering = (req, res) => {
     order.isOrdered = true;
     order.save((err) => {
       if (err) throw err;
+      req.flash('success', {msg: 'Item Updated'});
+      res.redirect('/orders/view');
     });
   });
 }
+
+exports.getApproving = (req, res) => {
+  let user = req.user;
+  let orderID = req.params.id;
+  if(!user || !user.isAdmin) {
+    req.flash('errors', {msg : 'You are not authorized to approve an order'});
+    res.redirect('back');
+  }
+  Order.findById(orderID, (err, order) => {
+    order.isApproved = true;
+    order.save((err) => {
+      req.flash('success', {msg: 'Order Approved'});
+      res.redirect('/orders/view');
+    });
+  });
+};
