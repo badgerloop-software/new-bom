@@ -42,6 +42,9 @@
   </div>
   <div class="card-footer order-footer">
     <a href="/orders/edit/{{this._id}}" class="btn btn-primary" style=" align-self: center;">Edit/Update Order</a>
+    {{#if this.trackingNum}}
+    <a href="http://www.google.com/search?q={{this.trackingNum}}" class="btn btn-primary">Track Order</a>
+    {{/if}}
   </div>
 </div>
 </div>
@@ -51,3 +54,5 @@
 {{#unless orders}}
 <h1>No Orders Found</h1>
 {{/unless}}
+
+

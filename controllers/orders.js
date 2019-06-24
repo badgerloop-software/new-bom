@@ -17,6 +17,12 @@ function createSlackMessage(order) {
     }
   })
 }
+
+function redirectToMain(req, res) {
+  req.flash('errors', { msg: 'You are not authorized to view that!' });
+  res.redirect('/');
+}
+
 exports.getMakeOrder = (req, res) => {
   res.render('makeOrder', {
     user: req.user,
@@ -26,6 +32,7 @@ exports.getMakeOrder = (req, res) => {
 
 exports.postMakeOrder = (req, res, next) => {
   let totalCost = req.body.cost * req.body.quantity;
+  let notARequest = req.body.notARequest;
   let order = new Order({
     requestor: req.body.requestor,
     item: req.body.item,
@@ -35,6 +42,13 @@ exports.postMakeOrder = (req, res, next) => {
     quantity: req.body.quantity,
     cost: totalCost
   });
+
+  if(notARequest) {
+    order.purchaser = req.body.requestor;
+    order.dateOrdered = new Date();
+    order.isOrdered = true;
+    order.isApproved = true;
+  }
 
   let orderObj = {
     requestor: req.body.requestor,
@@ -90,17 +104,28 @@ exports.postViewOrders = (req, res) => {
 
 exports.getEditOrders = (req, res) => {
   if (!req.user) {
-    req.flash('errors', { msg: 'You are not authorized to view that!' });
-    res.redirect('/');
+    return redirectToMain(req, res);
   }
   let orderID = req.params.id;
   Order.findById(orderID, (err, selectedOrder) => {
     if (err || selectedOrder === undefined) {
-      // req.flash('errors', {
-      //   msg: 'Order ID Not Found'
-      // });
       res.redirect('/');
     } else {
+      if(!req.user) {
+        return redirectToMain(req, res);
+      }
+      if(!req.user.isFSC && !req.user.isAdmin) {
+        if (req.user.name !== selectedOrder.requestor) {
+         redirectToMain(req, res);
+        } else {
+          res.render('editOrder', {
+            user: req.user,
+            order: selectedOrder,
+            activeView: true
+          });
+          return;       
+        }
+      }
       // console.log(`Order ${order._id} selected`);
       res.render('editOrder', {
         user: req.user,

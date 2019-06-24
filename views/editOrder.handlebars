@@ -1,3 +1,12 @@
+<script>
+  let orderCost = {{order.cost}};
+  let orderQuantity = {{order.quantity}};
+  let individualCost = Number(orderCost/orderQuantity);
+  console.log(individualCost);
+  window.onload = () => {
+  document.getElementById('orderIndCost').value = individualCost;
+  }
+</script>
 <h1>Edit Order</h1>
 <form id="editForm" action="/orders/edit" method="POST">
   <div class="form-row">
@@ -7,7 +16,7 @@
     </div>
     <div class="form-group col-auto">
       <label>Subteam</label>
-      <select class="form-control" id="chooseSubteam" name="subteam" value="{{order.subteam}}">
+      <select class="form-control" id="chooseSubteam" name="subteam" {{order.subteam}}>
         <option value="Analysis">Analysis</option>
         <option value="Battery">Battery</option>
         <option value="Braking">Braking</option>
@@ -48,7 +57,7 @@
         <div class="input-group-prepend">
           <div class="input-group-text">$</div>
         </div>
-        <input class="form-control" aria-describedby="costHelp" name="cost" type="number" step=".01" min="0" value="{{order.cost}}">
+        <input class="form-control" aria-describedby="costHelp" name="cost" type="number" id="orderIndCost" step=".01" min="0">
         <small id="costHelp" class="form-text text-muted">Remember to update with actual cost</small>
       </div>
     </div>
@@ -57,7 +66,7 @@
   <div class="form-row">
     <div class="form-group col-auto">
       <label>Tracking Number</label>
-      <input class="form-control" name="trackingNumber" type="text" value="{{order.trackingNum}}">
+      <input class="form-control" name="trackingNum" type="text" value="{{order.trackingNum}}">
     </div>
   </div>
   <div class="form-row">

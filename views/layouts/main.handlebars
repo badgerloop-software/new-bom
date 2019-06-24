@@ -9,9 +9,16 @@
 <link href="../../assets/css/material-dashboard.css?v=2.1.1" rel="stylesheet" />
 <link href="../../assets/css/main.css" rel="stylesheet" />
 <link rel="icon" href="/favicon.ico">
+<script src="../../assets/js/handlebars.js"></script>
 </head>
 
 <body>
+  <script>
+  Handlebars.registerHelper('ifCond', (val1, val2, options) => {
+    if (val1 === val2) return options.fn(this);
+    else return options.inverse(this)
+  })
+</script>
   <div class="sidebar" data-color="danger" data-background-color="white" data-image="../assets/img/sidebar-1.jpg">
       <!--
         Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
@@ -39,28 +46,12 @@
               <p>Make a purchase</p>
             </a>
           </li>
-          <li class="nav-item {{#if activeTrack}} active {{/if}}">
-            <a class="nav-link" href="/orders/track">
-              <i class="material-icons">content_paste</i>
-              <p>Track Orders</p>
-            </a>
-          </li>
-          {{#if user.isFSC}}
           <li class="nav-item {{#if activeView}} active {{/if}}">
             <a class="nav-link" href="/orders/view">
               <i class="material-icons">library_books</i>
               <p>View Orders</p>
             </a>
           </li>
-          {{/if}}
-          {{#if user.isAdmin}}
-          <li class="nav-item {{#if activeView}} active {{/if}} ">
-            <a class="nav-link" href="/orders/view">
-              <i class="material-icons">library_books</i>
-              <p>View Orders</p>
-            </a>
-          </li>
-          {{/if}}
           {{#if user.isAdmin}}
           <li class="nav-item {{#if activeAdmin}} active {{/if}} ">
             <a class="nav-link" href="/admin/dashboard">
@@ -75,22 +66,6 @@
       </div>
     </div>
     <div class="main-panel">
-      <!-- Navbar -->
-      <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
-        <div class="container-fluid">
-          <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="navbar-toggler-icon icon-bar"></span>
-            <span class="navbar-toggler-icon icon-bar"></span>
-            <span class="navbar-toggler-icon icon-bar"></span>
-          </button>
-          <div class="collapse navbar-collapse justify-content-end">
-            <ul class="navbar-nav">
-            </ul>
-          </div>
-        </div>
-      </nav>
-      <!-- End Navbar -->
       <div class="content">
         <div class="container-fluid">
             {{> flash}}
@@ -100,5 +75,6 @@
     <script src="../assets/js/core/jquery.min.js"></script>
   <script src="../assets/js/core/popper.min.js"></script>
   <script src="../assets/js/core/bootstrap-material-design.min.js"></script>
+  
 </body>
 </html>

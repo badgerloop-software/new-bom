@@ -38,7 +38,8 @@ exports.getDash = (req, res) => {
             console.log(`Sum is now ${sum} the current cost is ${orders[i].cost}`)
           }
         }
-      
+        sum = sum.toFixed(2);
+        
       res.render('adminDash', {
         user: req.user,
         users: users,
