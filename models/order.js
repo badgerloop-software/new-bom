@@ -17,6 +17,7 @@ const OrderSchema = new mongoose.Schema({
   dateOrdered: Date,
   purchaser: String,
   comments: String,
+  link: String
 });
 
 OrderSchema.index({'$**': 'text'}, {

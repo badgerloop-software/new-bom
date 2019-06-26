@@ -40,7 +40,8 @@ exports.postMakeOrder = (req, res, next) => {
     supplier: req.body.supplier,
     productNum: req.body.productNum,
     quantity: req.body.quantity,
-    cost: totalCost
+    cost: totalCost,
+    link: req.body.link
   });
 
   if(notARequest) {
@@ -150,6 +151,7 @@ exports.postEditOrder = (req, res) => {
     order.cost = totalCost,
     order.trackingNum = req.body.trackingNum;
     order.comments = req.body.comments;
+    order.link = req.body.link;
     order.save((err) => {
       if (err) throw err;
     });
