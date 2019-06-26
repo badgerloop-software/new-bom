@@ -65,6 +65,7 @@ app.get('/slack/auth/redirect', passport.authenticate('slack'), (req, res) => re
 app.get('/logout', authController.getLogout);
 
 app.get('/admin/dashboard', passportConfig.isAuthenticated, adminController.getDash);
+app.get('/admin/set', passportConfig.isAuthenticated, adminController.setUser);
 
 app.get('/slack/reaction?challenge=:event', eventsController.getEvent);
 

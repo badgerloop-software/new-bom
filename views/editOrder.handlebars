@@ -3,8 +3,16 @@
   let orderQuantity = {{order.quantity}};
   let individualCost = Number(orderCost/orderQuantity);
   console.log(individualCost);
+  let orderSubteam = `{{{order.subteam}}}`;
   window.onload = () => {
+  let teams = document.getElementById('chooseSubteam').children;
   document.getElementById('orderIndCost').value = individualCost;
+   for (let i=0; i<teams.length; i++) {
+    console.log(`Order subteam = ${orderSubteam} || Team ID = ${teams[i].id}`);
+    if(orderSubteam === `${teams[i].id}`) {
+      teams[i].setAttribute('selected', 'selected');
+    }
+  }
   }
 </script>
 <h1>Edit Order</h1>
@@ -17,18 +25,20 @@
     <div class="form-group col-auto">
       <label>Subteam</label>
       <select class="form-control" id="chooseSubteam" name="subteam" {{order.subteam}}>
-        <option value="Analysis">Analysis</option>
-        <option value="Battery">Battery</option>
-        <option value="Braking">Braking</option>
-        <option value="Controls">Controls</option>
-        <option value="Electrical Reliablilty">Electrical Reliability</option>
-        <option value="Electrical Hardware">Electrical Hardware</option>
-        <option value="Executitive">Executitive</option>
-        <option value="Powertrain">Powertrain</option>
-        <option value="Propulsion">Propulsion</option>
-        <option value="Software">Software</option>
-        <option value="Stability">Stability</option>
-        <option value="Structural">Structural</option>
+        <option id="Analysis" value="Analysis">Analysis</option>
+        <option id="Battery" value="Battery">Battery</option>
+        <option id="Braking" value="Braking">Braking</option>
+        <option id="Controls" value="Controls">Controls</option>
+        <option id="Electrical Reliability" value="Electrical Reliablilty">Electrical Reliability</option>
+        <option id="Electrical Hardware" value="Electrical Hardware">Electrical Hardware</option>
+        <option id="Executive" value="Executitive">Executitive</option>
+        <option id="Operations" value="Operations">Operations</option>
+        <option id="Powertrain" value="Powertrain">Powertrain</option>
+        <option id="Propulsion" value="Propulsion">Propulsion</option>
+        <option id="Software" value="Software">Software</option>
+        <option id="Stability" value="Stability">Stability</option>
+        <option id="Structural" value="Structural">Structural</option>
+        <option id="Workshop" value="Workshop">Tools &amp; Workshop</option>
       </select>
     </div>
   </div>

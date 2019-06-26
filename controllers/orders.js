@@ -116,7 +116,7 @@ exports.getEditOrders = (req, res) => {
       }
       if(!req.user.isFSC && !req.user.isAdmin) {
         if (req.user.name !== selectedOrder.requestor) {
-         redirectToMain(req, res);
+         return redirectToMain(req, res);
         } else {
           res.render('editOrder', {
             user: req.user,

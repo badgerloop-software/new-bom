@@ -54,3 +54,32 @@ exports.getDash = (req, res) => {
     });
   });
 };
+
+exports.setUser = (req, res) => {
+  let userQuery = {slackID: `${req.query.u}`};
+  let role = req.query.r;
+  let value = req.query.v;
+  let change;
+  if (role === 'f') {
+    if (value === 't') {
+      change = {isFSC: true}
+    } else {
+      change = {isFSC: false}
+    }
+  } else if (role === 'e') {
+    if (value === 't') {
+      change = {isAdmin: true}
+    } else {
+      change = {isAdmin: false}
+    }
+  }
+
+  Users.findOneAndUpdate(userQuery, change, {new: true}, (err, user) => {
+    if (err) {
+      req.flash('errors', {msg: 'Something went wrong'});
+      return res.redirect('back');
+    }
+    req.flash('success', {msg: 'User privilages modified'});
+    return res.redirect('back');
+  });
+}
