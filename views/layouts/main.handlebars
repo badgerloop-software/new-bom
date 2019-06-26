@@ -3,13 +3,78 @@
 <head>
 <meta charset="utf-8">
 <title>Badgerloop - Make Purchase</title>
-<link href="../main.css" rel="stylesheet" type="text/css">
+<link href="./main.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+<link href="../../assets/css/material-dashboard.css?v=2.1.1" rel="stylesheet" />
+<link href="../../assets/css/main.css" rel="stylesheet" />
 <link rel="icon" href="/favicon.ico">
+<script src="../../assets/js/handlebars.js"></script>
 </head>
 
 <body>
-  <h1>Badgerloop Bill of Materials and Finance Information System</h1>
-  {{> flash}}
-    {{{body}}}
+  <script>
+  Handlebars.registerHelper('ifCond', (val1, val2, options) => {
+    if (val1 === val2) return options.fn(this);
+    else return options.inverse(this)
+  })
+</script>
+  <div class="sidebar" data-color="danger" data-background-color="white" data-image="../assets/img/sidebar-1.jpg">
+      <!--
+        Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
+
+        Tip 2: you can also add an image using data-image tag
+    -->
+      <div class="logo">
+        <a href="/" class="simple-text logo-normal">
+          Badgerloop
+        </a>
+      </div>
+      <div class="sidebar-wrapper">
+        <ul class="nav">
+          <li class="nav-item {{#if activeDashboard}} active {{/if}}">
+            <a class="nav-link" href="/">
+              <i class="material-icons">dashboard</i>
+              <p>Dashboard</p>
+            </a>
+          </li>
+          {{> account}}
+          {{#if user}}
+          <li class="nav-item {{#if activePurchase}} active {{/if}}">
+            <a class="nav-link" href="/orders/purchase">
+              <i class="material-icons">attach_money</i>
+              <p>Make a purchase</p>
+            </a>
+          </li>
+          <li class="nav-item {{#if activeView}} active {{/if}}">
+            <a class="nav-link" href="/orders/view">
+              <i class="material-icons">library_books</i>
+              <p>View Orders</p>
+            </a>
+          </li>
+          {{#if user.isAdmin}}
+          <li class="nav-item {{#if activeAdmin}} active {{/if}} ">
+            <a class="nav-link" href="/admin/dashboard">
+              <i class="material-icons">bubble_chart</i>
+              <p>Administrative Access</p>
+            </a>
+          </li>
+          {{/if}}
+          {{/if}}
+          
+        </ul>
+      </div>
+    </div>
+    <div class="main-panel">
+      <div class="content">
+        <div class="container-fluid">
+            {{> flash}}
+         {{{body}}}
+        </div>
+      </div>
+    <script src="../assets/js/core/jquery.min.js"></script>
+  <script src="../assets/js/core/popper.min.js"></script>
+  <script src="../assets/js/core/bootstrap-material-design.min.js"></script>
+  
 </body>
 </html>

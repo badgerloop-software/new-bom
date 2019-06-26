@@ -1,9 +1,16 @@
 <h1><small>Welcome {{user.name}}</small></h1>
 <h3><small>{{#if user.isFSC}} FSC Member {{/if}} {{#if user.isAdmin}} Executitive Team Member {{/if}}</small></h3>
+<form class="form-inline md-form form-sm active-red active-red-2 mt-2" method="POST" action="/orders/view">
+  <i class="material-icons" aria-hidden="true">search</i>
+  <input name="search" class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search Items, Names, Part Numbers and More" aria-label="Search">
+</form>
+<div class="container-fluid mt-4">
+  <div class="row justify-content-center">
 {{#each orders}}
-<div class="card">
-  <div class="container">
-    <h2><b>{{this.item}}</b></h2>
+<div class="col mb-3">
+<div class="card order-card">
+  <div class="card-header"><h3>{{this.item}}</h3></div>
+  <div class="card-body">
     <ul>
       <li><b>Requestor</b>: {{this.requestor}}</li>
       <li><b>Subteam</b>: {{this.subteam}}</li>
@@ -11,15 +18,16 @@
       <li><b>Product Number</b>: {{this.productNum}}</li>
       <li><b>Quantity</b>: {{this.quantity}}</li>
       <li><b>Cost</b>: ${{this.cost}}</li>
+      <li><a target="_blank" href="{{this.link}}">Visit Link</a></li>
       {{#if this.trackingNum}}
       <li><b>Tracking Number</b>: {{this.trackingNum}}</li>
       {{/if}}
     </ul>
     {{#if this.comments}}
-    <h2><small>Comments</small></h2>
+    <h3><small>Comments</small></h3>
     <p>{{this.comments}}</p>
     {{/if}}
-    <h3>Status</h3>
+    <h3 class="card-header">Status</h3>
     <ul>
     {{#if this.isApproved}}
     <li>Order Approved</li>
@@ -32,7 +40,20 @@
     <li>Order Awaiting Approval</li>
     {{/if}}
     </ul>
-    <a href="/orders/edit/{{this._id}}"><button>Edit/Update Order</button></a>
+  </div>
+  <div class="card-footer order-footer">
+    <a href="/orders/edit/{{this._id}}" class="btn btn-primary" style=" align-self: center;">Edit/Update Order</a>
+    {{#if this.trackingNum}}
+    <a href="http://www.google.com/search?q={{this.trackingNum}}" class="btn btn-primary">Track Order</a>
+    {{/if}}
   </div>
 </div>
+</div>
 {{/each}}
+</div>
+</div>
+{{#unless orders}}
+<h1>No Orders Found</h1>
+{{/unless}}
+
+

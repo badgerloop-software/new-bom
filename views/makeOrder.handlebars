@@ -1,42 +1,77 @@
 <h1>Make Purchase</h1>
 <form id="orderForm" action="/orders/purchase" method="POST">
-<label>Requestor:</label>
-<input name="requestor" type="text" value="{{user.name}}">
-<br>
-<label>Item</label>
-<input name="item" type="text">
-<br>
-<label>Subteam</label>
-<select id="chooseSubteam" name="subteam">
-  <option value="Analysis">Analysis</option>
-  <option value="Battery">Battery</option>
-  <option value="Braking">Braking</option>
-  <option value="Controls">Controls</option>
-  <option value="Electrical Reliablilty">Electrical Reliability</option>
-  <option value="Electrical Hardware">Electrical Hardware</option>
-  <option value="Executitive">Executitive</option>
-  <option value="Powertrain">Powertrain</option>
-  <option value="Propulsion">Propulsion</option>
-  <option value="Software">Software</option>
-  <option value="Stability">Stability</option>
-  <option value="Structural">Structural</option>
-</select>
-<br>
-<label>Supplier</label>
-<input name="supplier" type="text">
-<br>
-<label>Product Number</label>
-<input name="productNum">
-<br>
-<label>Estimated Quantity</label>
-<input name="quantity" type="number">
-<br>
-<label>Estimated <b>Individual</b> Cost</label>
-<input name="cost" type="number" step=".01">
-<br>
-<br>
-<label>I have double checked that I need this item and all information is correct</label>
-<input type="checkbox" name="confirm" required>
-<br>
-<button type="submit">Submit Order</button>
+  <div class="form-row">
+    <div class="form-group col-auto">
+      <label>Requestor:</label>
+      <input class="form-control" name="requestor" type="text" value="{{user.name}}" readonly>
+    </div>
+    <div class="form-group col-auto">
+      <label>Subteam</label>
+      <select class="form-control" id="chooseSubteam" name="subteam">
+        <option value="Analysis">Analysis</option>
+        <option value="Battery">Battery</option>
+        <option value="Braking">Braking</option>
+        <option value="Controls">Controls</option>
+        <option value="Electrical Reliablilty">Electrical Reliability</option>
+        <option value="Electrical Hardware">Electrical Hardware</option>
+        <option value="Executitive">Executitive</option>
+        <option value="Operations">Operations</option>
+        <option value="Powertrain">Powertrain</option>
+        <option value="Propulsion">Propulsion</option>
+        <option value="Software">Software</option>
+        <option value="Stability">Stability</option>
+        <option value="Structural">Structural</option>
+        <option value="Workshop">Tools &amp; Workshop</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class='form-group col-auto'>
+      <label>Item</label>
+      <input class="form-control" name="item" type="text">
+    </div>
+    <div class="form-group col-auto">
+      <label>Supplier</label>
+      <input class="form-control" name="supplier" type="text">
+    </div>
+    <div class="form-group col-auto">
+      <label>Product Number</label>
+      <input class="form-control" name="productNum">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-auto">
+      <label>Estimated Quantity</label>
+      <input class="form-control" name="quantity" type="number">
+    </div>
+    <div class="form-group col-auto">
+      <label>Estimated <b>Individual</b> Cost</label>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <div class="input-group-text">$</div>
+        </div>
+        <input class="form-control" name="cost" type="number" step=".01" min="0">
+      </div>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-auto">
+      <label for="link">Link to Purchase</label>
+      <input class="form-control" type="text" name="link" id="link">
+    </div>
+  </div>
+    <div class="form-row">
+    <div class="form-check ">
+      <input type="checkbox" name="notARequest" id="notArequestCheck">
+      <label for="notARequestCheck" class="form-check-label">I will/did purchase this myself (Make sure you get written or verbal approval)</label>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-check">
+      <input type="checkbox" name="confirm" required>
+      <label class="form-check-label">I have double checked that I need this item and all information is correct (required)</label>
+    </div>
+  </div>
+  <br>
+  <button class="btn btn-lg btn-success" type="submit">Submit Order</button>
 </form>
