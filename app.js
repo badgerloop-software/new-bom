@@ -57,6 +57,7 @@ app.get('/orders/view', passportConfig.isAuthenticated, ordersController.getView
 app.post('/orders/view', passportConfig.isAuthenticated, ordersController.postViewOrders);
 app.get('/orders/edit/:id', ordersController.getEditOrders);
 app.post('/orders/edit', ordersController.postEditOrder);
+app.get('/orders/cancel', ordersController.getCancelOrder);
 app.get('/orders/place/:id', ordersController.getOrdering);
 app.get('/orders/approve/:id', ordersController.getApproving);
 
