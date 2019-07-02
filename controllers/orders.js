@@ -161,7 +161,6 @@ exports.postEditOrder = (req, res) => {
 }
 
 exports.getCancelOrder = (req, res) => {
-  console.log(`params = ${req.query.q}`);
   Order.deleteOne({'_id': req.query.q}, (err, order) => {
     if (err) throw err;
     req.flash('success', {msg: 'Order Cancelled'});
