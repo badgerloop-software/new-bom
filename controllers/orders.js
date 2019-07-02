@@ -155,10 +155,18 @@ exports.postEditOrder = (req, res) => {
     order.save((err) => {
       if (err) throw err;
     });
-    console.log('All Done')
   });
   req.flash('success', { msg: 'Order Sucessfully Updated' });
-  res.redirect('back')
+  res.redirect('back');
+}
+
+exports.getCancelOrder = (req, res) => {
+  console.log(`params = ${req.query.q}`);
+  Order.deleteOne({'_id': req.query.q}, (err, order) => {
+    if (err) throw err;
+    req.flash('success', {msg: 'Order Cancelled'});
+    res.redirect('/orders/view');
+  })
 }
 
 exports.getOrdering = (req, res) => {

@@ -1,18 +1,18 @@
 <script>
-  let orderCost = {{order.cost}};
-  let orderQuantity = {{order.quantity}};
-  let individualCost = Number(orderCost/orderQuantity);
+  let orderCost = {{ order.cost }};
+  let orderQuantity = {{ order.quantity }};
+  let individualCost = Number(orderCost / orderQuantity);
   console.log(individualCost);
   let orderSubteam = `{{{order.subteam}}}`;
   window.onload = () => {
-  let teams = document.getElementById('chooseSubteam').children;
-  document.getElementById('orderIndCost').value = individualCost;
-   for (let i=0; i<teams.length; i++) {
-    console.log(`Order subteam = ${orderSubteam} || Team ID = ${teams[i].id}`);
-    if(orderSubteam === `${teams[i].id}`) {
-      teams[i].setAttribute('selected', 'selected');
+    let teams = document.getElementById('chooseSubteam').children;
+    document.getElementById('orderIndCost').value = individualCost;
+    for (let i = 0; i < teams.length; i++) {
+      console.log(`Order subteam = ${orderSubteam} || Team ID = ${teams[i].id}`);
+      if (orderSubteam === `${teams[i].id}`) {
+        teams[i].setAttribute('selected', 'selected');
+      }
     }
-  }
   }
 </script>
 <h1>Edit Order</h1>
@@ -67,7 +67,8 @@
         <div class="input-group-prepend">
           <div class="input-group-text">$</div>
         </div>
-        <input class="form-control" aria-describedby="costHelp" name="cost" type="number" id="orderIndCost" step=".01" min="0">
+        <input class="form-control" aria-describedby="costHelp" name="cost" type="number" id="orderIndCost" step=".01"
+          min="0">
         <small id="costHelp" class="form-text text-muted">Remember to update with actual cost</small>
       </div>
     </div>
@@ -84,17 +85,23 @@
       <label for="link">Link to Purchase</label>
       <input class="form-control" type="text" name="link" id="link" value="{{order.link}}">
     </div>
+    {{#if order.link}}
     <div class="form-group col-auto">
       <a target="_blank" href="{{order.link}}">Click here to Visit Link</a>
     </div>
+    {{/if}}
   </div>
   <div class="form-row">
-  <label>Comments:</label>
-  <textarea class="form-control" type="text" name="comments">{{order.comments}}</textarea>
+    <label>Comments:</label>
+    <textarea class="form-control" type="text" name="comments">{{order.comments}}</textarea>
   </div>
   <input style="display: none" name="id" value="{{order._id}}">
-  <br>
-  <button class="btn btn-success" type="submit">Edit Order</button>
+  <div class="form-row">
+    <div class="form-group">
+      <button class="btn btn-success" type="submit">Edit Order</button>
+      <a class="btn btn-danger" href="/orders/cancel?q={{order._id}}">Cancel Order</a>
+    </div>
+  </div>
 </form>
 <div id="status">
   <h3>Status</h3>
