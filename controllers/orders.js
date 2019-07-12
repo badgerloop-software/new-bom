@@ -1,4 +1,5 @@
 const Order = require('../models/order');
+const Budget = require('../models/budget');
 const webhookURL = process.env.WEBHOOK_URL;
 const request = require('request');
 
@@ -49,6 +50,13 @@ exports.postMakeOrder = (req, res, next) => {
     order.dateOrdered = new Date();
     order.isOrdered = true;
     order.isApproved = true;
+    Budget.find({}, (err, budgets) => {
+      if (err) throw err;
+      let budget = budgets[0];
+      let index = budget.findTeamIndex(order.subteam);
+      budget.currentBudgets[index] -= order.cost;
+      budget.save((err) => {if (err) throw err});
+    });
   }
 
   let orderObj = {
@@ -192,6 +200,8 @@ exports.getOrdering = (req, res) => {
   });
 }
 
+
+
 exports.getApproving = (req, res) => {
   let user = req.user;
   let orderID = req.params.id;
@@ -201,7 +211,21 @@ exports.getApproving = (req, res) => {
   }
   Order.findById(orderID, (err, order) => {
     order.isApproved = true;
+    Budget.find({}, (err, budgets) => {
+      if (err) throw err;
+      let budget = budgets[0];
+      let index = budget.findTeamIndex(order.subteam);
+      console.log(`Current Budget is ${budget.currentBudgets[index]}`);
+      budget.currentBudgets[index] -= order.cost;
+      console.log(`Now Budget is ${budget.currentBudgets[index]}`);
+      console.log(`Current Doc is ${budget}`);
+      budget.save((err) => {
+        if (err) throw err;
+        console.log(`Current Doc is ${budget}`);
+      });
+    });
     order.save((err) => {
+      if (err) throw err;
       req.flash('success', {msg: 'Order Approved'});
       res.redirect('/orders/view');
     });

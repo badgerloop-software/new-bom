@@ -6,16 +6,16 @@ const flash = require('express-flash');
 const session = require('express-session');
 const passport = require('passport');
 const mongoose = require('mongoose');
+const http = require('http');
 
 const ordersController = require('./controllers/orders');
 const authController = require('./controllers/auth');
 const eventsController = require('./controllers/events');
 const adminController = require('./controllers/admin');
+
 const mongoConfig = require('./config/mongo');
+const passportConfig = require('./config/passport');
 
-passportConfig = require('./config/passport');
-
-const http = require('http');
 const app = module.exports.app = express();
 const server = http.createServer(app);
 server.listen(7000);
@@ -67,6 +67,7 @@ app.get('/logout', authController.getLogout);
 
 app.get('/admin/dashboard', passportConfig.isAuthenticated, adminController.getDash);
 app.get('/admin/set', passportConfig.isAuthenticated, adminController.setUser);
+app.get('/admin/createbudget', passportConfig.isAuthenticated, adminController.createBudget);
 
 app.get('/slack/reaction?challenge=:event', eventsController.getEvent);
 

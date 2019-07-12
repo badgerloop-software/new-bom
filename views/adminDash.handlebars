@@ -1,130 +1,168 @@
-          <div class="row">
-            <div class="col-lg-3 col-md-6 col-sm-6">
-              <div class="card card-stats">
-                <div class="card-header card-header-warning card-header-icon">
-                  <div class="card-icon">
-                    <i class="material-icons">content_copy</i>
-                  </div>
-                  <p class="card-category">Orders Awating Approval</p>
-                  <h3 class="card-title">
-                    {{#if awaitingApproval}}
-                    {{awaitingApproval}}
-                    <small>Unapproved POs</small>
-                    {{else}}
-                    All orders approved!
-                    {{/if}}
-                  </h3>
-                </div>
-                <div class="card-footer">
-                  <div class="stats">
-                    <a href="/orders/view">View Orders</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-6">
-              <div class="card card-stats">
-                <div class="card-header card-header-success card-header-icon">
-                  <div class="card-icon">
-                    <i class="material-icons">attach_money</i>
-                  </div>
-                  <p class="card-category">Total Spent</p>
-                  <h3 class="card-title">
-                    {{#if totalDollars}}
-                    ${{totalDollars}}
-                    {{else}}
-                    No Orders Made Yet
-                    {{/if}}
-                  </h3>
-                </div>
-                <div class="card-footer">
-                  <div class="stats">
-                    <i class="material-icons">bookmark</i> Make a purchase request
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-6">
-              <div class="card card-stats">
-                <div class="card-header card-header-danger card-header-icon">
-                  <div class="card-icon">
-                    <i class="material-icons">person</i>
-                  </div>
-                  <p class="card-category">Users Registered</p>
-                  <h3 class="card-title">
-                    {{#if numUsers}}
-                    {{numUsers}}
-                    <small>Users</small>
-                    {{else}}
-                    No Users Registered
-                    {{/if}}
-                  </h3>
-                </div>
-                <div class="card-footer">
-                  <div class="stats">
-                    <i class="material-icons">info</i> Manage Users
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-6">
-              <div class="card card-stats">
-                <div class="card-header card-header-info card-header-icon">
-                  <div class="card-icon">
-                    <i class="material-icons">local_post_office</i>
-                  </div>
-                  <p class="card-category">Total Orders</p>
-                  <h3 class="card-title">
-                    {{#if numOrders}}
-                    {{numOrders}}
-                    <small>Orders Tracked</small>
-                    {{else}}
-                    No Orders Placed
-                    {{/if}}
-                  </h3>
-                </div>
-                <div class="card-footer">
-                  <div class="stats">
-                    <i class="material-icons">update</i> Just Updated
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          {{!-- User Management --}}
-          <div class="row">
-            <div class="col-auto">
-              <div class="card">
-                <div class="card-header card-header-danger">
-                  <h4 class="card-title">Manage Users</h4>
-                </div>
-                <div class="card-body table-responsive">
-                  <table class="table table-hover">
-                    <thead class="text-warning">
-                      <th>Name</th>
-                      <th>FSC Member</th>
-                      <th>Executitive Team Member</th>
-                    </thead>
-                    <tbody>
-                      {{#each users}}
-                      <tr>
-                        <td>{{this.name}}</td>
-                        {{#if this.isFSC}}
-                        <td><a href="/admin/set?u={{this.slackID}}&r=f&v=f" class="btn btn-small btn-success">Yes</a></td>
-                        {{else}}
-                        <td><a href="/admin/set?u={{this.slackID}}&r=f&v=t" class="btn btn-small btn-danger">No</a></td>
-                        {{/if}}
-                        {{#if this.isAdmin}}
-                        <td><a href="/admin/set?u={{this.slackID}}&r=e&v=f" class="btn btn-small btn-success">Yes</a></td>
-                        {{else}}
-                        <td><a href="/admin/set?u={{this.slackID}}&r=e&v=t" class="btn btn-small btn-danger">No</a></td>
-                        {{/if}}
-                        {{/each}}
-                      </tr>
-                    </tbody>
-                    </thead>
-                  </table>
-                </div>
-                {{!-- TODO: Budget setting, Subsystem breakdown, view budget on make purchase --}}
-              </div>
-          </div>
+<div class="row">
+  <div class="col-lg-3 col-md-6 col-sm-6">
+    <div class="card card-stats">
+      <div class="card-header card-header-warning card-header-icon">
+        <div class="card-icon">
+          <i class="material-icons">content_copy</i>
+        </div>
+        <p class="card-category">Orders Awating Approval</p>
+        <h3 class="card-title">
+          {{#if awaitingApproval}}
+          {{awaitingApproval}}
+          <small>Unapproved POs</small>
+          {{else}}
+          All orders approved!
+          {{/if}}
+        </h3>
+      </div>
+      <div class="card-footer">
+        <div class="stats">
+          <a href="/orders/view">View Orders</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-3 col-md-6 col-sm-6">
+    <div class="card card-stats">
+      <div class="card-header card-header-success card-header-icon">
+        <div class="card-icon">
+          <i class="material-icons">attach_money</i>
+        </div>
+        <p class="card-category">Total Spent</p>
+        <h3 class="card-title">
+          {{#if totalDollars}}
+          ${{totalDollars}}
+          {{else}}
+          No Orders Made Yet
+          {{/if}}
+        </h3>
+      </div>
+      <div class="card-footer">
+        <div class="stats">
+          <i class="material-icons">bookmark</i> Make a purchase request
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-3 col-md-6 col-sm-6">
+    <div class="card card-stats">
+      <div class="card-header card-header-danger card-header-icon">
+        <div class="card-icon">
+          <i class="material-icons">person</i>
+        </div>
+        <p class="card-category">Users Registered</p>
+        <h3 class="card-title">
+          {{#if numUsers}}
+          {{numUsers}}
+          <small>Users</small>
+          {{else}}
+          No Users Registered
+          {{/if}}
+        </h3>
+      </div>
+      <div class="card-footer">
+        <div class="stats">
+          <i class="material-icons">info</i> Manage Users
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-3 col-md-6 col-sm-6">
+    <div class="card card-stats">
+      <div class="card-header card-header-info card-header-icon">
+        <div class="card-icon">
+          <i class="material-icons">local_post_office</i>
+        </div>
+        <p class="card-category">Total Orders</p>
+        <h3 class="card-title">
+          {{#if numOrders}}
+          {{numOrders}}
+          <small>Orders Tracked</small>
+          {{else}}
+          No Orders Placed
+          {{/if}}
+        </h3>
+      </div>
+      <div class="card-footer">
+        <div class="stats">
+          <i class="material-icons">update</i> Just Updated
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+{{!-- User Management --}}
+<div class="row">
+  <div class="col-auto">
+    <div class="card">
+      <div class="card-header card-header-danger">
+        <h4 class="card-title">Manage Users</h4>
+      </div>
+      <div class="card-body table-responsive">
+        <table class="table table-hover">
+          <thead class="text-warning">
+            <th>Name</th>
+            <th>FSC Member</th>
+            <th>Executitive Team Member</th>
+          </thead>
+          <tbody>
+            {{#each users}}
+            <tr>
+              <td>{{this.name}}</td>
+              {{#if this.isFSC}}
+              <td><a href="/admin/set?u={{this.slackID}}&r=f&v=f" class="btn btn-small btn-success">Yes</a></td>
+              {{else}}
+              <td><a href="/admin/set?u={{this.slackID}}&r=f&v=t" class="btn btn-small btn-danger">No</a></td>
+              {{/if}}
+              {{#if this.isAdmin}}
+              <td><a href="/admin/set?u={{this.slackID}}&r=e&v=f" class="btn btn-small btn-success">Yes</a></td>
+              {{else}}
+              <td><a href="/admin/set?u={{this.slackID}}&r=e&v=t" class="btn btn-small btn-danger">No</a></td>
+              {{/if}}
+              {{/each}}
+            </tr>
+          </tbody>
+          </thead>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-auto">
+    <div class="card">
+      <div class="card-header card-header-info">
+        <h4 class="card-title">Team Budgets</h4>
+        <p class="card-category">Team Budgets are Reset on August 15th of each year</p>
+      </div>
+      <div class="card-body table-responsive">
+        {{#if budget}}
+        <table class="table table-hover">
+          <thead class="text-danger">
+            <th>Subteam</th>
+            <th>Allocated Budget</th>
+            <th>Amount Spent</th>
+            <th>Amount Left</th>
+          </thead>
+          <tbody>
+            {{#each table}}
+            <tr>
+              <td>{{this.[0]}}</td>
+              <td>${{this.[1]}}</td>
+              <td>${{this.[2]}}</td>
+              <td>${{this.[3]}}</td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+        <a class="btn btn-sm" href="/admin/editbudget">Edit Budget</a>
+        {{else}}
+        <a class="btn btn-lg btn-primary" href="/admin/createbudget">You must initalize the budget first</a>
+        {{/if}}
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+</div>
+{{!-- TODO: Budget setting, Subsystem breakdown, view budget on make purchase --}}

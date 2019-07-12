@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>Badgerloop - Make Purchase</title>
+<title>Badgerloop Bill of Materials</title>
 <link href="./main.css" rel="stylesheet" type="text/css">
 <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
@@ -13,18 +13,7 @@
 </head>
 
 <body>
-  <script>
-  Handlebars.registerHelper('ifCond', (val1, val2, options) => {
-    if (val1 === val2) return options.fn(this);
-    else return options.inverse(this)
-  })
-</script>
   <div class="sidebar" data-color="danger" data-background-color="white" data-image="../assets/img/sidebar-1.jpg">
-      <!--
-        Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
-
-        Tip 2: you can also add an image using data-image tag
-    -->
       <div class="logo">
         <a href="/" class="simple-text logo-normal">
           Badgerloop
