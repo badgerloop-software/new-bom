@@ -2,7 +2,7 @@
 <h3><small>{{#if user.isFSC}} FSC Member {{/if}} {{#if user.isAdmin}} Executitive Team Member {{/if}}</small></h3>
 <form class="form-inline md-form form-sm active-red active-red-2 mt-2" method="POST" action="/orders/view">
   <i class="material-icons" aria-hidden="true">search</i>
-  <input name="search" class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search Items, Names, Part Numbers and More" aria-label="Search">
+  <input name="search" class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search Items, Names, Part Numbers, Subteam Names and More" aria-label="Search">
 </form>
 <div class="container-fluid mt-4">
   <div class="row justify-content-center">
@@ -18,7 +18,9 @@
       <li><b>Product Number</b>: {{this.productNum}}</li>
       <li><b>Quantity</b>: {{this.quantity}}</li>
       <li><b>Cost</b>: ${{this.cost}}</li>
+      {{#if this.link}}
       <li><a target="_blank" href="{{this.link}}">Visit Link</a></li>
+      {{/if}}
       {{#if this.trackingNum}}
       <li><b>Tracking Number</b>: {{this.trackingNum}}</li>
       {{/if}}

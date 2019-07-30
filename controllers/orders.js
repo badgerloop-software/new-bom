@@ -1,4 +1,5 @@
 const Order = require('../models/order');
+const Budget = require('../models/budget');
 const webhookURL = process.env.WEBHOOK_URL;
 const request = require('request');
 
@@ -8,7 +9,7 @@ function createSlackMessage(order) {
     uri: webhookURL,
     method: 'POST',
     json: {
-      "text": `====${order.subteam}==== \n *Requestor*: ${order.requestor} \n *Items*: ${order.item} \n *Cost*: $${order.cost} \n ==== ==== ====`
+      "text": `====${order.subteam}==== \n *Requestor*: @${order.requestor} \n *Items*: ${order.item} \n *Cost*: $${order.cost} \n ==== ==== ====`
     }
   };
   request(options, (err, res, body) => {
@@ -49,6 +50,13 @@ exports.postMakeOrder = (req, res, next) => {
     order.dateOrdered = new Date();
     order.isOrdered = true;
     order.isApproved = true;
+    Budget.find({}, (err, budgets) => {
+      if (err) throw err;
+      let budget = budgets[0];
+      let index = budget.findTeamIndex(order.subteam);
+      budget.currentBudgets[index] -= order.cost;
+      budget.save((err) => {if (err) throw err});
+    });
   }
 
   let orderObj = {
@@ -85,7 +93,6 @@ exports.getViewOrders = (req, res) => {
       });
     });
   } else {
-    console.log(req.user);
     Order.find({}, (err, orders) => {
       if (err) throw err;
       res.render('viewOrders', {
@@ -161,7 +168,6 @@ exports.postEditOrder = (req, res) => {
 }
 
 exports.getCancelOrder = (req, res) => {
-  console.log(`params = ${req.query.q}`);
   Order.deleteOne({'_id': req.query.q}, (err, order) => {
     if (err) throw err;
     req.flash('success', {msg: 'Order Cancelled'});
@@ -193,6 +199,8 @@ exports.getOrdering = (req, res) => {
   });
 }
 
+
+
 exports.getApproving = (req, res) => {
   let user = req.user;
   let orderID = req.params.id;
@@ -202,9 +210,29 @@ exports.getApproving = (req, res) => {
   }
   Order.findById(orderID, (err, order) => {
     order.isApproved = true;
-    order.save((err) => {
-      req.flash('success', {msg: 'Order Approved'});
-      res.redirect('/orders/view');
+    let budgetID = null;
+    let update;
+    let updatedNumber = null;
+    let teamIndex = null
+    let newCurrentBudgets;
+    Budget.find({}, (err, budgets) => {
+      if (err) throw err;
+      let budget = budgets[0];
+      budgetID = budget._id;
+      teamIndex = budget.findTeamIndex(order.subteam);
+      newCurrentBudgets = budget.currentBudgets;
+      updatedNumber = budget.currentBudgets[teamIndex] - order.cost;
+      newCurrentBudgets[teamIndex] = updatedNumber;
+      update = {currentBudgets: newCurrentBudgets};
+      Budget.findByIdAndUpdate(budgetID, update, {new: true}, (err, doc) => {
+        if (err) throw err;
+        console.log(doc.currentBudgets);
+        order.save((err) => {
+          if (err) throw err;
+          req.flash('success', {msg: 'Order Approved'});
+          res.redirect('/orders/view');
+        });
+      });
     });
   });
 };

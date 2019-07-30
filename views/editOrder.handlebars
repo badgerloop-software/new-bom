@@ -24,22 +24,24 @@
     </div>
     <div class="form-group col-auto">
       <label>Subteam</label>
-      <select class="form-control" id="chooseSubteam" name="subteam" {{order.subteam}}>
+      <select class="form-control" id="chooseSubteam" name="subteam">
+        {{!-- You can't use a partial here because it would interfere with the frontend JS --}}
         <option id="Analysis" value="Analysis">Analysis</option>
         <option id="Battery" value="Battery">Battery</option>
         <option id="Braking" value="Braking">Braking</option>
-        <option id="Controls" value="Controls">Controls</option>
+        <option id="Controls"value="Controls">Controls</option>
         <option id="Electrical Reliability" value="Electrical Reliablilty">Electrical Reliability</option>
         <option id="Electrical Hardware" value="Electrical Hardware">Electrical Hardware</option>
-        <option id="Executive" value="Executitive">Executitive</option>
+        <option id="Executitive" value="Executitive">Executitive</option>
         <option id="Operations" value="Operations">Operations</option>
         <option id="Powertrain" value="Powertrain">Powertrain</option>
-        <option id="Propulsion" value="Propulsion">Propulsion</option>
+        <option id=" Propulsion" value="Propulsion">Propulsion</option>
         <option id="Software" value="Software">Software</option>
         <option id="Stability" value="Stability">Stability</option>
         <option id="Structural" value="Structural">Structural</option>
         <option id="Workshop" value="Workshop">Tools &amp; Workshop</option>
-      </select>
+
+</select>
     </div>
   </div>
   <div class="form-row">
