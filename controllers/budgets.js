@@ -38,3 +38,10 @@ exports.createBudgets = (req, res) => {
   }
   return createMongoBudget(req, res, namesArray, budgetsArray)
 }
+
+exports.getDelete = (req, res) => {
+  Budgets.remove({}, () => {
+    req.flash('success', {msg: 'Budget Deleted'});
+    res.redirect('/admin/dashboard');
+  })
+}
