@@ -95,27 +95,7 @@ exports.setUser = (req, res) => {
 }
 
 exports.createBudget = (req, res) => {
-  if (req.user.isFSC || req.user.isAdmin) {
-    let currentBudgetsArray = [];
-    let setBudgetsArray = [];
-    let teamArray = ['Analysis', 'Battery', 'Braking', 'Controls', 'Electrical Reliability', 'Electrical Hardware', 'Executitive', 'Operations', 'Powertrain', 'Propulsion', 'Software', 'Stability', 'Structural', 'ToolsAndWorkshop'];
-    for (let i = 0; i < teamArray.length; i++) {
-      currentBudgetsArray[i] = 0;
-      setBudgetsArray[i] = 0;
-    }
-    let options = {
-      teamList: teamArray,
-      currentBudgets: currentBudgetsArray,
-      setBudgets: setBudgetsArray
-    }
-
-    Budgets.create(options, (err, budget) => {
-      if (err) throw err;
-      req.flash('success', { msg: 'Budget Deployed, Welcome to the Badgerloop BOM Boss' });
-      return res.redirect('/admin/dashboard');
-    });
-  } else {
-    req.flash('error', { msg: 'You are not authorized to do this' });
-    return res.redirect('/');
-  }
+  res.render('createBudget', {
+    user: req.user
+  })
 }

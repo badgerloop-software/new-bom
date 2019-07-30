@@ -9,7 +9,7 @@ function createSlackMessage(order) {
     uri: webhookURL,
     method: 'POST',
     json: {
-      "text": `====${order.subteam}==== \n *Requestor*: ${order.requestor} \n *Items*: ${order.item} \n *Cost*: $${order.cost} \n ==== ==== ====`
+      "text": `====${order.subteam}==== \n *Requestor*: @${order.requestor} \n *Items*: ${order.item} \n *Cost*: $${order.cost} \n ==== ==== ====`
     }
   };
   request(options, (err, res, body) => {
@@ -93,7 +93,6 @@ exports.getViewOrders = (req, res) => {
       });
     });
   } else {
-    console.log(req.user);
     Order.find({}, (err, orders) => {
       if (err) throw err;
       res.render('viewOrders', {
@@ -211,23 +210,29 @@ exports.getApproving = (req, res) => {
   }
   Order.findById(orderID, (err, order) => {
     order.isApproved = true;
+    let budgetID = null;
+    let update;
+    let updatedNumber = null;
+    let teamIndex = null
+    let newCurrentBudgets;
     Budget.find({}, (err, budgets) => {
       if (err) throw err;
       let budget = budgets[0];
-      let index = budget.findTeamIndex(order.subteam);
-      console.log(`Current Budget is ${budget.currentBudgets[index]}`);
-      budget.currentBudgets[index] -= order.cost;
-      console.log(`Now Budget is ${budget.currentBudgets[index]}`);
-      console.log(`Current Doc is ${budget}`);
-      budget.save((err) => {
+      budgetID = budget._id;
+      teamIndex = budget.findTeamIndex(order.subteam);
+      newCurrentBudgets = budget.currentBudgets;
+      updatedNumber = budget.currentBudgets[teamIndex] - order.cost;
+      newCurrentBudgets[teamIndex] = updatedNumber;
+      update = {currentBudgets: newCurrentBudgets};
+      Budget.findByIdAndUpdate(budgetID, update, {new: true}, (err, doc) => {
         if (err) throw err;
-        console.log(`Current Doc is ${budget}`);
+        console.log(doc.currentBudgets);
+        order.save((err) => {
+          if (err) throw err;
+          req.flash('success', {msg: 'Order Approved'});
+          res.redirect('/orders/view');
+        });
       });
-    });
-    order.save((err) => {
-      if (err) throw err;
-      req.flash('success', {msg: 'Order Approved'});
-      res.redirect('/orders/view');
     });
   });
 };
