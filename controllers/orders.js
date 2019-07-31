@@ -15,7 +15,7 @@ function createSlackMessage(order) {
   *Requestor*: ${order.requestor}
   *Items*: ${order.item}
   *Cost*: $${order.cost}
-  *Link*: http://${URL}/orders/${order.id}
+  *Link*: http://${URL}/orders/edit/${order.id}
 ==== ==== ====`
     }
   };
