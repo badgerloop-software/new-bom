@@ -1,6 +1,7 @@
 const Order = require('../models/order');
 const Budget = require('../models/budget');
 const webhookURL = process.env.WEBHOOK_URL;
+const URL = process.env.LOCAL_URL;
 const request = require('request');
 
 
@@ -9,7 +10,13 @@ function createSlackMessage(order) {
     uri: webhookURL,
     method: 'POST',
     json: {
-      "text": `====${order.subteam}==== \n *Requestor*: ${order.requestor} \n *Items*: ${order.item} \n *Cost*: $${order.cost} \n ==== ==== ====`
+      "text": 
+`====${order.subteam}====
+  *Requestor*: ${order.requestor}
+  *Items*: ${order.item}
+  *Cost*: $${order.cost}
+  *Link*: http://${URL}/orders/${order.id}
+==== ==== ====`
     }
   };
   request(options, (err, res, body) => {
@@ -59,22 +66,21 @@ exports.postMakeOrder = (req, res, next) => {
     });
   }
 
-  let orderObj = {
-    requestor: req.body.requestor,
-    item: req.body.item,
-    subteam: req.body.subteam,
-    cost: totalCost
-  }
-
   order.save((err) => {
     if (err) return next(err);
+    let orderObj = {
+      requestor: req.body.requestor,
+      item: req.body.item,
+      subteam: req.body.subteam,
+      cost: totalCost,
+      id: order._id
+    }
+    createSlackMessage(orderObj);
     req.flash('success', {
       msg: 'Order Submitted'
     })
     return res.redirect('/');
   });
-
-  createSlackMessage(orderObj);
 }
 
 exports.getViewOrders = (req, res) => {
