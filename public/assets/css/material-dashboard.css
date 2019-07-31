@@ -14494,7 +14494,7 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
 }
 
 .sidebar[data-background-color="black"] {
-  background-color: #191919;
+  background-color: #ffffff;
 }
 
 .sidebar .sidebar-wrapper {
@@ -14764,7 +14764,7 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
 }
 
 .sidebar[data-background-color="black"] .sidebar-background:after {
-  background: #000;
+  background: rgb(255, 255, 255);
   opacity: .8;
 }
 
@@ -18215,9 +18215,11 @@ Copyright (c) 2015 Daniel Eden
   .sidebar {
     display: none;
     box-shadow: none;
+    
   }
   .sidebar .sidebar-wrapper {
     padding-bottom: 60px;
+    background: white;
   }
   .sidebar .nav-mobile-menu {
     margin-top: 0;
@@ -18368,6 +18370,7 @@ Copyright (c) 2015 Daniel Eden
   .off-canvas-sidebar nav .navbar-collapse .logo {
     position: relative;
     z-index: 4;
+    background: white;
   }
   .sidebar .navbar-form,
   .off-canvas-sidebar nav .navbar-collapse .navbar-form {

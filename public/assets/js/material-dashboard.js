@@ -33,9 +33,7 @@ function debounce(t, n, i) {
 $(document).ready(function() {
   $("body").bootstrapMaterialDesign(),
     ($sidebar = $(".sidebar")),
-    md.initSidebarsCheck(),
     (window_width = $(window).width()),
-    md.checkSidebarImage(),
     0 != $(".selectpicker").length && $(".selectpicker").selectpicker(),
     $('[rel="tooltip"]').tooltip(),
     $(".form-control")
@@ -93,8 +91,7 @@ $(document).ready(function() {
   $(window).resize(function() {
     md.initSidebarsCheck(),
       (seq = seq2 = 0),
-      setTimeout(function() {
-        md.initDashboardPageCharts();
+      setTimeout(function() {;
       }, 500);
   }),
   (md = {
@@ -112,18 +109,6 @@ $(document).ready(function() {
             image_src +
             ') "/>'),
           $sidebar.append(sidebar_container));
-    },
-    showNotification: function(e, a) {
-      (type = ["", "info", "danger", "success", "warning", "rose", "primary"]),
-        (color = Math.floor(6 * Math.random() + 1)),
-        $.notify(
-          {
-            icon: "add_alert",
-            message:
-              "Welcome to <b>Material Dashboard Pro</b> - a beautiful admin panel for every web developer."
-          },
-          { type: type[color], timer: 3e3, placement: { from: e, align: a } }
-        );
     },
     initDocumentationCharts: function() {
       if (
@@ -261,16 +246,11 @@ $(document).ready(function() {
             (nav_content = $navbar.html()),
             (nav_content =
               '<ul class="nav navbar-nav nav-mobile-menu">' +
-              nav_content +
+              '' +
               "</ul>"),
-            (navbar_form = $("nav")
-              .find(".navbar-form")
-              .get(0).outerHTML),
             ($sidebar_nav = $sidebar_wrapper.find(" > .nav")),
             ($nav_content = $(nav_content)),
-            ($navbar_form = $(navbar_form)),
             $nav_content.insertBefore($sidebar_nav),
-            $navbar_form.insertBefore($nav_content),
             $(".sidebar-wrapper .dropdown .dropdown-menu > li > a").click(
               function(e) {
                 e.stopPropagation();

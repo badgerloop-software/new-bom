@@ -9,7 +9,7 @@ function createSlackMessage(order) {
     uri: webhookURL,
     method: 'POST',
     json: {
-      "text": `====${order.subteam}==== \n *Requestor*: @${order.requestor} \n *Items*: ${order.item} \n *Cost*: $${order.cost} \n ==== ==== ====`
+      "text": `====${order.subteam}==== \n *Requestor*: ${order.requestor} \n *Items*: ${order.item} \n *Cost*: $${order.cost} \n ==== ==== ====`
     }
   };
   request(options, (err, res, body) => {
