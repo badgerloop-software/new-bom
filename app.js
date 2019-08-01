@@ -75,5 +75,6 @@ app.get('/admin/createbudget', passportConfig.isAuthenticated, adminController.c
 
 app.get('/budget/edit', passportConfig.isAuthenticated, budgetController.getEdit);
 app.post('/budget/createBudget', budgetController.createBudgets);
+app.get('/budget/delete', passportConfig.isAuthenticated, budgetController.getDelete);
 app.get('/slack/reaction?challenge=:event', eventsController.getEvent);
 

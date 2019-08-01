@@ -5,18 +5,37 @@ const URL = process.env.LOCAL_URL;
 const request = require('request');
 
 
+function isURL(str) {
+  var urlRegex = '^(?!mailto:)(?:(?:http|https|ftp)://)(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))|localhost)(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?$';
+  var url = new RegExp(urlRegex, 'i');
+  return str.length < 2083 && url.test(str);
+}
+
 function createSlackMessage(order) {
-  let options = {
-    uri: webhookURL,
-    method: 'POST',
-    json: {
-      "text": 
+  let msg;
+  if (order.reimbursement) {
+    msg = 
+    `====${order.subteam}====
+    *Requestor*: ${order.requestor}
+    *Items*: ${order.item}
+    *Cost*: $${order.cost}
+    *This is a reimbursement*
+    *Link*: http://${URL}/orders/edit/${order.id}
+  ==== ==== ====`   
+  } else {
+    msg =
 `====${order.subteam}====
   *Requestor*: ${order.requestor}
   *Items*: ${order.item}
   *Cost*: $${order.cost}
   *Link*: http://${URL}/orders/edit/${order.id}
 ==== ==== ====`
+  }
+  let options = {
+    uri: webhookURL,
+    method: 'POST',
+    json: {
+      "text": msg
     }
   };
   request(options, (err, res, body) => {
@@ -41,6 +60,10 @@ exports.getMakeOrder = (req, res) => {
 exports.postMakeOrder = (req, res, next) => {
   let totalCost = req.body.cost * req.body.quantity;
   let notARequest = req.body.notARequest;
+  if (!isURL(req.body.link)) {
+    req.flash('errors', msg: {'That is not a valid link, be sure to include http://'});
+    res.redirect('back')
+  }
   let order = new Order({
     requestor: req.body.requestor,
     item: req.body.item,
@@ -48,14 +71,15 @@ exports.postMakeOrder = (req, res, next) => {
     supplier: req.body.supplier,
     productNum: req.body.productNum,
     quantity: req.body.quantity,
-    cost: totalCost,
-    link: req.body.link
+    totalCost: totalCost,
+    indvPrice: req.body.cost,
+    link: req.body.link,
+    comments: req.body.comments
   });
 
   if(notARequest) {
     order.purchaser = req.body.requestor;
     order.dateOrdered = new Date();
-    order.isOrdered = true;
     order.isApproved = true;
     Budget.find({}, (err, budgets) => {
       if (err) throw err;
@@ -128,8 +152,7 @@ exports.getEditOrders = (req, res) => {
       if(!req.user) {
         return redirectToMain(req, res);
       }
-      if(!req.user.isFSC && !req.user.isAdmin) {
-        if (req.user.name !== selectedOrder.requestor) {
+      if(!req.user.isFSC || !req.user.isAdmin) {
          return redirectToMain(req, res);
         } else {
           res.render('editOrder', {
@@ -139,7 +162,6 @@ exports.getEditOrders = (req, res) => {
           });
           return;       
         }
-      }
       // console.log(`Order ${order._id} selected`);
       res.render('editOrder', {
         user: req.user,
@@ -152,7 +174,7 @@ exports.getEditOrders = (req, res) => {
 
 exports.postEditOrder = (req, res) => {
   let orderID = req.body.id;
-  let totalCost = req.body.cost * req.body.quantity;
+  let totalCost = (req.body.cost * req.body.quantity) + req.body.shipping + req.body.tax;
   Order.findById(orderID, (err, order) => {
     if (err) throw err;
     order.requestor = req.body.requestor;
@@ -161,10 +183,14 @@ exports.postEditOrder = (req, res) => {
     order.supplier = req.body.supplier;
     order.productNum = req.body.productNum;
     order.quantity = req.body.quantity;
-    order.cost = totalCost,
+    order.totalCost = totalCost,
+    order.indvPrice = req.body.cost,
+    order.shipping = req.body.shipping,
+    order.tax = req.body.tax,
     order.trackingNum = req.body.trackingNum;
     order.comments = req.body.comments;
     order.link = req.body.link;
+    order.invoice = req.body.invoice;
     order.save((err) => {
       if (err) throw err;
     });

@@ -9,7 +9,11 @@ const OrderSchema = new mongoose.Schema({
   supplier: String,
   productNum: String,
   quantity: Number,
-  cost: Number,
+  totalCost: Number,
+  indvPrice: Number,
+  tax: Number,
+  shipping: Number,
+  tax: Number,
   isApproved: {type: Boolean, default: false},
   trackingNum: String,
   dateRequested: {type: Date, default: Date.now},
@@ -17,7 +21,8 @@ const OrderSchema = new mongoose.Schema({
   dateOrdered: Date,
   purchaser: String,
   comments: String,
-  link: String
+  link: String,
+  invoice: String,
 });
 
 OrderSchema.index({'$**': 'text'}, {

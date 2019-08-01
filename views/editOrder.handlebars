@@ -63,18 +63,38 @@
       <label>Quantity</label>
       <input class="form-control" name="quantity" type="number" value="{{order.quantity}}">
     </div>
+  </div>
+  <div class="form-row">
     <div class="form-group col-auto">
       <label><b>Individual</b> Cost</label>
       <div class="input-group">
         <div class="input-group-prepend">
-          <div class="input-group-text">$</div>
+          <div class="input-group-text" style="padding-left: 0">$</div>
         </div>
         <input class="form-control" aria-describedby="costHelp" name="cost" type="number" id="orderIndCost" step=".01"
           min="0">
-        <small id="costHelp" class="form-text text-muted">Remember to update with actual cost</small>
       </div>
     </div>
-  </div>
+    <div class="form-group col-auto">
+      <label>Shipping Cost</label>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <div class="input-group-text">$</div>
+        </div>
+        <input class="form-control" aria-describedby="costHelp" name="shipping" type="number" id="orderShipping" step=".01"
+          min="0">
+      </div>
+    </div>
+    <div class="form-group col-auto">
+      <label>Tax</label>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <div class="input-group-text">$</div>
+        </div>
+        <input class="form-control" aria-describedby="costHelp" name="tax" type="number" id="orderTax" step=".01"
+          min="0">
+      </div>
+    </div>
   </div>
   <div class="form-row">
     <div class="form-group col-auto">
@@ -87,6 +107,12 @@
       <label for="link">Link to Purchase</label>
       <input class="form-control" type="text" name="link" id="link" value="{{order.link}}">
     </div>
+    <div class="form-group col-auto">
+      <label for="invoice">Link to Invoice</label>
+      <input class="form-control" type="text" name="invoice" value="{{order.invoice}}">
+    </div>
+  </div>
+  <div class="form-row">
     {{#if order.link}}
     <div class="form-group col-auto">
       <a target="_blank" href="{{order.link}}">Click here to Visit Link</a>
