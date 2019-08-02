@@ -84,7 +84,7 @@ exports.postMakeOrder = (req, res, next) => {
     Budget.find({}, (err, budgets) => {
       if (err) throw err;
       if (budgets === {}) {
-        req.flash('errors' {msg: 'The Budget has not been initalized yet'});
+        req.flash('errors', {msg: 'The Budget has not been initalized yet'});
         return res.redirect('back');
       }
       let budget = budgets[0];
