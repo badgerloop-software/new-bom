@@ -60,9 +60,9 @@ exports.getMakeOrder = (req, res) => {
 exports.postMakeOrder = (req, res, next) => {
   let totalCost = req.body.cost * req.body.quantity;
   let notARequest = req.body.notARequest;
-  if (!isURL(req.body.link)) {
+  if (req.body.link && !isURL(req.body.link)) {
     req.flash('errors', {msg:'That is not a valid link, be sure to include http://'});
-    res.redirect('back')
+   return res.redirect('back')
   }
   let order = new Order({
     requestor: req.body.requestor,
