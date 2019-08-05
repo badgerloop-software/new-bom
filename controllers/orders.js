@@ -272,6 +272,10 @@ exports.getApproving = (req, res) => {
     let newCurrentBudgets;
     Budget.find({}, (err, budgets) => {
       if (err) throw err;
+      if (budgets === {}) {
+        req.flash('errors', {msg: 'The Budget has not been initalized'});
+        return res.redirect('/');
+      }
       let budget = budgets[0];
       budgetID = budget._id;
       teamIndex = budget.findTeamIndex(order.subteam);
