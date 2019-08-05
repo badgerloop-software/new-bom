@@ -197,7 +197,7 @@ exports.getEditOrders = (req, res) => {
 
 exports.postEditOrder = (req, res) => {
   let orderID = req.body.id;
-  let totalCost = (req.body.cost * req.body.quantity) + req.body.shipping + req.body.tax;
+  let totalCost = (req.body.cost * req.body.quantity) + Number(req.body.shipping) + Number(req.body.tax);
   Order.findById(orderID, (err, order) => {
     if (err) throw err;
     order.requestor = req.body.requestor;
@@ -208,8 +208,8 @@ exports.postEditOrder = (req, res) => {
     order.quantity = req.body.quantity;
     order.totalCost = totalCost,
       order.indvPrice = req.body.cost,
-      order.shipping = req.body.shipping,
-      order.tax = req.body.tax,
+      order.shipping = Number(req.body.shipping),
+      order.tax = Number(req.body.tax),
       order.trackingNum = req.body.trackingNum;
     order.comments = req.body.comments;
     order.link = req.body.link;
