@@ -1,10 +1,45 @@
 <div class="container-fluid">
-  <table>
-    <thead>
+  <table class="table table-bordered table-hover table-responsive">
+    <thead class="thead-dark">
       <th>Item</th>
+      <th>Subteam</th>
+      <th>Requester</th>
+      <th>Date Requested</th>     
       <th>Supplier</th>
       <th>Part Number</th>
-      <th></th>
+      <th>Quantity</th>
+      <th>Ind. Item Cost</th>
+      <th>Shipping</th>
+      <th>Tax</th>
+      <th>Total Cost</th>
+      <th>Date Purchased</th>
+      <th>Purchased By</th>
+      <th>Link</th>
+      <th>Comments</th>
+      <th>Link to Invoice</th>
+      <th>Tracking Number</th>
     </thead>
+    <tbody>
+      {{#each orders}}
+      <tr>
+        <td>{{this.item}}</td>
+        <td>{{this.subteam}}</td>
+        <td>{{this.requestor}}</td>
+        <td>{{this.dateRequested}}</td>
+        <td>{{this.supplier}}</td>
+        <td>{{this.productNum}}</td>
+        <td>{{this.quantity}}</td>
+        <td>${{this.indvPrice}}</td>
+        <td>${{this.shipping}}</td>
+        <td>${{this.tax}}</td>
+        <td>${{this.totalCost}}</td>
+        <td>{{this.dateOrdered}}</td>
+        <td>{{this.purchaser}}</td>
+        <td>{{this.link}}</td>
+        <td>{{this.invoice}}</td>
+        <td>{{this.trackingNum}}</td>
+        {{/each}}
+      </tr>
+    </tbody>
   </table>
 </div>

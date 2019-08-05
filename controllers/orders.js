@@ -175,7 +175,7 @@ exports.getEditOrders = (req, res) => {
       if (!req.user) {
         return redirectToMain(req, res);
       }
-      if (!req.user.isFSC || !req.user.isAdmin) {
+      if (!req.user.isFSC && !req.user.isAdmin) {
         return redirectToMain(req, res);
       } else {
         res.render('editOrder', {
@@ -185,12 +185,6 @@ exports.getEditOrders = (req, res) => {
         });
         return;
       }
-      // console.log(`Order ${order._id} selected`);
-      res.render('editOrder', {
-        user: req.user,
-        order: selectedOrder,
-        activeView: true
-      });
     }
   });
 }
@@ -289,7 +283,7 @@ exports.getApproving = (req, res) => {
         order.save((err) => {
           if (err) throw err;
           req.flash('success', { msg: 'Order Approved' });
-          res.redirect('/orders/view');
+          return res.redirect('/orders/view');
         });
       });
     });

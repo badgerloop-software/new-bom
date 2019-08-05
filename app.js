@@ -16,6 +16,7 @@ const authController = require('./controllers/auth');
 const eventsController = require('./controllers/events');
 const adminController = require('./controllers/admin');
 const budgetController = require('./controllers/budgets');
+const bomController = require('./controllers/bom');
 
 const mongoConfig = require('./config/mongo');
 const passportConfig = require('./config/passport');
@@ -78,3 +79,4 @@ app.post('/budget/createBudget', budgetController.createBudgets);
 app.get('/budget/delete', passportConfig.isAuthenticated, budgetController.getDelete);
 app.get('/slack/reaction?challenge=:event', eventsController.getEvent);
 
+app.get('/bom', passportConfig.isAuthenticated, bomController.getTableView);
