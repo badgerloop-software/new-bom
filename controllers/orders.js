@@ -14,17 +14,17 @@ function isURL(str) {
 function createSlackMessage(order) {
   let msg;
   if (order.reimbursement) {
-    msg = 
-    `====${order.subteam}====
+    msg =
+      `====${order.subteam}====
     *Requestor*: ${order.requestor}
     *Items*: ${order.item}
     *Cost*: $${order.cost}
     *This is a reimbursement*
     *Link*: http://${URL}/orders/edit/${order.id}
-  ==== ==== ====`   
+  ==== ==== ====`
   } else {
     msg =
-`====${order.subteam}====
+      `====${order.subteam}====
   *Requestor*: ${order.requestor}
   *Items*: ${order.item}
   *Cost*: $${order.cost}
@@ -35,7 +35,26 @@ function createSlackMessage(order) {
     uri: webhookURL,
     method: 'POST',
     json: {
-      "text": msg
+      "text": msg,
+      "attachments": [
+        {
+          "fallback": `View this order at http://${URL}/orders/edit/${order.id}`,
+          "actions": [
+            {
+              "type": "button",
+              "text": "Approve Order 💵",
+              "url": `http://${URL}/orders/approve/${order.id}`,
+              "style": 'primary',
+            },
+            {
+              "type": "button",
+              "text": "Deny Order (Not Implemented Yet)",
+              "url": `http://${URL}/orders/deny/${order.id}`,
+              "style": 'danger'
+            }
+          ]
+        }
+      ]
     }
   };
   request(options, (err, res, body) => {
@@ -61,8 +80,8 @@ exports.postMakeOrder = (req, res, next) => {
   let totalCost = req.body.cost * req.body.quantity;
   let notARequest = req.body.notARequest;
   if (req.body.link && !isURL(req.body.link)) {
-    req.flash('errors', {msg:'That is not a valid link, be sure to include http://'});
-   return res.redirect('back')
+    req.flash('errors', { msg: 'That is not a valid link, be sure to include http://' });
+    return res.redirect('back')
   }
   let order = new Order({
     requestor: req.body.requestor,
@@ -77,20 +96,20 @@ exports.postMakeOrder = (req, res, next) => {
     comments: req.body.comments
   });
 
-  if(notARequest) {
+  if (notARequest) {
     order.purchaser = req.body.requestor;
     order.dateOrdered = new Date();
     order.isApproved = true;
     Budget.find({}, (err, budgets) => {
       if (err) throw err;
       if (budgets === {}) {
-        req.flash('errors', {msg: 'The Budget has not been initalized yet'});
+        req.flash('errors', { msg: 'The Budget has not been initalized yet' });
         return res.redirect('back');
       }
       let budget = budgets[0];
       let index = budget.findTeamIndex(order.subteam);
       budget.currentBudgets[index] -= order.cost;
-      budget.save((err) => {if (err) throw err});
+      budget.save((err) => { if (err) throw err });
     });
   }
 
@@ -115,9 +134,9 @@ exports.getViewOrders = (req, res) => {
   if (req.query.search) {
     console.log(`Recieved serch term ${req.query.search}`);
     Order.find(
-      { $text : {$search : req.query.search} },
-      { score: {$meta: "textScore"} },
-    ).sort({score: {$meta : 'textScore'}}).exec((err, results) => {
+      { $text: { $search: req.query.search } },
+      { score: { $meta: "textScore" } },
+    ).sort({ score: { $meta: 'textScore' } }).exec((err, results) => {
       if (err) throw err;
       console.log(results);
       res.render('viewOrders', {
@@ -153,19 +172,19 @@ exports.getEditOrders = (req, res) => {
     if (err || selectedOrder === undefined) {
       res.redirect('/');
     } else {
-      if(!req.user) {
+      if (!req.user) {
         return redirectToMain(req, res);
       }
-      if(!req.user.isFSC || !req.user.isAdmin) {
-         return redirectToMain(req, res);
-        } else {
-          res.render('editOrder', {
-            user: req.user,
-            order: selectedOrder,
-            activeView: true
-          });
-          return;       
-        }
+      if (!req.user.isFSC || !req.user.isAdmin) {
+        return redirectToMain(req, res);
+      } else {
+        res.render('editOrder', {
+          user: req.user,
+          order: selectedOrder,
+          activeView: true
+        });
+        return;
+      }
       // console.log(`Order ${order._id} selected`);
       res.render('editOrder', {
         user: req.user,
@@ -188,10 +207,10 @@ exports.postEditOrder = (req, res) => {
     order.productNum = req.body.productNum;
     order.quantity = req.body.quantity;
     order.totalCost = totalCost,
-    order.indvPrice = req.body.cost,
-    order.shipping = req.body.shipping,
-    order.tax = req.body.tax,
-    order.trackingNum = req.body.trackingNum;
+      order.indvPrice = req.body.cost,
+      order.shipping = req.body.shipping,
+      order.tax = req.body.tax,
+      order.trackingNum = req.body.trackingNum;
     order.comments = req.body.comments;
     order.link = req.body.link;
     order.invoice = req.body.invoice;
@@ -204,9 +223,9 @@ exports.postEditOrder = (req, res) => {
 }
 
 exports.getCancelOrder = (req, res) => {
-  Order.deleteOne({'_id': req.query.q}, (err, order) => {
+  Order.deleteOne({ '_id': req.query.q }, (err, order) => {
     if (err) throw err;
-    req.flash('success', {msg: 'Order Cancelled'});
+    req.flash('success', { msg: 'Order Cancelled' });
     res.redirect('/orders/view');
   })
 }
@@ -229,7 +248,7 @@ exports.getOrdering = (req, res) => {
     order.isOrdered = true;
     order.save((err) => {
       if (err) throw err;
-      req.flash('success', {msg: 'Item Updated'});
+      req.flash('success', { msg: 'Item Updated' });
       res.redirect('/orders/view');
     });
   });
@@ -240,8 +259,8 @@ exports.getOrdering = (req, res) => {
 exports.getApproving = (req, res) => {
   let user = req.user;
   let orderID = req.params.id;
-  if(!user || !user.isAdmin) {
-    req.flash('errors', {msg : 'You are not authorized to approve an order'});
+  if (!user || !user.isAdmin) {
+    req.flash('errors', { msg: 'You are not authorized to approve an order' });
     res.redirect('back');
   }
   Order.findById(orderID, (err, order) => {
@@ -259,13 +278,13 @@ exports.getApproving = (req, res) => {
       newCurrentBudgets = budget.currentBudgets;
       updatedNumber = budget.currentBudgets[teamIndex] - order.cost;
       newCurrentBudgets[teamIndex] = updatedNumber;
-      update = {currentBudgets: newCurrentBudgets};
-      Budget.findByIdAndUpdate(budgetID, update, {new: true}, (err, doc) => {
+      update = { currentBudgets: newCurrentBudgets };
+      Budget.findByIdAndUpdate(budgetID, update, { new: true }, (err, doc) => {
         if (err) throw err;
         console.log(doc.currentBudgets);
         order.save((err) => {
           if (err) throw err;
-          req.flash('success', {msg: 'Order Approved'});
+          req.flash('success', { msg: 'Order Approved' });
           res.redirect('/orders/view');
         });
       });
