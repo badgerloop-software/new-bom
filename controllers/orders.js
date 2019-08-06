@@ -48,8 +48,8 @@ function createSlackMessage(order) {
             },
             {
               "type": "button",
-              "text": "Deny Order (Not Implemented Yet)",
-              "url": `http://${URL}/orders/deny/${order.id}`,
+              "text": "Deny Order",
+              "url": `http://${URL}/orders/cancel?q=${order.id}`,
               "style": 'danger'
             }
           ]
@@ -217,6 +217,9 @@ exports.postEditOrder = (req, res) => {
 }
 
 exports.getCancelOrder = (req, res) => {
+  if (!req.user || (!req.user.isAdmin && req.user.isFSC)) {
+    redirectToMain(req, res);
+  }
   Order.deleteOne({ '_id': req.query.q }, (err, order) => {
     if (err) throw err;
     req.flash('success', { msg: 'Order Cancelled' });
@@ -247,8 +250,6 @@ exports.getOrdering = (req, res) => {
     });
   });
 }
-
-
 
 exports.getApproving = (req, res) => {
   let user = req.user;
