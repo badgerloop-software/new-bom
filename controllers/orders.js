@@ -48,7 +48,7 @@ function createSlackMessage(order) {
             },
             {
               "type": "button",
-              "text": "Deny Order",
+              "text": "Deny Order 🚫",
               "url": `http://${URL}/orders/cancel?q=${order.id}`,
               "style": 'danger'
             }
@@ -134,6 +134,7 @@ exports.getViewOrders = (req, res) => {
   if (req.query.search) {
     console.log(`Recieved serch term ${req.query.search}`);
     Order.find(
+      {isOrdered: false},
       { $text: { $search: req.query.search } },
       { score: { $meta: "textScore" } },
     ).sort({ score: { $meta: 'textScore' } }).exec((err, results) => {
@@ -146,7 +147,7 @@ exports.getViewOrders = (req, res) => {
       });
     });
   } else {
-    Order.find({}, (err, orders) => {
+    Order.find({isOrdered: false}, (err, orders) => {
       if (err) throw err;
       res.render('viewOrders', {
         user: req.user,
