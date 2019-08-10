@@ -1,12 +1,7 @@
 <script>
-  let orderCost = {{ order.cost }};
-  let orderQuantity = {{ order.quantity }};
-  let individualCost = Number(orderCost / orderQuantity);
-  console.log(individualCost);
   let orderSubteam = `{{{order.subteam}}}`;
   window.onload = () => {
     let teams = document.getElementById('chooseSubteam').children;
-    document.getElementById('orderIndCost').value = individualCost;
     for (let i = 0; i < teams.length; i++) {
       console.log(`Order subteam = ${orderSubteam} || Team ID = ${teams[i].id}`);
       if (orderSubteam === `${teams[i].id}`) {
@@ -71,7 +66,7 @@
         <div class="input-group-prepend">
           <div class="input-group-text" style="padding-left: 0">$</div>
         </div>
-        <input class="form-control" aria-describedby="costHelp" name="cost" type="number" id="orderIndCost" step=".01"
+        <input class="form-control" aria-describedby="costHelp" value="{{order.indvPrice}}" name="cost" type="number" id="orderIndCost" step=".01"
           min="0">
       </div>
     </div>
