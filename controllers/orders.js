@@ -70,10 +70,20 @@ function redirectToMain(req, res) {
 }
 
 exports.getMakeOrder = (req, res) => {
-  res.render('makeOrder', {
+  Budget.find({}, (err, budgets) => {
+    if (err) throw err;
+    if (budgets === {}) {
+      req.flash('errors', {msg: 'The budget has not been initalized yet, contact the finance lead'});
+      return res.redirect('/');
+    }
+    let budget = budgets[0];
+    let teamList = budget.teamList;
+  return res.render('makeOrder', {
     user: req.user,
-    activePurchase: true
-  })
+    activePurchase: true,
+    teamList: teamList
+  });
+  });
 }
 
 exports.postMakeOrder = (req, res, next) => {
@@ -169,6 +179,15 @@ exports.getEditOrders = (req, res) => {
     return redirectToMain(req, res);
   }
   let orderID = req.params.id;
+  Budget.find({}, (err, budgets) => {
+    if (err) throw err;
+    if (budgets === {}) {
+      req.flash('errors', {msg: 'Budget has been deleted, contact the Finance Lead'});
+      return res.redirect('/');
+    }
+    let budget = budgets[0];
+    let teamList = budget.teamList;
+
   Order.findById(orderID, (err, selectedOrder) => {
     if (err || selectedOrder === undefined) {
       res.redirect('/');
@@ -182,12 +201,14 @@ exports.getEditOrders = (req, res) => {
         res.render('editOrder', {
           user: req.user,
           order: selectedOrder,
-          activeView: true
+          activeView: true,
+          teamList: teamList,
         });
         return;
       }
     }
   });
+});
 }
 
 exports.postEditOrder = (req, res) => {

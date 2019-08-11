@@ -7,8 +7,8 @@
     </div>
     <div class="form-group col-sm-2">
       <div class="input-group mb-3">
-        <select class="form-control custom-select" name="subteam">
-          {{> teamsDropdown}}
+        <select class="form-control custom-select" name="subteam" id="subteamDropdown">
+          {{!-- {{> teamsDropdown}} --}}
         </select>
       </div>
     </div>
@@ -67,3 +67,15 @@
   <br>
   <button class="btn btn-lg btn-success" type="submit">Submit Order</button>
 </form>
+<script>
+  const DROPDOWN = document.getElementById('subteamDropdown');
+  const TEAMS_LIST_STRING = "{{teamList}}";
+  const TEAMS_LIST = TEAMS_LIST_STRING.split(',');
+  TEAMS_LIST.forEach((team) => {
+    let option = document.createElement('option');
+    option.id = String(team);
+    option.name = String(team);
+    option.innerHTML = String(team);
+    DROPDOWN.appendChild(option);
+  });
+</script>

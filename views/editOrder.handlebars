@@ -1,15 +1,3 @@
-<script>
-  let orderSubteam = `{{{order.subteam}}}`;
-  window.onload = () => {
-    let teams = document.getElementById('chooseSubteam').children;
-    for (let i = 0; i < teams.length; i++) {
-      console.log(`Order subteam = ${orderSubteam} || Team ID = ${teams[i].id}`);
-      if (orderSubteam === `${teams[i].id}`) {
-        teams[i].setAttribute('selected', 'selected');
-      }
-    }
-  }
-</script>
 <h1>Edit Order</h1>
 <form id="editForm" action="/orders/edit" method="POST">
   <div class="form-row">
@@ -21,7 +9,7 @@
       <label>Subteam</label>
       <select class="form-control" id="chooseSubteam" name="subteam">
         {{!-- You can't use a partial here because it would interfere with the frontend JS --}}
-        <option id="Analysis" value="Analysis">Analysis</option>
+        {{!-- <option id="Analysis" value="Analysis">Analysis</option>
         <option id="Battery" value="Battery">Battery</option>
         <option id="Braking" value="Braking">Braking</option>
         <option id="Controls"value="Controls">Controls</option>
@@ -34,7 +22,7 @@
         <option id="Software" value="Software">Software</option>
         <option id="Stability" value="Stability">Stability</option>
         <option id="Structural" value="Structural">Structural</option>
-        <option id="Workshop" value="Workshop">Tools &amp; Workshop</option>
+        <option id="Workshop" value="Workshop">Tools &amp; Workshop</option> --}}
 
 </select>
     </div>
@@ -151,3 +139,26 @@
   {{/unless}}
   {{/if}}
 </div>
+<script>
+  const DROPDOWN = document.getElementById('chooseSubteam');
+  const TEAMS_LIST_STRING = "{{teamList}}";
+  const TEAMS_LIST = TEAMS_LIST_STRING.split(',');
+  TEAMS_LIST.forEach((team) => {
+    let option = document.createElement('option');
+    option.id = String(team);
+    option.name = String(team);
+    option.innerHTML = String(team);
+    DROPDOWN.appendChild(option);
+  });
+
+  let orderSubteam = `{{{order.subteam}}}`;
+  window.onload = () => {
+    let teams = DROPDOWN.children;
+    for (let i = 0; i < teams.length; i++) {
+      console.log(`Order subteam = ${orderSubteam} || Team ID = ${teams[i].id}`);
+      if (orderSubteam === `${teams[i].id}`) {
+        teams[i].setAttribute('selected', 'selected');
+      }
+    }
+  }
+</script>
