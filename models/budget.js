@@ -4,7 +4,7 @@ const BudgetSchema = new mongoose.Schema({
   totalAllocated: {type: Number, default: 0},
   totalSpent: {type: Number, default: 0},
   totalLeft: {type: Number, default: 0},
-  currentBudgets: [Number],
+  currentSpent: [Number],
   setBudgets: [Number],
   teamList: {type: [String], default: ['Analysis', 'Battery', 'Braking', 'Controls', 'Electrical Reliability', 'Electrical Hardware', 'Executitive', 'Operations', 'Powertrain', 'Propulsion', 'Software', 'Stability', 'Structural', 'ToolsAndWorkshop']},
 

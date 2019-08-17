@@ -14,8 +14,9 @@ function setTable(budgets) {
   let table = [];
   if (budget !== undefined) {
     for (let i = 0; i < budget.teamList.length; i++) {
-      let spent = budget.setBudgets[i] - budget.currentBudgets[i];
-      let teamArray = [budget.teamList[i], budget.setBudgets[i], spent, budget.currentBudgets[i]]
+      let spent = budget.currentSpent[i];
+      let left = budget.setBudgets[i] - budget.currentSpent[i]
+      let teamArray = [budget.teamList[i], budget.setBudgets[i], spent, left]
       table.push(teamArray);
     }
   }
@@ -25,8 +26,8 @@ function setTable(budgets) {
 function findSum(orders) {
   let sum = 0;
   for (let i = 0; i < orders.length; i++) {
-    if (orders[i].isApproved) {
-      sum += orders[i].cost;
+    if (orders[i].isOrdered) {
+      sum += orders[i].totalCost;
     }
   }
   return sum.toFixed(2);

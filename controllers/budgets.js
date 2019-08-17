@@ -6,13 +6,13 @@ exports.getEdit = (req, res) => {
 
 function createMongoBudget(req, res, teamList, budgetList) {
   if (req.user.isFSC || req.user.isAdmin) {
-    let currentBudgetsArray = [];
+    let currentSpent = [];
     for (let i = 0; i < teamList.length; i++) {
-      currentBudgetsArray[i] = budgetList[i];
+      currentSpent[i] = 0;
     }
     let options = {
       teamList: teamList,
-      currentBudgets: currentBudgetsArray,
+      currentSpent: currentSpent,
       setBudgets: budgetList
     }
 

@@ -73,16 +73,16 @@ exports.getMakeOrder = (req, res) => {
   Budget.find({}, (err, budgets) => {
     if (err) throw err;
     if (budgets === {}) {
-      req.flash('errors', {msg: 'The budget has not been initalized yet, contact the finance lead'});
+      req.flash('errors', { msg: 'The budget has not been initalized yet, contact the finance lead' });
       return res.redirect('/');
     }
     let budget = budgets[0];
     let teamList = budget.teamList;
-  return res.render('makeOrder', {
-    user: req.user,
-    activePurchase: true,
-    teamList: teamList
-  });
+    return res.render('makeOrder', {
+      user: req.user,
+      activePurchase: true,
+      teamList: teamList
+    });
   });
 }
 
@@ -144,7 +144,7 @@ exports.getViewOrders = (req, res) => {
   if (req.query.search) {
     console.log(`Recieved serch term ${req.query.search}`);
     Order.find(
-      {isOrdered: false},
+      { isOrdered: false },
       { $text: { $search: req.query.search } },
       { score: { $meta: "textScore" } },
     ).sort({ score: { $meta: 'textScore' } }).exec((err, results) => {
@@ -157,7 +157,7 @@ exports.getViewOrders = (req, res) => {
       });
     });
   } else {
-    Order.find({isOrdered: false}, (err, orders) => {
+    Order.find({ isOrdered: false }, (err, orders) => {
       if (err) throw err;
       res.render('viewOrders', {
         user: req.user,
@@ -182,33 +182,33 @@ exports.getEditOrders = (req, res) => {
   Budget.find({}, (err, budgets) => {
     if (err) throw err;
     if (budgets === {}) {
-      req.flash('errors', {msg: 'Budget has been deleted, contact the Finance Lead'});
+      req.flash('errors', { msg: 'Budget has been deleted, contact the Finance Lead' });
       return res.redirect('/');
     }
     let budget = budgets[0];
     let teamList = budget.teamList;
 
-  Order.findById(orderID, (err, selectedOrder) => {
-    if (err || selectedOrder === undefined) {
-      res.redirect('/');
-    } else {
-      if (!req.user) {
-        return redirectToMain(req, res);
-      }
-      if (!req.user.isFSC && !req.user.isAdmin) {
-        return redirectToMain(req, res);
+    Order.findById(orderID, (err, selectedOrder) => {
+      if (err || selectedOrder === undefined) {
+        res.redirect('/');
       } else {
-        res.render('editOrder', {
-          user: req.user,
-          order: selectedOrder,
-          activeView: true,
-          teamList: teamList,
-        });
-        return;
+        if (!req.user) {
+          return redirectToMain(req, res);
+        }
+        if (!req.user.isFSC && !req.user.isAdmin) {
+          return redirectToMain(req, res);
+        } else {
+          res.render('editOrder', {
+            user: req.user,
+            order: selectedOrder,
+            activeView: true,
+            teamList: teamList,
+          });
+          return;
+        }
       }
-    }
+    });
   });
-});
 }
 
 exports.postEditOrder = (req, res) => {
@@ -234,6 +234,15 @@ exports.postEditOrder = (req, res) => {
       if (err) throw err;
     });
   });
+  if (order.isPurchased) {
+    Budget.find({}, (err, list) => {
+      updateBudget(list[0], order, (err) => {
+        if (err) throw err;
+        req.flash('success', { msg: 'Order Sucessfully Updated' });
+        return res.redirect('back');
+      })
+    });
+  }
   req.flash('success', { msg: 'Order Sucessfully Updated' });
   res.redirect('back');
 }
@@ -242,11 +251,26 @@ exports.getCancelOrder = (req, res) => {
   if (!req.user || (!req.user.isAdmin && req.user.isFSC)) {
     redirectToMain(req, res);
   }
-  Order.deleteOne({ '_id': req.query.q }, (err, order) => {
-    if (err) throw err;
-    req.flash('success', { msg: 'Order Cancelled' });
-    res.redirect('/orders/view');
-  })
+  Order.findOne({ _id: req.query.q }).select("_id").lean().then(exists => {
+    if (!exists) {
+      req.flash('errors', { msg: 'That order no longer exists' });
+      return res.redirect('/');
+    }
+    Order.findById(req.query.q, (err, order) => {
+      if (err) throw err;
+      if (order.isPurchased || order.isApproved) {
+        Budget.find({}, (err, list) => {
+          deleteOrderFromBudget(list[0], order, () => {
+            Order.deleteOne({ '_id': req.query.q }, (err) => {
+              if (err) throw err;
+              req.flash('success', { msg: 'Order Cancelled' });
+              res.redirect('/orders/view');
+            });
+          });
+        });
+      }
+    });
+  });
 }
 
 exports.getOrdering = (req, res) => {
@@ -275,40 +299,55 @@ exports.getOrdering = (req, res) => {
 
 exports.getApproving = (req, res) => {
   let user = req.user;
-  let orderID = req.params.id;
+  let orderID = req.params.id || req.query.q;
   if (!user || !user.isAdmin) {
     req.flash('errors', { msg: 'You are not authorized to approve an order' });
     res.redirect('back');
   }
-  Order.findById(orderID, (err, order) => {
-    order.isApproved = true;
-    let budgetID = null;
-    let update;
-    let updatedNumber = null;
-    let teamIndex = null
-    let newCurrentBudgets;
-    Budget.find({}, (err, budgets) => {
-      if (err) throw err;
-      if (budgets === {}) {
-        req.flash('errors', {msg: 'The Budget has not been initalized'});
-        return res.redirect('/');
-      }
-      let budget = budgets[0];
-      budgetID = budget._id;
-      teamIndex = budget.findTeamIndex(order.subteam);
-      newCurrentBudgets = budget.currentBudgets;
-      updatedNumber = budget.currentBudgets[teamIndex] - order.totalCost;
-      newCurrentBudgets[teamIndex] = updatedNumber;
-      update = { currentBudgets: newCurrentBudgets };
-      Budget.findByIdAndUpdate(budgetID, update, { new: true }, (err, doc) => {
+  Order.findOne({ _id: orderID }).select("_id").lean().then(exists => {
+    if (!exists) {
+      req.flash('errors', { msg: 'That order no longer exists' });
+      return res.redirect('/');
+    }
+    Order.findById(orderID, (err, order) => {
+      order.isApproved = true;
+      let budgetID = null;
+      let update;
+      let teamIndex = null
+      Budget.find({}, (err, budgets) => {
         if (err) throw err;
-        console.log(doc.currentBudgets);
-        order.save((err) => {
+        if (budgets === {}) {
+          req.flash('errors', { msg: 'The Budget has not been initalized' });
+          return res.redirect('/');
+        }
+        updateBudget(budgets[0], order, (err, doc) => {
           if (err) throw err;
-          req.flash('success', { msg: 'Order Approved' });
-          return res.redirect('/orders/view');
+          console.log(doc.currentBudgets);
+          order.save((err) => {
+            if (err) throw err;
+            req.flash('success', { msg: 'Order Approved' });
+            return res.redirect('/orders/view');
+          });
         });
       });
     });
   });
-};
+}
+
+function updateBudget(budget, order, callback) {
+  budgetID = budget._id;
+  teamIndex = budget.findTeamIndex(order.subteam);
+  let newCurrentSpent = budget.currentSpent;
+  newCurrentSpent[teamIndex] += order.totalCost;
+  let update = { currentSpent: newCurrentSpent };
+  Budget.findByIdAndUpdate(budgetID, update, { new: true }, callback);
+}
+
+function deleteOrderFromBudget(budget, order, callback) {
+  budgetID = budget._id;
+  teamIndex = budget.findTeamIndex(order.subteam);
+  let newCurrentSpent = budget.currentSpent;
+  newCurrentSpent[teamIndex] -= order.totalCost;
+  let update = { currentSpent: newCurrentSpent };
+  Budget.findByIdAndUpdate(budgetID, update, { new: true }, callback);
+}
