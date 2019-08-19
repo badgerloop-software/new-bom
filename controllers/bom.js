@@ -18,15 +18,15 @@ exports.getTableView = (req, res) => {
     if (req.query.q) {
       console.log(`Recieved serch term ${req.query.q}`);
       Orders.find(
-        { isOrdered: true },
-        { $text: { $search: req.query.q } },
-        { score: { $meta: 'textScore' } }
-      ).exec((err, results) => {
+        { isOrdered: true,
+          $text : {$search : req.query.q} },
+        { score: {$meta: "textScore"} },
+      ).sort({score: {$meta : 'textScore'}}).exec((err, results) => {
         if (err) throw err;
+        console.log(results);
         res.render('tableView', {
           user: req.user,
           orders: results,
-          budget: budget,
           activeBOM: true
         });
       });

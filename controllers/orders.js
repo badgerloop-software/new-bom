@@ -136,14 +136,16 @@ exports.postMakeOrder = (req, res, next) => {
     });
 }
 
+
+
 exports.getViewOrders = (req, res) => {
   if (req.query.search) {
     console.log(`Recieved serch term ${req.query.search}`);
     Order.find(
-      { isOrdered: false },
-      { $text: { $search: `${req.query.search}` } },
-      // { score: { $meta: "textScore" } },
-    ).exec((err, results) => {
+      { isOrdered: false, 
+        $text : {$search : req.query.search} },
+      { score: {$meta: "textScore"} },
+    ).sort({score: {$meta : 'textScore'}}).exec((err, results) => {
       if (err) throw err;
       console.log(results);
       res.render('viewOrders', {
@@ -153,7 +155,8 @@ exports.getViewOrders = (req, res) => {
       });
     });
   } else {
-    Order.find({ isOrdered: false }, (err, orders) => {
+    console.log(req.user);
+    Order.find({isOrdered: false}, (err, orders) => {
       if (err) throw err;
       res.render('viewOrders', {
         user: req.user,
