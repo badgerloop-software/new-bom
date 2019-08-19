@@ -16,11 +16,11 @@
   <div class="form-row">
     <div class='form-group col-auto'>
       <label>Item</label>
-      <input class="form-control" name="item" type="text">
+      <input class="form-control" name="item" type="text" required>
     </div>
     <div class="form-group col-auto">
       <label>Supplier</label>
-      <input class="form-control" name="supplier" type="text">
+      <input class="form-control" name="supplier" type="text" required>
     </div>
     <div class="form-group col-auto">
       <label>Product Number</label>
@@ -30,7 +30,7 @@
   <div class="form-row">
     <div class="form-group col-auto">
       <label>Estimated Quantity</label>
-      <input class="form-control" name="quantity" type="number">
+      <input class="form-control" name="quantity" type="number" required>
     </div>
     <div class="form-group col-auto">
       <label>Estimated <b>Individual</b> Cost</label>
@@ -38,7 +38,7 @@
         <div class="input-group-prepend">
           <div class="input-group-text">$</div>
         </div>
-        <input class="form-control" name="cost" type="number" step=".01" min="0">
+        <input class="form-control" name="cost" type="number" step=".01" min="0" required>
       </div>
     </div>
   </div>
@@ -50,7 +50,7 @@
   </div>
     <div class="form-row">
     <label for="comments">Comments:</label>
-    <textarea class="form-control" type="text" name="comments" rows="3" style="border: 2px red" id="comments"></textarea>
+    <input class="form-control" type="text" name="comments" rows="3" style="border: 2px red" id="comments">
   </div>
     <div class="form-row">
     <div class="form-check ">

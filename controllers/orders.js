@@ -230,19 +230,19 @@ exports.postEditOrder = (req, res) => {
     order.comments = req.body.comments;
     order.link = req.body.link;
     order.invoice = req.body.invoice;
+    if (order.isApproved) {
+      Budget.find({}, (err, list) => {
+        updateBudget(list[0], order, (err) => {
+          if (err) throw err;
+          req.flash('success', { msg: 'Order Sucessfully Updated' });
+          return res.redirect('back');
+        })
+      });
+    }
     order.save((err) => {
       if (err) throw err;
     });
   });
-  if (order.isPurchased) {
-    Budget.find({}, (err, list) => {
-      updateBudget(list[0], order, (err) => {
-        if (err) throw err;
-        req.flash('success', { msg: 'Order Sucessfully Updated' });
-        return res.redirect('back');
-      })
-    });
-  }
   req.flash('success', { msg: 'Order Sucessfully Updated' });
   res.redirect('back');
 }
