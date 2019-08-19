@@ -80,3 +80,4 @@ app.get('/budget/delete', passportConfig.isAuthenticated, budgetController.getDe
 app.get('/slack/reaction?challenge=:event', eventsController.getEvent);
 
 app.get('/bom', passportConfig.isAuthenticated, bomController.getTableView);
+app.post('/bom', passportConfig.isAuthenticated, bomController.postTableView);

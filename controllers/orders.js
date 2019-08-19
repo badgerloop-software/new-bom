@@ -116,28 +116,24 @@ exports.postMakeOrder = (req, res, next) => {
         req.flash('errors', { msg: 'The Budget has not been initalized yet' });
         return res.redirect('back');
       }
-      let budget = budgets[0];
-      let index = budget.findTeamIndex(order.subteam);
-      budget.currentBudgets[index] -= order.cost;
-      budget.save((err) => { if (err) throw err });
+      updateBudget(budgets[0], order);
     });
   }
-
-  order.save((err) => {
-    if (err) return next(err);
-    let orderObj = {
-      requestor: req.body.requestor,
-      item: req.body.item,
-      subteam: req.body.subteam,
-      cost: totalCost,
-      id: order._id
-    }
-    createSlackMessage(orderObj);
-    req.flash('success', {
-      msg: 'Order Submitted'
-    })
-    return res.redirect('/');
-  });
+    order.save((err) => {
+      if (err) return next(err);
+      let orderObj = {
+        requestor: req.body.requestor,
+        item: req.body.item,
+        subteam: req.body.subteam,
+        cost: totalCost,
+        id: order._id
+      }
+      createSlackMessage(orderObj);
+      req.flash('success', {
+        msg: 'Order Submitted'
+      }) 
+      return res.redirect('/');
+    });
 }
 
 exports.getViewOrders = (req, res) => {
@@ -145,9 +141,9 @@ exports.getViewOrders = (req, res) => {
     console.log(`Recieved serch term ${req.query.search}`);
     Order.find(
       { isOrdered: false },
-      { $text: { $search: req.query.search } },
-      { score: { $meta: "textScore" } },
-    ).sort({ score: { $meta: 'textScore' } }).exec((err, results) => {
+      { $text: { $search: `${req.query.search}` } },
+      // { score: { $meta: "textScore" } },
+    ).exec((err, results) => {
       if (err) throw err;
       console.log(results);
       res.render('viewOrders', {

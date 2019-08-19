@@ -26,13 +26,13 @@ const OrderSchema = new mongoose.Schema({
 });
 
 OrderSchema.index({'$**': 'text'}, {
-weights: {
-  requestor: 5,
-  item: 4,
-  subteam: 3,
-  supplier: 2,
-  productNum: 5,
-  purchaser: 4
-}
+// weights: {
+//   requestor: 5,
+//   item: 4,
+//   subteam: 3,
+//   supplier: 2,
+//   productNum: 5,
+//   purchaser: 4
+// }
 })
 module.exports = mongoose.model('Orders', OrderSchema);
