@@ -93,6 +93,11 @@ exports.postMakeOrder = (req, res, next) => {
     req.flash('errors', { msg: 'That is not a valid link, be sure to include http://' });
     return res.redirect('back')
   }
+  let podCost = false;
+  if (req.body.podCost === 'on') {
+     podCost = true
+  }
+  let needDate = req.body.date.toString()
   let order = new Order({
     requestor: req.body.requestor,
     item: req.body.item,
@@ -103,7 +108,10 @@ exports.postMakeOrder = (req, res, next) => {
     totalCost: totalCost,
     indvPrice: req.body.cost,
     link: req.body.link,
-    comments: req.body.comments
+    comments: req.body.comments,
+    project: req.body.project,
+    countsTowardPodCost: podCost,
+    needDate: needDate
   });
 
   if (notARequest) {
@@ -213,6 +221,12 @@ exports.getEditOrders = (req, res) => {
 exports.postEditOrder = (req, res) => {
   let orderID = req.body.id;
   let totalCost = (req.body.cost * req.body.quantity) + Number(req.body.shipping) + Number(req.body.tax);
+  let podCost = false;
+  console.log(req.body.podCost)
+  if (req.body.podCost === 'on') {
+    podCost = true
+  }
+  let needDate = req.body.date.toString()
   Order.findById(orderID, (err, order) => {
     if (err) throw err;
     order.requestor = req.body.requestor;
@@ -229,6 +243,9 @@ exports.postEditOrder = (req, res) => {
     order.comments = req.body.comments;
     order.link = req.body.link;
     order.invoice = req.body.invoice;
+    order.project = req.body.project,
+    order.countsTowardPodCost = podCost,
+    order.needDate = needDate
     if (order.isApproved) {
       Budget.find({}, (err, list) => {
         updateBudget(list[0], order, (err) => {

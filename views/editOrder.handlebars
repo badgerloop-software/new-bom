@@ -26,6 +26,10 @@
 
 </select>
     </div>
+        <div class="form-group col-auto">
+      <label>Project</label>
+      <input class="form-control" type="text" name="project" value="{{order.project}}">
+    </div>
   </div>
   <div class="form-row">
     <div class='form-group col-auto'>
@@ -78,6 +82,12 @@
           min="0">
       </div>
     </div>
+        <div class="form-group col-auto">
+      <div class="form-check">
+      <input type="checkbox" name="podCost" {{#if order.countsTowardPodCost}} checked {{/if}}">
+      <label for="podCost">Counts toward pod cost?</label>
+      </div>
+    </div>
   </div>
   <div class="form-row">
     <div class="form-group col-auto">
@@ -90,6 +100,11 @@
       <label for="link">Link to Purchase</label>
       <input class="form-control" type="text" name="link" id="link" value="{{order.link}}">
     </div>
+        <div class="form-group col=auto"> 
+      <label for="date">Needed By:</label>
+      <input class="form-control" type="text" name="date" id="date" value="{{order.needDate}}" readonly>
+    </div>
+  </div>
     <div class="form-group col-auto">
       <label for="invoice">Link to Invoice</label>
       <input class="form-control" type="text" name="invoice" value="{{order.invoice}}">

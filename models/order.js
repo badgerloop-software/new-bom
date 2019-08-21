@@ -23,6 +23,9 @@ const OrderSchema = new mongoose.Schema({
   comments: String,
   link: String,
   invoice: String,
+  project: String,
+  countsTowardPodCost: {type: Boolean, default: false},
+  needDate: String
 });
 
 OrderSchema.index({'$**': 'text'}, {
