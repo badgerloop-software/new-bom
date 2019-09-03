@@ -72,10 +72,10 @@ function redirectToMain(req, res) {
 exports.getMakeOrder = (req, res) => {
   Budget.find({}, (err, budgets) => {
     if (err) throw err;
-    if (budgets === {}) {
+    if (!budgets[0]) {
       req.flash('errors', { msg: 'The budget has not been initalized yet, contact the finance lead' });
       return res.redirect('/');
-    }
+    } else {
     let budget = budgets[0];
     let teamList = budget.teamList;
     return res.render('makeOrder', {
@@ -83,6 +83,7 @@ exports.getMakeOrder = (req, res) => {
       activePurchase: true,
       teamList: teamList
     });
+  }
   });
 }
 
