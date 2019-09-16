@@ -266,7 +266,7 @@ exports.postEditOrder = (req, res) => {
 
 exports.getCancelOrder = (req, res) => {
   if (!req.user || (!req.user.isAdmin && req.user.isFSC)) {
-    redirectToMain(req, res);
+   return redirectToMain(req, res);
   }
   Order.findOne({ _id: req.query.q }).select("_id").lean().then(exists => {
     if (!exists) {
