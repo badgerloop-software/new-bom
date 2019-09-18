@@ -265,25 +265,38 @@ exports.postEditOrder = (req, res) => {
 }
 
 exports.getCancelOrder = (req, res) => {
+  console.log("Cancel Recieved");
   if (!req.user || (!req.user.isAdmin && req.user.isFSC)) {
+    console.log("No user or no privilages");
    return redirectToMain(req, res);
   }
+  console.log("There is a user!")
   Order.findOne({ _id: req.query.q }).select("_id").lean().then(exists => {
     if (!exists) {
       req.flash('errors', { msg: 'That order no longer exists' });
       return res.redirect('/');
     }
+    console.log("Order Exists");
     Order.findById(req.query.q, (err, order) => {
       if (err) throw err;
+      console.log("Found Order");
       if (order.isPurchased || order.isApproved) {
         Budget.find({}, (err, list) => {
+          console.log("Right before delete")
           deleteOrderFromBudget(list[0], order, () => {
+             console.log("Its gotta be here");
             Order.deleteOne({ '_id': req.query.q }, (err) => {
               if (err) throw err;
               req.flash('success', { msg: 'Order Cancelled' });
               res.redirect('/orders/view');
             });
           });
+        });
+      } else {
+        Order.deleteOne({ '_id': req.query.q }, (err) => {
+          if (err) throw err;
+          req.flash('success', { msg: 'Order Cancelled' });
+          res.redirect('/orders/view');
         });
       }
     });
