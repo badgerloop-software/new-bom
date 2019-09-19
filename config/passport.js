@@ -20,6 +20,7 @@ const redirectURI = process.env.REDIRECT_URI;
    clientID: clientID,
    clientSecret: clientSecret
  }, (accessToken, refreshToke, profile, done) => {
+   console.log(profile)
    User.findOne({name: profile.displayName}).then((currentUser) => {
      if(currentUser) {
        console.log('Current User is' + currentUser);

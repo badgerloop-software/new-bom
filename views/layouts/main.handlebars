@@ -2,29 +2,19 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>Badgerloop - Make Purchase</title>
+<title>Badgerloop Bill of Materials</title>
 <link href="./main.css" rel="stylesheet" type="text/css">
 <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
 <link href="../../assets/css/material-dashboard.css?v=2.1.1" rel="stylesheet" />
 <link href="../../assets/css/main.css" rel="stylesheet" />
 <link rel="icon" href="/favicon.ico">
+   <script src="../assets/js/core/jquery.min.js"></script>
 <script src="../../assets/js/handlebars.js"></script>
 </head>
 
 <body>
-  <script>
-  Handlebars.registerHelper('ifCond', (val1, val2, options) => {
-    if (val1 === val2) return options.fn(this);
-    else return options.inverse(this)
-  })
-</script>
   <div class="sidebar" data-color="danger" data-background-color="white" data-image="../assets/img/sidebar-1.jpg">
-      <!--
-        Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
-
-        Tip 2: you can also add an image using data-image tag
-    -->
       <div class="logo">
         <a href="/" class="simple-text logo-normal">
           Badgerloop
@@ -49,7 +39,7 @@
           <li class="nav-item {{#if activeView}} active {{/if}}">
             <a class="nav-link" href="/orders/view">
               <i class="material-icons">library_books</i>
-              <p>View Orders</p>
+              <p>View Requests</p>
             </a>
           </li>
           {{#if user.isAdmin}}
@@ -60,11 +50,31 @@
             </a>
           </li>
           {{/if}}
+          <li class="nav-item {{#if activeBOM}} active {{/if}} ">
+            <a class="nav-link" href="/bom">
+              <i class="material-icons">grid_on</i>
+              <p>BOM</p>
+            </a>
+          </li>
           {{/if}}
-          
         </ul>
       </div>
     </div>
+          <!-- Navbar -->
+      <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
+        <div class="container-fluid">
+          <div class="navbar-wrapper">
+            <a class="navbar-brand"></a>
+          </div>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="navbar-toggler-icon icon-bar"></span>
+            <span class="navbar-toggler-icon icon-bar"></span>
+            <span class="navbar-toggler-icon icon-bar"></span>
+          </button>
+          <div class="collapse navbar-collapse justify-content-end">
+        </div>
+      </nav>
     <div class="main-panel">
       <div class="content">
         <div class="container-fluid">
@@ -72,7 +82,8 @@
          {{{body}}}
         </div>
       </div>
-    <script src="../assets/js/core/jquery.min.js"></script>
+      <script src="../assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
+      <script src="../assets/js/material-dashboard.js"></script>
   <script src="../assets/js/core/popper.min.js"></script>
   <script src="../assets/js/core/bootstrap-material-design.min.js"></script>
   

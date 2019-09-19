@@ -14,11 +14,15 @@
     <ul>
       <li><b>Requestor</b>: {{this.requestor}}</li>
       <li><b>Subteam</b>: {{this.subteam}}</li>
+      <li><b>Project</b>: {{this.project}}</li>
       <li><b>Supplier</b>: {{this.supplier}}</li>
       <li><b>Product Number</b>: {{this.productNum}}</li>
       <li><b>Quantity</b>: {{this.quantity}}</li>
-      <li><b>Cost</b>: ${{this.cost}}</li>
+      <li><b>Cost</b>: ${{this.totalCost}}</li>
+      <li><b>Need Date</b>: {{this.needDate}}</li>
+      {{#if this.link}}
       <li><a target="_blank" href="{{this.link}}">Visit Link</a></li>
+      {{/if}}
       {{#if this.trackingNum}}
       <li><b>Tracking Number</b>: {{this.trackingNum}}</li>
       {{/if}}

@@ -1,20 +1,3 @@
-<script>
-  let orderCost = {{ order.cost }};
-  let orderQuantity = {{ order.quantity }};
-  let individualCost = Number(orderCost / orderQuantity);
-  console.log(individualCost);
-  let orderSubteam = `{{{order.subteam}}}`;
-  window.onload = () => {
-    let teams = document.getElementById('chooseSubteam').children;
-    document.getElementById('orderIndCost').value = individualCost;
-    for (let i = 0; i < teams.length; i++) {
-      console.log(`Order subteam = ${orderSubteam} || Team ID = ${teams[i].id}`);
-      if (orderSubteam === `${teams[i].id}`) {
-        teams[i].setAttribute('selected', 'selected');
-      }
-    }
-  }
-</script>
 <h1>Edit Order</h1>
 <form id="editForm" action="/orders/edit" method="POST">
   <div class="form-row">
@@ -24,7 +7,28 @@
     </div>
     <div class="form-group col-auto">
       <label>Subteam</label>
-      {{> teamsDropdown}}
+      <select class="form-control" id="chooseSubteam" name="subteam">
+        {{!-- You can't use a partial here because it would interfere with the frontend JS --}}
+        {{!-- <option id="Analysis" value="Analysis">Analysis</option>
+        <option id="Battery" value="Battery">Battery</option>
+        <option id="Braking" value="Braking">Braking</option>
+        <option id="Controls"value="Controls">Controls</option>
+        <option id="Electrical Reliability" value="Electrical Reliablilty">Electrical Reliability</option>
+        <option id="Electrical Hardware" value="Electrical Hardware">Electrical Hardware</option>
+        <option id="Executitive" value="Executitive">Executitive</option>
+        <option id="Operations" value="Operations">Operations</option>
+        <option id="Powertrain" value="Powertrain">Powertrain</option>
+        <option id=" Propulsion" value="Propulsion">Propulsion</option>
+        <option id="Software" value="Software">Software</option>
+        <option id="Stability" value="Stability">Stability</option>
+        <option id="Structural" value="Structural">Structural</option>
+        <option id="Workshop" value="Workshop">Tools &amp; Workshop</option> --}}
+
+</select>
+    </div>
+        <div class="form-group col-auto">
+      <label>Project</label>
+      <input class="form-control" type="text" name="project" value="{{order.project}}">
     </div>
   </div>
   <div class="form-row">
@@ -46,20 +50,50 @@
       <label>Quantity</label>
       <input class="form-control" name="quantity" type="number" value="{{order.quantity}}">
     </div>
+  </div>
+  <div class="form-row">
     <div class="form-group col-auto">
       <label><b>Individual</b> Cost</label>
       <div class="input-group">
         <div class="input-group-prepend">
+          <div class="input-group-text" style="padding-left: 0">$</div>
+        </div>
+        <input class="form-control" aria-describedby="costHelp" value="{{order.indvPrice}}" name="cost" type="number" id="orderIndCost" step=".01"
+          min="0">
+      </div>
+    </div>
+    <div class="form-group col-auto">
+      <label>Shipping Cost</label>
+      <div class="input-group">
+        <div class="input-group-prepend">
           <div class="input-group-text">$</div>
         </div>
-        <input class="form-control" aria-describedby="costHelp" name="cost" type="number" id="orderIndCost" step=".01"
+        <input class="form-control" aria-describedby="costHelp" name="shipping" type="number" id="orderShipping" step=".01"
           min="0">
-        <small id="costHelp" class="form-text text-muted">Remember to update with actual cost</small>
+      </div>
+    </div>
+    <div class="form-group col-auto">
+      <label>Tax</label>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <div class="input-group-text">$</div>
+        </div>
+        <input class="form-control" aria-describedby="costHelp" name="tax" type="number" id="orderTax" step=".01"
+          min="0">
+      </div>
+    </div>
+        <div class="form-group col-auto">
+      <div class="form-check">
+      <input type="checkbox" name="podCost" {{#if order.countsTowardPodCost}} checked {{/if}}>
+      <label for="podCost">Counts toward pod cost?</label>
       </div>
     </div>
   </div>
-  </div>
   <div class="form-row">
+    <div class="form-group col=auto"> 
+      <label for="date">Needed By:</label>
+      <input class="form-control" type="text" name="date" id="date" value="{{order.needDate}}" readonly>
+    </div>
     <div class="form-group col-auto">
       <label>Tracking Number</label>
       <input class="form-control" name="trackingNum" type="text" value="{{order.trackingNum}}">
@@ -70,6 +104,13 @@
       <label for="link">Link to Purchase</label>
       <input class="form-control" type="text" name="link" id="link" value="{{order.link}}">
     </div>
+    <div class="form-group col-auto">
+      <label for="invoice">Link to Invoice</label>
+      <input class="form-control" type="text" name="invoice" value="{{order.invoice}}">
+    </div>
+  </div>
+  </div>
+  <div class="form-row">
     {{#if order.link}}
     <div class="form-group col-auto">
       <a target="_blank" href="{{order.link}}">Click here to Visit Link</a>
@@ -78,7 +119,7 @@
   </div>
   <div class="form-row">
     <label>Comments:</label>
-    <textarea class="form-control" type="text" name="comments">{{order.comments}}</textarea>
+   <input name="comments" class="form-control" rows="5" value="{{order.comments}}"></input>
   </div>
   <input style="display: none" name="id" value="{{order._id}}">
   <div class="form-row">
@@ -113,3 +154,26 @@
   {{/unless}}
   {{/if}}
 </div>
+<script>
+  const DROPDOWN = document.getElementById('chooseSubteam');
+  const TEAMS_LIST_STRING = "{{teamList}}";
+  const TEAMS_LIST = TEAMS_LIST_STRING.split(',');
+  TEAMS_LIST.forEach((team) => {
+    let option = document.createElement('option');
+    option.id = String(team);
+    option.name = String(team);
+    option.innerHTML = String(team);
+    DROPDOWN.appendChild(option);
+  });
+
+  let orderSubteam = `{{{order.subteam}}}`;
+  window.onload = () => {
+    let teams = DROPDOWN.children;
+    for (let i = 0; i < teams.length; i++) {
+      console.log(`Order subteam = ${orderSubteam} || Team ID = ${teams[i].id}`);
+      if (orderSubteam === `${teams[i].id}`) {
+        teams[i].setAttribute('selected', 'selected');
+      }
+    }
+  }
+</script>

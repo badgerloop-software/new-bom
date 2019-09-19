@@ -1,0 +1,19 @@
+<div class="card">
+  <h1>Create Budget Allocations</h1>
+  <h4><small>Enter the subteams this year and how much each team shall be allocated</small></h4>
+  <form id="form" method="POST" action="/budget/createBudget">
+    <div class="col-7 md-4">
+      <div class="input-group input-group-lg mb-3">
+        <input oninput="updateForm()" type="number" min="1" class="form-control" placeholder="Number of Subteams" id="numTeams" name="numTeams">
+        <div class="input-group-append">
+          <span class="input-group-text">Total Subteams</span>
+        </div>
+      </div>
+    </div>
+    {{!-- Begin Copy --}}
+     <div id="inputs"></div>
+      {{!-- End Copy --}}
+      <button type="submit" class="form-control btn btn-success">Finalize Budget</button>
+  </form>
+</div>
+<script src="../../assets/js/createBudget.js"></script>

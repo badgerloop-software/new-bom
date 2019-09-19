@@ -3,5 +3,10 @@
 {{/unless}}
 {{#if user}}
 <h2>Welcome {{user.name}}</h2>
-<h3>FSC {{user.isFSC}}  | Admin {{user.isAdmin}}</h3>
+{{#if user.isFSC}}
+<h3>Finance/Supply Chain Member</h3>
+{{/if}}
+{{#if user.isAdmin}}
+<h3>Executitive Team Member</h3>
+{{/if}}
 {{/if}}
