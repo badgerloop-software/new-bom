@@ -76,14 +76,14 @@ exports.getMakeOrder = (req, res) => {
       req.flash('errors', { msg: 'The budget has not been initalized yet, contact the finance lead' });
       return res.redirect('/');
     } else {
-    let budget = budgets[0];
-    let teamList = budget.teamList;
-    return res.render('makeOrder', {
-      user: req.user,
-      activePurchase: true,
-      teamList: teamList
-    });
-  }
+      let budget = budgets[0];
+      let teamList = budget.teamList;
+      return res.render('makeOrder', {
+        user: req.user,
+        activePurchase: true,
+        teamList: teamList
+      });
+    }
   });
 }
 
@@ -96,7 +96,7 @@ exports.postMakeOrder = (req, res, next) => {
   }
   let podCost = false;
   if (req.body.podCost === 'on') {
-     podCost = true
+    podCost = true
   }
   let needDate = req.body.date.toString()
   let order = new Order({
@@ -128,21 +128,21 @@ exports.postMakeOrder = (req, res, next) => {
       updateBudget(budgets[0], order);
     });
   }
-    order.save((err) => {
-      if (err) return next(err);
-      let orderObj = {
-        requestor: req.body.requestor,
-        item: req.body.item,
-        subteam: req.body.subteam,
-        cost: totalCost,
-        id: order._id
-      }
-      createSlackMessage(orderObj);
-      req.flash('success', {
-        msg: 'Order Submitted'
-      }) 
-      return res.redirect('/');
-    });
+  order.save((err) => {
+    if (err) return next(err);
+    let orderObj = {
+      requestor: req.body.requestor,
+      item: req.body.item,
+      subteam: req.body.subteam,
+      cost: totalCost,
+      id: order._id
+    }
+    createSlackMessage(orderObj);
+    req.flash('success', {
+      msg: 'Order Submitted'
+    })
+    return res.redirect('/');
+  });
 }
 
 
@@ -151,10 +151,12 @@ exports.getViewOrders = (req, res) => {
   if (req.query.search) {
     console.log(`Recieved serch term ${req.query.search}`);
     Order.find(
-      { isOrdered: false, 
-        $text : {$search : req.query.search} },
-      { score: {$meta: "textScore"} },
-    ).sort({score: {$meta : 'textScore'}}).exec((err, results) => {
+      {
+        isOrdered: false,
+        $text: { $search: req.query.search }
+      },
+      { score: { $meta: "textScore" } },
+    ).sort({ score: { $meta: 'textScore' } }).exec((err, results) => {
       if (err) throw err;
       console.log(results);
       res.render('viewOrders', {
@@ -165,7 +167,7 @@ exports.getViewOrders = (req, res) => {
     });
   } else {
     console.log(req.user);
-    Order.find({isOrdered: false}, (err, orders) => {
+    Order.find({ isOrdered: false }, (err, orders) => {
       if (err) throw err;
       res.render('viewOrders', {
         user: req.user,
@@ -237,16 +239,16 @@ exports.postEditOrder = (req, res) => {
     order.productNum = req.body.productNum;
     order.quantity = req.body.quantity;
     order.totalCost = totalCost,
-      order.indvPrice = req.body.cost,
-      order.shipping = Number(req.body.shipping),
-      order.tax = Number(req.body.tax),
-      order.trackingNum = req.body.trackingNum;
+    order.indvPrice = req.body.cost,
+    order.shipping = Number(req.body.shipping),
+    order.tax = Number(req.body.tax),      
+    order.trackingNum = req.body.trackingNum;
     order.comments = req.body.comments;
     order.link = req.body.link;
     order.invoice = req.body.invoice;
     order.project = req.body.project,
-    order.countsTowardPodCost = podCost,
-    order.needDate = needDate
+      order.countsTowardPodCost = podCost,
+      order.needDate = needDate
     if (order.isApproved) {
       Budget.find({}, (err, list) => {
         updateBudget(list[0], order, (err) => {
@@ -268,7 +270,7 @@ exports.getCancelOrder = (req, res) => {
   console.log("Cancel Recieved");
   if (!req.user || (!req.user.isAdmin && req.user.isFSC)) {
     console.log("No user or no privilages");
-   return redirectToMain(req, res);
+    return redirectToMain(req, res);
   }
   console.log("There is a user!")
   Order.findOne({ _id: req.query.q }).select("_id").lean().then(exists => {
@@ -284,7 +286,7 @@ exports.getCancelOrder = (req, res) => {
         Budget.find({}, (err, list) => {
           console.log("Right before delete")
           deleteOrderFromBudget(list[0], order, () => {
-             console.log("Its gotta be here");
+            console.log("Its gotta be here");
             Order.deleteOne({ '_id': req.query.q }, (err) => {
               if (err) throw err;
               req.flash('success', { msg: 'Order Cancelled' });

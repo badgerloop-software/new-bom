@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const PORT = process.env.port || 7001;
+const PORT = process.env.port || 7000;
 
 const express = require('express');
 const exphbs = require('express-handlebars');
@@ -25,11 +25,14 @@ const passportConfig = require('./config/passport');
 
 const app = module.exports.app = express();
 const server = http.createServer(app);
-server.listen(7001);
+server.listen(PORT);
 console.log(`The party is happening on ${PORT}, who do you know here?`)
 
+const bomDB = mongoose.createConnection(mongoConfig.bomURL);
+const prodDB = mongoose.createConnection(mongoConfig.prodURL);
 
-mongoose.connect(mongoConfig.url, {useNewUrlParser: true});
+exports.bomDB = bomDB;
+exports.prodDB = prodDB;
 
 app.set('view engine', 'handlebars');
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));

@@ -1,3 +1,4 @@
 module.exports = {
-  url : 'mongodb://localhost:27017/BLBOM'
+  bomURL : 'mongodb://localhost:27017/BLBOM',
+  prodURL: 'mongodb://localhost:27017/PROD'
 }

@@ -28,20 +28,10 @@
               <p>Dashboard</p>
             </a>
           </li>
-          <li class="nav-item {{#if activeDashboard}} active {{/if}}">
-            <a class="nav-link" href="/crud">
-              <i class="material-icons">edit</i>
-              <p>CRUD</p>
-            </a>
-          </li>
+          <hr>
           {{> account}}
           {{#if user}}
-          <li class="nav-item {{#if activeDashboard}} active {{/if}}">
-            <a class="nav-link" href="/crud">
-              <i class="material-icons">pencil</i>
-              <p>CRUD</p>
-            </a>
-          </li>
+          <hr>
           <li class="nav-item {{#if activePurchase}} active {{/if}}">
             <a class="nav-link" href="/orders/purchase">
               <i class="material-icons">attach_money</i>
@@ -66,6 +56,15 @@
             <a class="nav-link" href="/bom">
               <i class="material-icons">grid_on</i>
               <p>BOM</p>
+            </a>
+          </li>
+          {{/if}}
+          {{#if user.isTeamLead}}
+          <hr>
+          <li class="nav-item {{#if activeCRUD}} active {{/if}}">
+            <a class="nav-link" href="/crud">
+              <i class="material-icons">edit</i>
+              <p>Edit Website</p>
             </a>
           </li>
           {{/if}}

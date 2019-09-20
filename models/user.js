@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bomDB = require('../app').bomDB;
 
 let userSchema = new mongoose.Schema({
   name : String,
@@ -9,4 +10,4 @@ let userSchema = new mongoose.Schema({
   isTeamLead: {type: Boolean, default: false}
 });
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = bomDB.model('User', userSchema);

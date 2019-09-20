@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bomDB = require('../app').bomDB;
 
 mongoose.set('useCreateIndex', true);
 
@@ -38,4 +39,4 @@ OrderSchema.index({'$**': 'text'}, {
 //   purchaser: 4
 // }
 })
-module.exports = mongoose.model('Orders', OrderSchema);
+module.exports = bomDB.model('Orders', OrderSchema);

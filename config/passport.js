@@ -34,7 +34,6 @@ passport.use(new SlackStragety({
     request(options, (err, res, body) => {
       if (err) throw new Error(err);
       let obj = JSON.parse(body);
-	    console.log(obj);
       for (let i = 0; i < Object.keys(obj.groups).length; i++) {
         let channel = obj.groups[i].name;
         if (channel.name == `${SECRET_CHANNEL}`) {
