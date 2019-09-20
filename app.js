@@ -8,8 +8,8 @@ const bodyParser = require('body-parser');
 const flash = require('express-flash');
 const session = require('express-session');
 const passport = require('passport');
-const mongoose = require('mongoose');
 const http = require('http');
+const mongoose = require('mongoose');
 
 const ordersController = require('./controllers/orders');
 const authController = require('./controllers/auth');
@@ -23,16 +23,15 @@ const crudController = require('./controllers/crud');
 const mongoConfig = require('./config/mongo');
 const passportConfig = require('./config/passport');
 
+const bomDB = mongoose.createConnection(mongoConfig.bomURL);
+// const prodDB = mongoose.createConnection(mongoConfig.prodURL);
+const prodDB = bomDB.useDb('PROD');
+
 const app = module.exports.app = express();
 const server = http.createServer(app);
 server.listen(PORT);
 console.log(`The party is happening on ${PORT}, who do you know here?`)
 
-const bomDB = mongoose.createConnection(mongoConfig.bomURL);
-const prodDB = mongoose.createConnection(mongoConfig.prodURL);
-
-exports.bomDB = bomDB;
-exports.prodDB = prodDB;
 
 app.set('view engine', 'handlebars');
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));

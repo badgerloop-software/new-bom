@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const bomDB = require('../app').bomDB;
+const mongoConfig = require('../config/mongo')
+const bomDB = mongoose.createConnection(mongoConfig.bomURL);
 
 mongoose.set('useCreateIndex', true);
 
@@ -38,5 +39,10 @@ OrderSchema.index({'$**': 'text'}, {
 //   productNum: 5,
 //   purchaser: 4
 // }
-})
-module.exports = bomDB.model('Orders', OrderSchema);
+});
+
+console.log('Imported First');
+
+let orderModel = bomDB.model('Orders', OrderSchema);
+module.exports = orderModel;
+

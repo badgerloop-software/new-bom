@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const bomDB = require('../app').bomDB;
+const mongoConfig = require('../config/mongo')
+const bomDB = mongoose.createConnection(mongoConfig.bomURL);
 
 let userSchema = new mongoose.Schema({
   name : String,

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const bomDB = require('../app').bomDB;
+const mongoConfig = require('../config/mongo')
+const bomDB = mongoose.createConnection(mongoConfig.bomURL);
 
 const BudgetSchema = new mongoose.Schema({
   totalAllocated: {type: Number, default: 0},
