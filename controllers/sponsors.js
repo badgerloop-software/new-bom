@@ -1,5 +1,5 @@
-const sponsors = require('../models/sponsors.model');
-const Sponsors = require('../models/sponsors.model');
+const sponsors = require('../models/sponsor');
+const Sponsors = require('../models/sponsor');
 
 exports.sponsors_create = function (req, res) {
     let sponsors = new Sponsors(
@@ -21,7 +21,7 @@ exports.sponsors_create = function (req, res) {
 
 exports.sponsors_details = function (req, res) {
     sponsors.findById(req.params.id, function (err, sponsors) {
-        if (err) return next(err);
+        if (err) throw err;
         res.send(sponsors);
     });
 };

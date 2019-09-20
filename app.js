@@ -9,7 +9,6 @@ const flash = require('express-flash');
 const session = require('express-session');
 const passport = require('passport');
 const http = require('http');
-const mongoose = require('mongoose');
 
 const ordersController = require('./controllers/orders');
 const authController = require('./controllers/auth');
@@ -20,13 +19,7 @@ const bomController = require('./controllers/bom');
 const crudController = require('./controllers/crud');
 const sponsorsController = require('./controllers/sponsors');
 
-
-const mongoConfig = require('./config/mongo');
 const passportConfig = require('./config/passport');
-
-const bomDB = mongoose.createConnection(mongoConfig.bomURL);
-// const prodDB = mongoose.createConnection(mongoConfig.prodURL);
-const prodDB = bomDB.useDb('PROD');
 
 const app = module.exports.app = express();
 const server = http.createServer(app);
@@ -89,9 +82,9 @@ app.get('/slack/reaction?challenge=:event', eventsController.getEvent);
 app.get('/bom', passportConfig.isAuthenticated, bomController.getTableView);
 app.post('/bom', passportConfig.isAuthenticated, bomController.postTableView);
 
-app.post('/create', sponsorsController.sponsors_create);
-app.get('/:id', sponsorsController.sponsors_details);
-app.get('/', sponsorsController.sponsors_list);
-app.put('/:id/update', sponsorsController.sponsors_update);
-app.delete('/:id/delete', sponsorsController.sponsors_delete);
+app.post('/sponsors/create', sponsorsController.sponsors_create);
+app.get('/sponsors/:id', sponsorsController.sponsors_details);
+app.get('/sponsors/', sponsorsController.sponsors_list);
+app.put('/sponsors/:id/update', sponsorsController.sponsors_update);
+app.delete('/sponsors/:id/delete', sponsorsController.sponsors_delete);
 

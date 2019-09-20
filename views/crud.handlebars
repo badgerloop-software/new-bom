@@ -467,6 +467,7 @@
                     </tr>
                 </thead>
                 <tbody>
+                        {{#each sponsors}}
                     <tr>
                         <td>
                             <span class="custom-checkbox">
@@ -474,17 +475,18 @@
                                 <label for="checkbox1"></label>
                             </span>
                         </td>
-                        <td>Gold</td>
-                        <td>Meridian Laboratory</td>
-                        <td>https://www.meridianlab.com/</td>
-                        <td>meridian.png</td>
+                        <td>{{this.tier}}</td>
+                        <td>{{this.company}}</td>
+                        <td>{{this.website}}</td>
+                        <td>{{this.logo}}</td>
                         <td>
-                            <a href="#editsponsorModal" class="edit" data-toggle="modal"><i class="material-icons"
+                            <a href="#editsponsorModal" class="edit" data-code="{{this.tier}}, {{this.company}}, {{this.website}}, {{this.logo}}" data-toggle="modal"><i class="material-icons"
                                     data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-                            <a href="#deletesponsorModal" class="delete" data-toggle="modal"><i class="material-icons"
+                            <a href="#deletesponsorModal" class="delete" data-code="{{this.id}}" data-toggle="modal"><i class="material-icons"
                                     data-toggle="tooltip" title="Delete">&#xE872;</i></a>
                         </td>
                     </tr>
+                    {{/each}}
                 </tbody>
             </table>
         </div>
@@ -501,7 +503,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label>Tier</label>
-                            <input type="text" class="form-control" required>
+                            <input id="addTier" type="text" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>Company</label>
@@ -536,19 +538,19 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label>Tier</label>
-                            <input type="text" class="form-control" required>
+                            <input id="editTier" type="text" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>Company</label>
-                            <input type="text" class="form-control" required>
+                            <input id="editCompany" type="text" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>Website</label>
-                            <input type="text" class="form-control" required>
+                            <input id="editWebsite" type="text" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>Logo</label>
-                            <input type="text" class="form-control" required>
+                            <input id="editLogo" type="text" class="form-control" required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -574,7 +576,7 @@
                     </div>
                     <div class="modal-footer">
                         <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                        <input type="submit" class="btn btn-danger" value="Delete">
+                        <a id="sponsorsDeleteButton" href="#"><button class="btn btn-danger">Delete</button></a>
                     </div>
                 </form>
             </div>
@@ -582,3 +584,20 @@
     </div>
 
 </body>
+
+<script>
+  $('#editsponsorModal').on('show.bs.modal', function (event) {
+    let button = $(event.relatedTarget) // Button that triggered the modal
+    let code = button.data('code') // Extract info from data-* attributes
+    let array = code.split(',');
+    document.getElementById('editTier').value = array[0];
+    document.getElementById('editCompany').value = array[1];
+    document.getElementById('editWebsite').value = array[2];
+    document.getElementById('editLogo').value = array[3];
+  })
+  $('#deletesponsorModal').on('show.bs.modal', function (event) {
+    let button = $(event.relatedTarget) // Button that triggered the modal
+    let code = button.data('code') // Extract info from data-* attributes
+    document.getElementById('sponsorsDeleteButton').href = `${code}`;
+  })
+</script>
