@@ -17,6 +17,8 @@ const eventsController = require('./controllers/events');
 const adminController = require('./controllers/admin');
 const budgetController = require('./controllers/budgets');
 const bomController = require('./controllers/bom');
+const crudController = require('./controllers/crud');
+
 
 const mongoConfig = require('./config/mongo');
 const passportConfig = require('./config/passport');
@@ -65,6 +67,8 @@ app.post('/orders/edit', ordersController.postEditOrder);
 app.get('/orders/cancel', ordersController.getCancelOrder);
 app.get('/orders/place/:id', ordersController.getOrdering);
 app.get('/orders/approve/:id', ordersController.getApproving);
+
+app.get('/crud', crudController.getCrud);
 
 app.get('/slack/auth', passport.authenticate('slack'));
 app.get('/slack/auth/redirect', passport.authenticate('slack'), (req, res) => res.redirect('/'));

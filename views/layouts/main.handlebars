@@ -28,8 +28,20 @@
               <p>Dashboard</p>
             </a>
           </li>
+          <li class="nav-item {{#if activeDashboard}} active {{/if}}">
+            <a class="nav-link" href="/crud">
+              <i class="material-icons">edit</i>
+              <p>CRUD</p>
+            </a>
+          </li>
           {{> account}}
           {{#if user}}
+          <li class="nav-item {{#if activeDashboard}} active {{/if}}">
+            <a class="nav-link" href="/crud">
+              <i class="material-icons">pencil</i>
+              <p>CRUD</p>
+            </a>
+          </li>
           <li class="nav-item {{#if activePurchase}} active {{/if}}">
             <a class="nav-link" href="/orders/purchase">
               <i class="material-icons">attach_money</i>
