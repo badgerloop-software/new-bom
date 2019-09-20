@@ -21,7 +21,7 @@ passport.deserializeUser((id, done) => {
 passport.use(new SlackStragety({
   clientID: clientID,
   clientSecret: clientSecret,
-  scope: ['users.profile:read', 'channels:read']
+  scope: ['users.profile:read', 'channels:read', 'groups:read']
 }, (accessToken, refreshToken, profile, done) => {
   console.log(profile);
   User.findOne({ name: profile.displayName }).then((currentUser) => {
@@ -34,8 +34,10 @@ passport.use(new SlackStragety({
     request(options, (err, res, body) => {
       if (err) throw new Error(err);
       let obj = JSON.parse(body);
-      for (let i = 0; i < Object.keys(obj.channels).length; i++) {
-        let channel = obj.channels[i];
+	    console.log(obj);
+      for (let i = 0; i < Object.keys(obj.groups).length; i++) {
+        let channel = obj.groups[i].name;
+	console.log(channel);
         if (channel.name == `${SECRET_CHANNEL}`) {
           console.log(`${profile.displayName} is a teamlead`);
           isTeamLead = true;
