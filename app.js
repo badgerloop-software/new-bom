@@ -18,6 +18,7 @@ const adminController = require('./controllers/admin');
 const budgetController = require('./controllers/budgets');
 const bomController = require('./controllers/bom');
 const crudController = require('./controllers/crud');
+const sponsorsController = require('./controllers/sponsors');
 
 
 const mongoConfig = require('./config/mongo');
@@ -87,3 +88,10 @@ app.get('/slack/reaction?challenge=:event', eventsController.getEvent);
 
 app.get('/bom', passportConfig.isAuthenticated, bomController.getTableView);
 app.post('/bom', passportConfig.isAuthenticated, bomController.postTableView);
+
+app.post('/create', sponsorsController.sponsors_create);
+app.get('/:id', sponsorsController.sponsors_details);
+app.get('/', sponsorsController.sponsors_list);
+app.put('/:id/update', sponsorsController.sponsors_update);
+app.delete('/:id/delete', sponsorsController.sponsors_delete);
+

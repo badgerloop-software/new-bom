@@ -5,7 +5,7 @@ exports.getCrud = (req, res) => {
       return res.redirect('back');  
     }
     res.render('crud', {
-        login: false,
+        user:req.user,
         activeCRUD: true
     });
 }
