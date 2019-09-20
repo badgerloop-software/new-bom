@@ -482,7 +482,7 @@
                         <td>
                             <a href="#editsponsorModal" class="edit" data-code="{{this.tier}}, {{this.company}}, {{this.website}}, {{this.logo}}" data-toggle="modal"><i class="material-icons"
                                     data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-                            <a href="#deletesponsorModal" class="delete" data-code="{{this.id}}" data-toggle="modal"><i class="material-icons"
+                            <a href="#deletesponsorModal" class="delete" data-code="{{this._id}}" data-toggle="modal"><i class="material-icons"
                                     data-toggle="tooltip" title="Delete">&#xE872;</i></a>
                         </td>
                     </tr>
@@ -576,7 +576,7 @@
                     </div>
                     <div class="modal-footer">
                         <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                        <a id="sponsorsDeleteButton" href="#"><button class="btn btn-danger">Delete</button></a>
+                        <a id="sponsorsDeleteButton"><button class="btn btn-danger">Delete</button></a>
                     </div>
                 </form>
             </div>
@@ -598,6 +598,7 @@
   $('#deletesponsorModal').on('show.bs.modal', function (event) {
     let button = $(event.relatedTarget) // Button that triggered the modal
     let code = button.data('code') // Extract info from data-* attributes
-    document.getElementById('sponsorsDeleteButton').href = `${code}`;
+    console.log(code);
+    document.getElementById('sponsorsDeleteButton').href = `/crud/sponsors/delete/${code}`;
   })
 </script>

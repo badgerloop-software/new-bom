@@ -65,6 +65,7 @@ app.get('/orders/place/:id', ordersController.getOrdering);
 app.get('/orders/approve/:id', ordersController.getApproving);
 
 app.get('/crud', crudController.getCrud);
+app.get('/crud/sponsors/delete/:id', crudController.getDeleteSponsor);
 
 app.get('/slack/auth', passport.authenticate('slack'));
 app.get('/slack/auth/redirect', passport.authenticate('slack'), (req, res) => res.redirect('/'));

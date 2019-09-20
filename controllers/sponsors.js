@@ -39,7 +39,7 @@ exports.sponsors_list = function (req, res) {
 exports.sponsors_update = function (req, res) {
     sponsors.findByIdAndUpdate(req.params.id, { $set: req.body }, function (err, sponsors) {
         if (err) return next(err);
-        res.send('sponsor udpated.');
+        res.send('sponsor updated.');
     });
 };
 
