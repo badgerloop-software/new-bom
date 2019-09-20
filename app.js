@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const PORT = process.env.port || 7000;
+const PORT = process.env.port || 7001;
 
 const express = require('express');
 const exphbs = require('express-handlebars');
@@ -25,7 +25,7 @@ const passportConfig = require('./config/passport');
 
 const app = module.exports.app = express();
 const server = http.createServer(app);
-server.listen(7000);
+server.listen(7001);
 console.log(`The party is happening on ${PORT}, who do you know here?`)
 
 
