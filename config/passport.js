@@ -55,11 +55,10 @@ passport.use(new SlackStragety({
           name: profile.displayName,
           slackID: profile.id,
           isTeamLead: isTeamLead
-
         });
         newUser.save().then((newUser) => {
           console.log('New User Created' + newUser);
-          done(null, newUser);
+          return done(null, newUser);
         });
       }
     });
