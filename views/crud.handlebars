@@ -595,6 +595,7 @@
     let button = $(event.relatedTarget) // Button that triggered the modal
     let code = button.data('code') // Extract info from data-* attributes
     let array = code.split(',');
+    document.getElementById('editSponsorForm').action = `/sponsors/${code}/delete`;
     document.getElementById('editTier').value = array[0];
     document.getElementById('editCompany').value = array[1];
     document.getElementById('editWebsite').value = array[2];
@@ -609,7 +610,6 @@
         let button = $(event.relatedTarget) // Button that triggered the modal
         let code = button.data('code') // Extract info from data-* attributes
         let array = code.split(',');
-        document.getElementById('editSponsorForm').action = `/sponsors/${code}/delete`;
         document.getElementById('editTeam').value = array[0];
         document.getElementById('editPosition').value = array[1];
         document.getElementById('editName').value = array[2];
