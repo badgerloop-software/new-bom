@@ -569,7 +569,7 @@
     <div id="deletesponsorModal" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form>
+                <form id="deleteSponsorForm" method="DELETE">
                     <div class="modal-header">
                         <h4 class="modal-title">Delete sponsor<span id="deleteSponsorName"></span></h4>
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -580,7 +580,7 @@
                     </div>
                     <div class="modal-footer">
                         <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                        <a id="sponsorsDeleteButton"><button class="btn btn-danger">Delete</button></a>
+                        <input type="button" class="btn btn-danger" type="submit" value="Delete">
                     </div>
                 </form>
             </div>
@@ -602,9 +602,9 @@
     document.getElementById('editLogo').value = array[3];
   })
   $('#deletesponsorModal').on('show.bs.modal', function (event) {
-    let button = $(event.relatedTarget) // Button that triggered the modal
-    let code = button.data('code') // Extract info from data-* attributes
-    document.getElementById('sponsorsDeleteButton').href = `localhost:7000/sponsors/${code}/delete`;
+    let button = $(event.relatedTarget); // Button that triggered the modal
+    let code = button.data('code').trim(); // Extract info from data-* attributes
+    document.getElementById('deleteSponsorForm').action = `localhost:7000/sponsors/${code}/delete`;
   })
   $('#editteamleadModal').on('show.bs.modal', function (event) {
         let button = $(event.relatedTarget) // Button that triggered the modal
