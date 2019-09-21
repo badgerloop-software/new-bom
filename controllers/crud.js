@@ -6,22 +6,16 @@ exports.getCrud = (req, res) => {
       req.flash('errors,', {msg: 'You are not authorized to view that!'});
       return res.redirect('back');  
     }
-    Sponsors.find({}, (err, list) => {
+    Sponsors.find({}, (err, spnsrList) => {
+        if (err) throw err; 
+    Teamleads.find({}, (err, leadsList) => {
         if (err) throw err;
-        res.render('crud', {
-            user:req.user,
-            activeCRUD: true,
-            sponsors: list
-        });     
-
-    });
-    Teamleads.find({}, (err, list) => {
-        if (err) throw err;
-        res.render('crud', {
+       return res.render('crud', {
             user: req.user,
             activeCRUD: true,
-            teamleads: list
+            teamleads: leadsList,
+            sponors:  spnsrList
         });
-
+    });
     });
 }
