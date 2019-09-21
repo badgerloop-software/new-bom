@@ -431,7 +431,7 @@
                     </div>
                     <div class="modal-footer">
                         <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                        <input type="submit" class="btn btn-danger" value="Delete">
+                        <a id="sponsorsDeleteButton"><button class="btn btn-danger">Delete</button></a>
                     </div>
                 </form>
             </div>
@@ -602,7 +602,7 @@
     let button = $(event.relatedTarget) // Button that triggered the modal
     let code = button.data('code') // Extract info from data-* attributes
     console.log(code);
-    document.getElementById('sponsorsDeleteButton').href = `/teamleads/${code}/delete`;
+    document.getElementById('sponsorsDeleteButton').href = `/sponsors/${code}/delete`;
   })
   $('#editteamleadModal').on('show.bs.modal', function (event) {
         let button = $(event.relatedTarget) // Button that triggered the modal
@@ -615,10 +615,10 @@
         document.getElementById('editYear').value = array[4];
         document.getElementById('editPicture').value = array[5];
     })
-    $('#deletesponsorModal').on('show.bs.modal', function (event) {
+    $('#deleteteamleadModal').on('show.bs.modal', function (event) {
         let button = $(event.relatedTarget) // Button that triggered the modal
         let code = button.data('code') // Extract info from data-* attributes
         console.log(code);
-        document.getElementById('sponsorsDeleteButton').href = `/sponsors/${code}/delete`;
+        document.getElementById('teamleadsDeleteButton').href = `/teamleads/${code}/delete`;
     })
 </script>
