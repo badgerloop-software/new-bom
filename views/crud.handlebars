@@ -595,7 +595,8 @@
     let button = $(event.relatedTarget) // Button that triggered the modal
     let code = button.data('code') // Extract info from data-* attributes
     let array = code.split(',');
-    document.getElementById('editSponsorForm').action = `localhost:7000/sponsors/${array[4].trim}/update`;
+    let id = array[4].trim();
+    document.getElementById('editSponsorForm').action = `localhost:7000/sponsors/${id}/update`;
     document.getElementById('editTier').value = array[0];
     document.getElementById('editCompany').value = array[1];
     document.getElementById('editWebsite').value = array[2];
