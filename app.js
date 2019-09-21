@@ -89,3 +89,9 @@ app.get('/sponsors/', sponsorsController.sponsors_list);
 app.put('/sponsors/:id/update', sponsorsController.sponsors_update);
 app.delete('/sponsors/:id/delete', sponsorsController.sponsors_delete);
 
+app.post('/teamleads/create', teamleads_controller.teamleads_create);
+app.get('/teamleads/:id', teamleads_controller.teamleads_details);
+app.get('/teamleads/', teamleads_controller.teamleads_list);
+app.put('/teamleads/:id/update', teamleads_controller.teamleads_update);
+app.delete('/teamleads/:id/delete', teamleads_controller.teamleads_delete);
+
