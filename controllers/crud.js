@@ -10,11 +10,11 @@ exports.getCrud = (req, res) => {
         if (err) throw err; 
     Teamleads.find({}, (err, leadsList) => {
         if (err) throw err;
-       return res.render('crud', {
+        return res.render('crud', {
             user: req.user,
             activeCRUD: true,
             teamleads: leadsList,
-            sponors:  spnsrList
+            sponsors:  spnsrList
         });
     });
     });
