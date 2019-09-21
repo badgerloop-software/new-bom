@@ -14,11 +14,3 @@ exports.getCrud = (req, res) => {
 
     });
 }
-exports.getDeleteSponsor = (req, res) => {
-    console.log("Deleting Sponsor");
-    Sponsors.findByIdAndRemove(req.params.id, (err) => {
-        if (err) throw err;
-        req.flash('success', {msg: 'Sucessfully Deleted'});
-        return res.redirect('back');
-    });
-}
