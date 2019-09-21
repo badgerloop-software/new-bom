@@ -385,27 +385,27 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label>Team</label>
-                            <input type="text" class="form-control" required>
+                            <input id="editTeam" ype="text" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>Position</label>
-                            <input type="text" class="form-control" required>
+                            <input id="editPosition" type="text" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>Name</label>
-                            <input type="text" class="form-control" required>
+                            <input id="editName" type="text" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>Major</label>
-                            <input type="text" class="form-control" required>
+                            <input id="editMajor" type="text" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>Year</label>
-                            <input type="text" class="form-control" required>
+                            <input id="editYear" type="text" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>Picture</label>
-                            <input type="text" class="form-control" required>
+                            <input id="editPicture" type="text" class="form-control" required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -604,4 +604,21 @@
     console.log(code);
     document.getElementById('sponsorsDeleteButton').href = `/crud/sponsors/delete/${code}`;
   })
+  $('#editteamleadModal').on('show.bs.modal', function (event) {
+        let button = $(event.relatedTarget) // Button that triggered the modal
+        let code = button.data('code') // Extract info from data-* attributes
+        let array = code.split(',');
+        document.getElementById('editTeam').value = array[0];
+        document.getElementById('editPosition').value = array[1];
+        document.getElementById('editName').value = array[2];
+        document.getElementById('editMajor').value = array[3];
+        document.getElementById('editYear').value = array[4];
+        document.getElementById('editPicture').value = array[5];
+    })
+    $('#deletesponsorModal').on('show.bs.modal', function (event) {
+        let button = $(event.relatedTarget) // Button that triggered the modal
+        let code = button.data('code') // Extract info from data-* attributes
+        console.log(code);
+        document.getElementById('sponsorsDeleteButton').href = `/crud/sponsors/delete/${code}`;
+    })
 </script>
