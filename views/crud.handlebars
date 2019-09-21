@@ -483,7 +483,7 @@
                         <td>{{this.website}}</td>
                         <td>{{this.logo}}</td>
                         <td>
-                            <a href="#editsponsorModal" class="edit" data-code="{{this.tier}}, {{this.company}}, {{this.website}}, {{this.logo}}" data-toggle="modal"><i class="material-icons"
+                            <a href="#editsponsorModal" class="edit" data-code="{{this.tier}}, {{this.company}}, {{this.website}}, {{this.logo}}, {{this._id}}" data-toggle="modal"><i class="material-icons"
                                     data-toggle="tooltip" title="Edit">&#xE254;</i></a>
                             <a href="#deletesponsorModal" class="delete" data-code="{{this._id}}" data-toggle="modal"><i class="material-icons"
                                     data-toggle="tooltip" title="Delete">&#xE872;</i></a>
@@ -595,7 +595,7 @@
     let button = $(event.relatedTarget) // Button that triggered the modal
     let code = button.data('code') // Extract info from data-* attributes
     let array = code.split(',');
-    document.getElementById('editSponsorForm').action = `/sponsors/${code}/delete`;
+    document.getElementById('editSponsorForm').action = `/sponsors/${array[4]}/delete`;
     document.getElementById('editTier').value = array[0];
     document.getElementById('editCompany').value = array[1];
     document.getElementById('editWebsite').value = array[2];
