@@ -11,6 +11,5 @@ let TeamleadsSchema = new mongoose.Schema({
     Picture: { type: String, required: false, max: 100 }
 });
 
-
 // Export the model
 module.exports = prodDB.model('Teamleads', TeamleadsSchema);

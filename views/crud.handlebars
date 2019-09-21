@@ -604,7 +604,7 @@
   $('#deletesponsorModal').on('show.bs.modal', function (event) {
     let button = $(event.relatedTarget) // Button that triggered the modal
     let code = button.data('code') // Extract info from data-* attributes
-    document.getElementById('sponsorsDeleteButton').href = `/sponsors/${code}/delete`;
+    document.getElementById('sponsorsDeleteButton').href = `localhost:7000/sponsors/${code}/delete`;
   })
   $('#editteamleadModal').on('show.bs.modal', function (event) {
         let button = $(event.relatedTarget) // Button that triggered the modal
@@ -620,6 +620,6 @@
     $('#deleteTeamleadModal').on('show.bs.modal', function (event) {
         let button = $(event.relatedTarget) // Button that triggered the modal
         let code = button.data('code') // Extract info from data-* attributes
-        document.getElementById('teamleadsDeleteButton').href = `/teamleads/${code}/delete`;
+        document.getElementById('teamleadsDeleteButton').href = `localhost:7000/teamleads/${code}/delete`;
     })
 </script>
