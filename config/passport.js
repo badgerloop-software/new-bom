@@ -55,9 +55,6 @@ passport.use(new SlackStragety({
       });
       newUser.save().then((newUser) => {
         console.log('New User Created' + newUser);
-        req.logIn(newUser, (err) => {
-          return next(err);
-        })
         done(null, newUser);
       });
     }
