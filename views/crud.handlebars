@@ -559,7 +559,7 @@
                     </div>
                     <div class="modal-footer">
                         <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                        <button class="btn btn-info" type="submit"></button>
+                        <button class="btn btn-info" type="submit">Save</button>
                     </div>
                 </form>
             </div>
@@ -609,13 +609,13 @@
         let button = $(event.relatedTarget) // Button that triggered the modal
         let code = button.data('code') // Extract info from data-* attributes
         let array = code.split(',');
+        document.getElementById('editSponsorForm').action = `/sponsors/${code}/delete`;
         document.getElementById('editTeam').value = array[0];
         document.getElementById('editPosition').value = array[1];
         document.getElementById('editName').value = array[2];
         document.getElementById('editMajor').value = array[3];
         document.getElementById('editYear').value = array[4];
         document.getElementById('editPicture').value = array[5];
-        document.getElementById('editSponsorForm').action = `/sponsors/${code}/delete`;
     })
     $('#deleteTeamleadModal').on('show.bs.modal', function (event) {
         let button = $(event.relatedTarget) // Button that triggered the modal
