@@ -18,6 +18,7 @@ const budgetController = require('./controllers/budgets');
 const bomController = require('./controllers/bom');
 const crudController = require('./controllers/crud');
 const sponsorsController = require('./controllers/sponsors');
+const teamleadscontroller = require('./controllers/teamleads');
 
 const passportConfig = require('./config/passport');
 
@@ -89,9 +90,9 @@ app.get('/sponsors/', sponsorsController.sponsors_list);
 app.put('/sponsors/:id/update', sponsorsController.sponsors_update);
 app.delete('/sponsors/:id/delete', sponsorsController.sponsors_delete);
 
-app.post('/teamleads/create', teamleads_controller.teamleads_create);
-app.get('/teamleads/:id', teamleads_controller.teamleads_details);
-app.get('/teamleads/', teamleads_controller.teamleads_list);
-app.put('/teamleads/:id/update', teamleads_controller.teamleads_update);
-app.delete('/teamleads/:id/delete', teamleads_controller.teamleads_delete);
+app.post('/teamleads/create', teamleadscontroller.teamleads_create);
+app.get('/teamleads/:id', teamleadscontroller.teamleads_details);
+app.get('/teamleads/', teamleadscontroller.teamleads_list);
+app.put('/teamleads/:id/update', teamleadscontroller.teamleads_update);
+app.delete('/teamleads/:id/delete', teamleadscontroller.teamleads_delete);
 
