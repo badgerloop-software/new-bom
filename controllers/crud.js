@@ -1,4 +1,6 @@
 const Sponsors = require('../models/sponsor');
+const Teamleads = require('../models/teamlead');
+
 exports.getCrud = (req, res) => {
     if (!req.user || !req.user.isTeamLead) {
       req.flash('errors,', {msg: 'You are not authorized to view that!'});
@@ -11,6 +13,15 @@ exports.getCrud = (req, res) => {
             activeCRUD: true,
             sponsors: list
         });     
+
+    });
+    Teamleads.find({}, (err, list) => {
+        if (err) throw err;
+        res.render('crud', {
+            user: req.user,
+            activeCRUD: true,
+            teamleads: list
+        });
 
     });
 }
