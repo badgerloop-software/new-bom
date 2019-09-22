@@ -68,7 +68,7 @@
         <div class="input-group-prepend">
           <div class="input-group-text">$</div>
         </div>
-        <input class="form-control" aria-describedby="costHelp" name="shipping" type="number" id="orderShipping" step=".01"
+        <input class="form-control" value="{{order.shipping}}" aria-describedby="costHelp" name="shipping" type="number" id="orderShipping" step=".01"
           min="0">
       </div>
     </div>
@@ -78,7 +78,7 @@
         <div class="input-group-prepend">
           <div class="input-group-text">$</div>
         </div>
-        <input class="form-control" aria-describedby="costHelp" name="tax" type="number" id="orderTax" step=".01"
+        <input class="form-control" value="{{order.tax}}" aria-describedby="costHelp" name="tax" type="number" id="orderTax" step=".01"
           min="0">
       </div>
     </div>

@@ -25,7 +25,7 @@ passport.use(new SlackStragety({
 }, (accessToken, refreshToken, profile, done) => {
   console.log(profile);
   User.findOne({ name: profile.displayName }).then((currentUser) => {
-    let isTeamLead = false;
+    let isTeamLead = false; // Innocent until proven guilty
     let options = {
       method: 'GET',
       url: 'https://slack.com/api/groups.list',
@@ -68,7 +68,7 @@ passport.use(new SlackStragety({
 exports.isAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) {
     return next();
-  }
+  } 
   req.flash('error', 'Not Logged In!');
   res.redirect('/');
 }
