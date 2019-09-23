@@ -341,23 +341,7 @@
             </div>
         </div>
     </div>
-    <h3>{{status}}</h3>
-    <h3>{{filename}}</h3>
-    <form class="md-form" action="/upload" enctype="multipart/form-data" method="POST">
-        <div class="file-field">
-            <div class="btn btn-primary btn-sm float-left">
-                <span>Choose file</span>
-                <input type="file">
-            </div>
-            <div class="file-path-wrapper">
-                <input class="file-path validate" type="text" placeholder="Upload your file">
-            </div>
-        </div>
-    </form>
-    <form action="/upload" enctype="multipart/form-data" method="POST">
-        <input type="file" name="myFile" id="myFile" required />
-        <input type="submit" value="Upload" />
-    </form>
+
     <div class="container">
         <div class="table-wrapper">
             <div class="table-title">
@@ -369,6 +353,10 @@
                         <a href="#addsponsorModal" class="btn btn-success" data-toggle="modal">
                             <i class="material-icons">&#xE147;</i> 
                             <span>Add New sponsor</span>
+                        </a>
+                        <a href="#uploadImage" class="btn btn-success" data-toggle="modal">
+                            <i class="material-icons">cloud_upload</i>
+                            <span>Upload Image</span>
                         </a>
                     </div>
                 </div>
@@ -491,6 +479,20 @@
                         <input class="btn btn-danger" type="submit" value="Delete">
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+    <!-- Edit Modal HTML -->
+    <div id="uploadImage" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                    <h3>{{status}}</h3>
+                    <h3>{{filename}}</h3>
+
+                    <form action="/upload" enctype="multipart/form-data" method="POST">
+                        <input type="file" name="myFile" id="myFile" required />
+                        <input type="submit" value="Upload" />
+                    </form>
             </div>
         </div>
     </div>
