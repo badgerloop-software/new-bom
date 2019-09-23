@@ -24,6 +24,7 @@ const passportConfig = require('./config/passport');
 
 const multer = require('multer');
 const upload = multer({ dest: './uploads/' });
+const fs = require('fs');
 
 const app = module.exports.app = express();
 const server = http.createServer(app);
@@ -102,7 +103,10 @@ app.post('/teamleads/:id/delete', teamleadscontroller.teamleads_delete);
 app.post('/upload', upload.single('myFile'), (req, res) => {
   if (req.file) {
     console.log('Uploading file...');
-    var filename = req.file.filename;
+    fs.rename('uploads/' + req.file.filename, 'uploads/' + req.file.originalname, function (err) {
+      if (err) console.log('ERROR: ' + err);
+    });
+    var filename = req.file.originalname;
     var uploadStatus = 'File Uploaded Successfully';
   } else {
     console.log('No File Uploaded');
