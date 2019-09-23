@@ -100,10 +100,10 @@ app.get('/teamleads/', teamleadscontroller.teamleads_list);
 app.post('/teamleads/:id/update', teamleadscontroller.teamleads_update);
 app.post('/teamleads/:id/delete', teamleadscontroller.teamleads_delete);
 
-app.post('/upload', upload.single('myFile'), (req, res) => {
+app.post('/upload/sponsors', upload.single('myFile'), (req, res) => {
   if (req.file) {
     console.log('Uploading file...');
-    fs.rename('uploads/' + req.file.filename, 'uploads/' + req.file.originalname, function (err) {
+    fs.rename('uploads/' + req.file.filename, 'uploads/sponsors' + req.file.originalname, function (err) {
       if (err) console.log('ERROR: ' + err);
     });
     var filename = req.file.originalname;
@@ -113,6 +113,19 @@ app.post('/upload', upload.single('myFile'), (req, res) => {
     var filename = 'FILE NOT UPLOADED';
     var uploadStatus = 'File Upload Failed';
   }
+  app.post('/upload/teamleads', upload.single('myFile'), (req, res) => {
+    if (req.file) {
+      console.log('Uploading file...');
+      fs.rename('uploads/' + req.file.filename, 'uploads/teamleads' + req.file.originalname, function (err) {
+        if (err) console.log('ERROR: ' + err);
+      });
+      var filename = req.file.originalname;
+      var uploadStatus = 'File Uploaded Successfully';
+    } else {
+      console.log('No File Uploaded');
+      var filename = 'FILE NOT UPLOADED';
+      var uploadStatus = 'File Upload Failed';
+    }
 
   /* ===== Add the function to save filename to database ===== */
   res.render('crud', { status: uploadStatus, filename: `Name Of File: ${filename}` });

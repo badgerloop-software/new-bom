@@ -234,6 +234,25 @@
             </table>
         </div>
     </div>
+    <div class="container">
+        <div class="table-wrapper">
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h2>Upload an Image to <b>Teamleads</b></h2>
+                    </div>
+                    <div class="col-sm-6">
+                        <form action="/upload/teamleads" enctype="multipart/form-data" method="POST">
+                            <input type="file" name="myFile" id="myFile" class="btn btn-default" required />
+                            <input type="submit" value="Upload" class="btn btn-info" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <p>{{status}}</p>
+            <p>{{filename}}</p>
+        </div>
+    </div>
     <!-- Edit Modal HTML -->
     <div id="addteamleadModal" class="modal fade">
         <div class="modal-dialog">
@@ -395,10 +414,10 @@
             <div class="table-title">
                 <div class="row">
                     <div class="col-sm-6">
-                        <h2>Upload an Image</b></h2>
+                        <h2>Upload an Image to <b>Sponsors</b></h2>
                     </div>
                     <div class="col-sm-6">
-                        <form action="/upload" enctype="multipart/form-data" method="POST">
+                        <form action="/upload/sponsors" enctype="multipart/form-data" method="POST">
                             <input type="file" name="myFile" id="myFile" class="btn btn-default" required />
                             <input type="submit" value="Upload" class="btn btn-info" />
                         </form>
@@ -516,7 +535,7 @@
                 </div>
                 <div class="modal-footer">
                     <form action="/upload" enctype="multipart/form-data" method="POST">
-                        <input type="file" id="BSbtninfo" name="myFile" id="myFile" required>
+                        <input type="file" name="myFile" id="myFile" required>
                         <input type="submit" value="Upload" class="btn btn-info" />
                     </form>
                 </div>
