@@ -111,6 +111,5 @@ app.post('/upload', upload.single('myFile'), (req, res) => {
   }
 
   /* ===== Add the function to save filename to database ===== */
-
   res.render('crud', { status: uploadStatus, filename: `Name Of File: ${filename}` });
 });

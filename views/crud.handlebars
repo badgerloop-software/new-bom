@@ -491,13 +491,13 @@
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <h3>{{status}}</h3>
-                    <h3>{{filename}}</h3>
+                    <p>{{status}}</p>
+                    <p>{{filename}}</p>
                 </div>
                 <div class="modal-footer">
                     <form action="/upload" enctype="multipart/form-data" method="POST">
                         <input type="file" name="myFile" id="myFile" class="btn btn-default" required />
-                        <input type="submit" value="Upload" class="btn btn-default" />
+                        <input type="submit" value="Upload" class="btn btn-info" />
                     </form>
                 </div>
             </div>
