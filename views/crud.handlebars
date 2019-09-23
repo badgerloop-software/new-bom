@@ -597,10 +597,10 @@
     let array = code.split(',');
     let id = array[4].trim();
     document.getElementById('editSponsorForm').action = `/sponsors/${id}/update`;
-    document.getElementById('editTier').value = array[0];
-    document.getElementById('editCompany').value = array[1];
-    document.getElementById('editWebsite').value = array[2];
-    document.getElementById('editLogo').value = array[3];
+    //document.getElementById('editTier').value = array[0];
+    //document.getElementById('editCompany').value = array[1];
+    //document.getElementById('editWebsite').value = array[2];
+    //document.getElementById('editLogo').value = array[3];
   })
   $('#deletesponsorModal').on('show.bs.modal', function (event) {
     let button = $(event.relatedTarget); // Button that triggered the modal
