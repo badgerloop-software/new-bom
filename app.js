@@ -104,7 +104,7 @@ app.post('/teamleads/:id/delete', teamleadscontroller.teamleads_delete);
 app.post('/upload/sponsors', uploadSponsor.single('myFile'), (req, res) => {
   if (req.file) {
     console.log('Uploading file...');
-    fs.rename('uploads/' + req.file.filename, 'uploads/' + req.file.originalname, function (err) {
+    fs.rename('uploads/sponsors' + req.file.filename, 'uploads/sponsors' + req.file.originalname, function (err) {
       if (err) console.log('ERROR: ' + err);
     });
     var filename = req.file.originalname;
@@ -121,7 +121,7 @@ app.post('/upload/sponsors', uploadSponsor.single('myFile'), (req, res) => {
 app.post('/upload/teamleads', uploadTeamlead.single('myFile'), (req, res) => {
   if (req.file) {
     console.log('Uploading file...');
-    fs.rename('uploads/' + req.file.filename, 'uploads/' + req.file.originalname, function (err) {
+    fs.rename('uploads/tamleads' + req.file.filename, 'uploads/teamleads' + req.file.originalname, function (err) {
       if (err) console.log('ERROR: ' + err);
     });
     var filename = req.file.originalname;
