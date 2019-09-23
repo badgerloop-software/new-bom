@@ -22,6 +22,9 @@ const teamleadscontroller = require('./controllers/teamleads');
 
 const passportConfig = require('./config/passport');
 
+const multer = require('multer');
+const upload = multer({ dest: './uploads/' });
+
 const app = module.exports.app = express();
 const server = http.createServer(app);
 server.listen(PORT);
@@ -96,3 +99,18 @@ app.get('/teamleads/', teamleadscontroller.teamleads_list);
 app.post('/teamleads/:id/update', teamleadscontroller.teamleads_update);
 app.post('/teamleads/:id/delete', teamleadscontroller.teamleads_delete);
 
+app.post('/upload', upload.single('myFile'), (req, res) => {
+  if (req.file) {
+    console.log('Uploading file...');
+    var filename = req.file.filename;
+    var uploadStatus = 'File Uploaded Successfully';
+  } else {
+    console.log('No File Uploaded');
+    var filename = 'FILE NOT UPLOADED';
+    var uploadStatus = 'File Upload Failed';
+  }
+
+  /* ===== Add the function to save filename to database ===== */
+
+  res.render('crud', { status: uploadStatus, filename: `Name Of File: ${filename}` });
+});
