@@ -87,12 +87,12 @@ app.post('/bom', passportConfig.isAuthenticated, bomController.postTableView);
 app.post('/sponsors/create', sponsorsController.sponsors_create);
 app.get('/sponsors/:id', sponsorsController.sponsors_details);
 app.get('/sponsors/', sponsorsController.sponsors_list);
-app.put('/sponsors/:id/update', sponsorsController.sponsors_update);
+app.post('/sponsors/:id/update', sponsorsController.sponsors_update);
 app.delete('/sponsors/:id/delete', sponsorsController.sponsors_delete);
 
 app.post('/teamleads/create', teamleadscontroller.teamleads_create);
 app.get('/teamleads/:id', teamleadscontroller.teamleads_details);
 app.get('/teamleads/', teamleadscontroller.teamleads_list);
-app.put('/teamleads/:id/update', teamleadscontroller.teamleads_update);
+app.post('/teamleads/:id/update', teamleadscontroller.teamleads_update);
 app.delete('/teamleads/:id/delete', teamleadscontroller.teamleads_delete);
 
