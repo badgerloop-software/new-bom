@@ -113,20 +113,23 @@ app.post('/upload/sponsors', upload.single('myFile'), (req, res) => {
     var filename = 'FILE NOT UPLOADED';
     var uploadStatus = 'File Upload Failed';
   }
-  app.post('/upload/teamleads', upload.single('myFile'), (req, res) => {
-    if (req.file) {
-      console.log('Uploading file...');
-      fs.rename('uploads/' + req.file.filename, 'uploads/teamleads' + req.file.originalname, function (err) {
-        if (err) console.log('ERROR: ' + err);
-      });
-      var filename = req.file.originalname;
-      var uploadStatus = 'File Uploaded Successfully';
-    } else {
-      console.log('No File Uploaded');
-      var filename = 'FILE NOT UPLOADED';
-      var uploadStatus = 'File Upload Failed';
-    }
+  /* ===== Add the function to save filename to database ===== */
+  res.render('crud', { status: uploadStatus, filename: `Name Of File: ${filename}` });
+});
 
+app.post('/upload/teamleads', upload.single('myFile'), (req, res) => {
+  if (req.file) {
+    console.log('Uploading file...');
+    fs.rename('uploads/' + req.file.filename, 'uploads/teamleads' + req.file.originalname, function (err) {
+      if (err) console.log('ERROR: ' + err);
+    });
+    var filename = req.file.originalname;
+    var uploadStatus = 'File Uploaded Successfully';
+  } else {
+    console.log('No File Uploaded');
+    var filename = 'FILE NOT UPLOADED';
+    var uploadStatus = 'File Upload Failed';
+  }
   /* ===== Add the function to save filename to database ===== */
   res.render('crud', { status: uploadStatus, filename: `Name Of File: ${filename}` });
 });
