@@ -99,7 +99,7 @@ app.get('/teamleads/', teamleadscontroller.teamleads_list);
 app.post('/teamleads/:id/update', teamleadscontroller.teamleads_update);
 app.post('/teamleads/:id/delete', teamleadscontroller.teamleads_delete);
 
-app.post('/upload', upload.single('myFile'), (req, res) => {
+app.post('/crud/upload', upload.single('myFile'), (req, res) => {
   if (req.file) {
     console.log('Uploading file...');
     var filename = req.file.filename;
