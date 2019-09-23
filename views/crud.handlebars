@@ -334,7 +334,7 @@
     <div id="addteamleadModal" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form>
+                <form id="addTeamleadForm" action="/teamleads/create" method="post">
                     <div class="modal-header">
                         <h4 class="modal-title">Add teamlead</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -342,27 +342,27 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label>Team</label>
-                            <input type="text" class="form-control" required>
+                            <input name="Team" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>Position</label>
-                            <input type="text" class="form-control" required>
+                            <input name="Position" type="text" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>Name</label>
-                            <input type="text" class="form-control" required>
+                            <input name="Name" type="text" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>Major</label>
-                            <input type="text" class="form-control" required>
+                            <input name="Major" type="text" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>Year</label>
-                            <input type="text" class="form-control" required>
+                            <input name="Year" type="text" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>Picture</label>
-                            <input type="text" class="form-control" required>
+                            <input name="Picture" type="text" class="form-control" required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -377,7 +377,7 @@
     <div id="editteamleadModal" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form>
+                <form id="editTeamleadForm" method="post">
                     <div class="modal-header">
                         <h4 class="modal-title">Edit teamlead</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -385,27 +385,27 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label>Team</label>
-                            <input id="editTeam" ype="text" class="form-control" required>
+                            <input id="editTeam" name="Team" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>Position</label>
-                            <input id="editPosition" type="text" class="form-control" required>
+                            <input id="editPosition" name="Position" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>Name</label>
-                            <input id="editName" type="text" class="form-control" required>
+                            <input id="editName" name="Name" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>Major</label>
-                            <input id="editMajor" type="text" class="form-control" required>
+                            <input id="editMajor" name="Major" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>Year</label>
-                            <input id="editYear" type="text" class="form-control" required>
+                            <input id="editYear" name="Year" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>Picture</label>
-                            <input id="editPicture" type="text" class="form-control" required>
+                            <input id="editPicture" name="Picture" class="form-control" required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -420,7 +420,7 @@
     <div id="deleteteamleadModal" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form>
+                <form id="deleteTeamleadForm" method="post">
                     <div class="modal-header">
                         <h4 class="modal-title">Delete teamlead</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -591,36 +591,39 @@
 </body>
 
 <script>
-  $('#editsponsorModal').on('show.bs.modal', function (event) {
-    let button = $(event.relatedTarget) // Button that triggered the modal
-    let code = button.data('code') // Extract info from data-* attributes
-    let array = code.split(',');
-    let id = array[4].trim();
-    document.getElementById('editSponsorForm').action = `/sponsors/${id}/update`;
-    document.getElementById('editTier').value = array[0];
-    document.getElementById('editCompany').value = array[1];
-    document.getElementById('editWebsite').value = array[2];
-    document.getElementById('editLogo').value = array[3];
-  })
-  $('#deletesponsorModal').on('show.bs.modal', function (event) {
-    let button = $(event.relatedTarget); // Button that triggered the modal
-    let code = button.data('code').trim(); // Extract info from data-* attributes
-    document.getElementById('deleteSponsorForm').action = `/sponsors/${code}/delete`;
-  })
-  $('#editteamleadModal').on('show.bs.modal', function (event) {
+    $('#editsponsorModal').on('show.bs.modal', function (event) {
         let button = $(event.relatedTarget) // Button that triggered the modal
         let code = button.data('code') // Extract info from data-* attributes
         let array = code.split(',');
+        let id = array[4].trim();
+        document.getElementById('editSponsorForm').action = `/sponsors/${id}/update`;
+        document.getElementById('editTier').value = array[0];
+        document.getElementById('editCompany').value = array[1];
+        document.getElementById('editWebsite').value = array[2];
+        document.getElementById('editLogo').value = array[3];
+    })
+    $('#deletesponsorModal').on('show.bs.modal', function (event) {
+        let button = $(event.relatedTarget); // Button that triggered the modal
+        let code = button.data('code').trim(); // Extract info from data-* attributes
+        document.getElementById('deleteSponsorForm').action = `/sponsors/${code}/delete`;
+    })
+    $('#editTeamleadModal').on('show.bs.modal', function (event) {
+        let button = $(event.relatedTarget) // Button that triggered the modal
+        let code = button.data('code') // Extract info from data-* attributes
+        let array = code.split(',');
+        let id = array[6].trim();
+        document.getElementById('editTeamleadForm').action = `/teamleads/${id}/update`;
         document.getElementById('editTeam').value = array[0];
         document.getElementById('editPosition').value = array[1];
         document.getElementById('editName').value = array[2];
         document.getElementById('editMajor').value = array[3];
         document.getElementById('editYear').value = array[4];
         document.getElementById('editPicture').value = array[5];
+
     })
     $('#deleteTeamleadModal').on('show.bs.modal', function (event) {
         let button = $(event.relatedTarget) // Button that triggered the modal
         let code = button.data('code') // Extract info from data-* attributes
-        document.getElementById('teamleadsDeleteButton').href = `localhost:7000/teamleads/${code}/delete`;
+        document.getElementById('deleteTeamleadForm').action = `/teamleads/${code}/delete`;
     })
 </script>
