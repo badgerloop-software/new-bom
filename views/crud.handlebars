@@ -570,7 +570,7 @@
     <div id="deletesponsorModal" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="deleteSponsorForm" method="DELETE">
+                <form id="deleteSponsorForm" method="post">
                     <div class="modal-header">
                         <h4 class="modal-title">Delete sponsor<span id="deleteSponsorName"></span></h4>
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -605,7 +605,7 @@
   $('#deletesponsorModal').on('show.bs.modal', function (event) {
     let button = $(event.relatedTarget); // Button that triggered the modal
     let code = button.data('code').trim(); // Extract info from data-* attributes
-    document.getElementById('deleteSponsorForm').action = `localhost:7000/sponsors/${code}/delete`;
+    document.getElementById('deleteSponsorForm').action = `/sponsors/${code}/delete`;
   })
   $('#editteamleadModal').on('show.bs.modal', function (event) {
         let button = $(event.relatedTarget) // Button that triggered the modal
