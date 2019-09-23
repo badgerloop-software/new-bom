@@ -542,19 +542,19 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label>Tier</label>
-                            <input id="tier" type="String" class="form-control" required>
+                            <input id="editTier" name="tier" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>Company</label>
-                            <input id="company" type="String" class="form-control" required>
+                            <input id="editCompany" name="company" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>Website</label>
-                            <input id="website" type="String" class="form-control" required>
+                            <input id="editWebsite" name="website" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>Logo</label>
-                            <input id="logo" type="String" class="form-control" required>
+                            <input id="editLogo" name="logo" class="form-control" required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -597,10 +597,10 @@
     let array = code.split(',');
     let id = array[4].trim();
     document.getElementById('editSponsorForm').action = `/sponsors/${id}/update`;
-    //document.getElementById('editTier').value = array[0];
-    //document.getElementById('editCompany').value = array[1];
-    //document.getElementById('editWebsite').value = array[2];
-    //document.getElementById('editLogo').value = array[3];
+    document.getElementById('editTier').value = array[0];
+    document.getElementById('editCompany').value = array[1];
+    document.getElementById('editWebsite').value = array[2];
+    document.getElementById('editLogo').value = array[3];
   })
   $('#deletesponsorModal').on('show.bs.modal', function (event) {
     let button = $(event.relatedTarget); // Button that triggered the modal
