@@ -432,7 +432,6 @@
                     <div class="modal-footer">
                         <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
                         <input class="btn btn-danger" type="submit" value="Delete">
-
                     </div>
                 </form>
             </div>
@@ -621,7 +620,7 @@
         document.getElementById('editPicture').value = array[5];
 
     })
-    $('#deleteTeamleadModal').on('show.bs.modal', function (event) {
+    $('#deleteteamleadModal').on('show.bs.modal', function (event) {
         let button = $(event.relatedTarget) // Button that triggered the modal
         let code = button.data('code') // Extract info from data-* attributes
         document.getElementById('deleteTeamleadForm').action = `/teamleads/${code}/delete`;
