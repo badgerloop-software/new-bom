@@ -353,7 +353,6 @@ exports.getApproving = (req, res) => {
         }
         updateBudget(budgets[0], order, null, (err, doc) => {
           if (err) throw err;
-          console.log(doc.currentBudgets);
           order.save((err) => {
             if (err) throw err;
             req.flash('success', { msg: 'Order Approved' });
