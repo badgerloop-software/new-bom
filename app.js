@@ -60,7 +60,7 @@ app.get('/', (req, res) => {
   });
 });
 
-app.get('/orders/purchase',  ordersController.getMakeOrder);
+app.get('/orders/purchase',passportConfig.isAuthenticated,  ordersController.getMakeOrder);
 app.post('/orders/purchase', ordersController.postMakeOrder);
 app.get('/orders/view', passportConfig.isAuthenticated, ordersController.getViewOrders);
 app.post('/orders/view', passportConfig.isAuthenticated, ordersController.postViewOrders);

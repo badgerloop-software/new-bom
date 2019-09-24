@@ -6,7 +6,9 @@ const User = require('../models/user');
 const clientID = process.env.CLIENT_ID;
 const clientSecret = process.env.CLIENT_SECRET;
 const redirectURI = process.env.REDIRECT_URI;
-const SECRET_CHANNEL = process.env.SECRET_CHANNEL;
+// const SECRET_CHANNEL = process.env.SECRET_CHANNEL;
+const SERVICES_TOKEN = process.env.SERVICES_TOKEN;
+const SECRET_CHANNEL = process.env.SECRET_CHANNEL
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
@@ -21,53 +23,73 @@ passport.deserializeUser((id, done) => {
 passport.use(new SlackStragety({
   clientID: clientID,
   clientSecret: clientSecret,
-  scope: ['users.profile:read', 'groups:read']
+  skipUserProfile: false,
+  scope: ['identity.basic']
 }, (accessToken, refreshToken, profile, done) => {
-  console.log(profile);
+  console.log("Made it to the callback");
   User.findOne({ name: profile.displayName }).then((currentUser) => {
-    let isTeamLead = false;
+    let isTeamLead = false; // Innocent until proven guilty
     let options = {
       method: 'GET',
-      url: 'https://slack.com/api/groups.list',
-      qs: { token: `${accessToken}` }
+      url: 'https://slack.com/api/groups.info',
+      qs: {
+        token: `${SERVICES_TOKEN}`,
+        channel: `${SECRET_CHANNEL}`
+      }
     };
     request(options, (err, res, body) => {
       if (err) throw new Error(err);
-      let obj = JSON.parse(body);
-      for (let i = 0; i < Object.keys(obj.groups).length; i++) {
-        let channel = obj.groups[i].name;
-        if (channel == `${SECRET_CHANNEL}`) {
-          console.log(`${profile.displayName} is a teamlead`);
-          isTeamLead = true;
-          break;
-        }
-      }
+      isTeamLead = findTeamLead(body, profile);
       if (currentUser) {
-        currentUser.isTeamLead = isTeamLead;
-        currentUser.save((err) => {
-          if (err) throw err;
-          console.log('Current User is' + currentUser);
-          return done(null, currentUser);
-        });
+        return updateCurrentUser(isTeamLead, currentUser, done)
       } else {
-        newUser = new User({
-          name: profile.displayName,
-          slackID: profile.id,
-          isTeamLead: isTeamLead
-        });
-        newUser.save().then((newUser) => {
-          console.log('New User Created' + newUser);
-          return done(null, newUser);
-        });
+        return createNewUser(profile, isTeamLead, done);
       }
     });
   });
 }));
 
-exports.isAuthenticated = (req, res, next) => {
-  if (req.isAuthenticated()) {
-    return next();
+  exports.isAuthenticated = (req, res, next) => {
+    if (req.isAuthenticated()) {
+      return next();
+    }
+    req.flash('error', 'Not Logged In!');
+    res.redirect('/');
   }
-  req.flash('error', 'Not Logged In!');
-  res.redirect('/');
-}
+
+  function updateCurrentUser(isTeamLead, user, cb) {
+    user.isTeamLead = isTeamLead;
+    user.save((err) => {
+      if (err) throw err;
+      console.log('Current User is' + user);
+      return cb(null, user);
+    });
+  }
+
+  function createNewUser(profile, isTeamLead, cb) {
+    console.log("You're new here");
+    let newUser = new User({
+      name: profile.displayName,
+      slackID: profile.id,
+      isTeamLead: isTeamLead
+    });
+    newUser.save().then((newUser) => {
+      console.log('New User Created' + newUser);
+      return cb(null, newUser);
+    });
+  }
+
+  function findTeamLead(body, profile) {
+    let output = false; // Innocent until proven guilty
+    let obj = JSON.parse(body);
+    console.log(obj);
+    let members = obj.group.members;
+    let userID = profile.id;
+    members.forEach((member) => {
+//	console.log(`${member} == ${profile.id} ??`);
+      if (member == userID) {
+	  output = true;
+      }
+    });
+    return output;
+  }
