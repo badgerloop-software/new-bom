@@ -21,54 +21,61 @@ passport.deserializeUser((id, done) => {
 passport.use(new SlackStragety({
   clientID: clientID,
   clientSecret: clientSecret,
-  scope: ['users.profile:read', 'groups:read']
+  skipUserProfile: false,
+  scope: ['identity.basic']
 }, (accessToken, refreshToken, profile, done) => {
-  console.log(profile);
+  console.log("Made it to the callback");
   User.findOne({ name: profile.displayName }).then((currentUser) => {
-    let isTeamLead = false; // Innocent until proven guilty
+   /* let isTeamLead = false; // Innocent until proven guilty
     let options = {
       method: 'GET',
       url: 'https://slack.com/api/groups.list',
       qs: { token: `${accessToken}` }
-    };
-    request(options, (err, res, body) => {
+    };*/
+  /*  request(options, (err, res, body) => {
       if (err) throw new Error(err);
       let obj = JSON.parse(body);
       console.log(obj);
-      for (let i = 0; i < Object.keys(obj.groups).length; i++) {
-        let channel = obj.groups[i].name;
-        if (channel == `${SECRET_CHANNEL}`) {
-          console.log(`${profile.displayName} is a teamlead`);
-          isTeamLead = true;
-          break;
-        }
-      }
+      isTeamLead = findTeamLead(obj, profile); */
       if (currentUser) {
-        currentUser.isTeamLead = isTeamLead;
-        currentUser.save((err) => {
-          if (err) throw err;
+      //  currentUser.isTeamLead = isTeamLead; 
+      //  currentUser.save((err) => {
+       //   if (err) throw err;
           console.log('Current User is' + currentUser);
           return done(null, currentUser);
-        });
       } else {
+        console.log("You're new here");
         newUser = new User({
           name: profile.displayName,
           slackID: profile.id,
-          isTeamLead: isTeamLead
+        //  isTeamLead: isTeamLead
         });
         newUser.save().then((newUser) => {
           console.log('New User Created' + newUser);
           return done(null, newUser);
         });
       }
-    });
   });
 }));
 
 exports.isAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) {
     return next();
-  } 
+  }
   req.flash('error', 'Not Logged In!');
   res.redirect('/');
+}
+
+function findTeamLead(obj, profile) {
+    let numGroups = Object.keys(obj.groups).length;
+    let output = false
+    for (let i=0; i<numGroups; i++) {
+        let channel = obj.groups[i].name;
+        if (channel == `${SECRET_CHANNEL}`) {
+            console.log(`${profile.displayName} is a teamlead`);
+            output = true;
+            break;
+        }
+    }
+    return output;
 }
