@@ -18,8 +18,14 @@ const budgetController = require('./controllers/budgets');
 const bomController = require('./controllers/bom');
 const crudController = require('./controllers/crud');
 const sponsorsController = require('./controllers/sponsors');
+const teamleadscontroller = require('./controllers/teamleads');
 
 const passportConfig = require('./config/passport');
+
+const multer = require('multer');
+const uploadTeamlead = multer({ dest: './uploads/teamleads' });
+const uploadSponsor = multer({ dest: './uploads/sponsors' });
+const fs = require('fs');
 
 const app = module.exports.app = express();
 const server = http.createServer(app);
@@ -65,7 +71,7 @@ app.get('/orders/place/:id', ordersController.getOrdering);
 app.get('/orders/approve/:id', ordersController.getApproving);
 
 app.get('/crud', crudController.getCrud);
-app.get('/crud/sponsors/delete/:id', crudController.getDeleteSponsor);
+//app.get('/crud/sponsors/delete/:id', crudController.getDeleteSponsor);
 
 app.get('/slack/auth', passport.authenticate('slack'));
 app.get('/slack/auth/redirect', passport.authenticate('slack'), (req, res) => res.redirect('/'));
@@ -86,6 +92,45 @@ app.post('/bom', passportConfig.isAuthenticated, bomController.postTableView);
 app.post('/sponsors/create', sponsorsController.sponsors_create);
 app.get('/sponsors/:id', sponsorsController.sponsors_details);
 app.get('/sponsors/', sponsorsController.sponsors_list);
-app.put('/sponsors/:id/update', sponsorsController.sponsors_update);
-app.delete('/sponsors/:id/delete', sponsorsController.sponsors_delete);
+app.post('/sponsors/:id/update', sponsorsController.sponsors_update);
+app.post('/sponsors/:id/delete', sponsorsController.sponsors_delete);
 
+app.post('/teamleads/create', teamleadscontroller.teamleads_create);
+app.get('/teamleads/:id', teamleadscontroller.teamleads_details);
+app.get('/teamleads/', teamleadscontroller.teamleads_list);
+app.post('/teamleads/:id/update', teamleadscontroller.teamleads_update);
+app.post('/teamleads/:id/delete', teamleadscontroller.teamleads_delete);
+
+app.post('/upload/sponsors', uploadSponsor.single('myFile'), (req, res) => {
+  if (req.file) {
+    console.log('Uploading file...');
+    fs.rename('uploads/sponsors' + req.file.filename, 'uploads/sponsors' + req.file.originalname, function (err) {
+      if (err) console.log('ERROR: ' + err);
+    });
+    var filename = req.file.originalname;
+    var uploadStatus = 'File Uploaded Successfully';
+  } else {
+    console.log('No File Uploaded');
+    var filename = 'FILE NOT UPLOADED';
+    var uploadStatus = 'File Upload Failed';
+  }
+  /* ===== Add the function to save filename to database ===== */
+  res.render('crud', { status: uploadStatus, filename: `Name Of File: ${filename}` });
+});
+
+app.post('/upload/teamleads', uploadTeamlead.single('myFile'), (req, res) => {
+  if (req.file) {
+    console.log('Uploading file...');
+    fs.rename('uploads/teamleads' + req.file.filename, 'uploads/teamleads' + req.file.originalname, function (err) {
+      if (err) console.log('ERROR: ' + err);
+    });
+    var filename = req.file.originalname;
+    var uploadStatus = 'File Uploaded Successfully';
+  } else {
+    console.log('No File Uploaded');
+    var filename = 'FILE NOT UPLOADED';
+    var uploadStatus = 'File Upload Failed';
+  }
+  /* ===== Add the function to save filename to database ===== */
+  res.render('crud', { status: uploadStatus, filename: `Name Of File: ${filename}` });
+});

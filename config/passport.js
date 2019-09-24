@@ -36,29 +36,32 @@ passport.use(new SlackStragety({
       let obj = JSON.parse(body);
       for (let i = 0; i < Object.keys(obj.groups).length; i++) {
         let channel = obj.groups[i].name;
-        if (channel.name == `${SECRET_CHANNEL}`) {
+        if (channel == `${SECRET_CHANNEL}`) {
           console.log(`${profile.displayName} is a teamlead`);
           isTeamLead = true;
+          break;
         }
       }
+      if (currentUser) {
+        currentUser.isTeamLead = isTeamLead;
+        currentUser.save((err) => {
+          if (err) throw err;
+          console.log('Current User is' + currentUser);
+          return done(null, currentUser);
+        });
+      } else {
+        newUser = new User({
+          name: profile.displayName,
+          slackID: profile.id,
+          isTeamLead: isTeamLead
+        });
+        newUser.save().then((newUser) => {
+          console.log('New User Created' + newUser);
+          return done(null, newUser);
+        });
+      }
     });
-    if (currentUser) {
-      currentUser.isTeamLead = isTeamLead;
-      console.log('Current User is' + currentUser);
-      done(null, currentUser);
-    } else {
-      newUser = new User({
-        name: profile.displayName,
-        slackID: profile.id,
-        isTeamLead: true
-
-      });
-      newUser.save().then((newUser) => {
-        console.log('New User Created' + newUser);
-        done(null, newUser);
-      });
-    }
-  })
+  });
 }));
 
 exports.isAuthenticated = (req, res, next) => {

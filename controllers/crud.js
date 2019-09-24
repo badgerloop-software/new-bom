@@ -1,24 +1,21 @@
 const Sponsors = require('../models/sponsor');
+const Teamleads = require('../models/teamlead');
+
 exports.getCrud = (req, res) => {
     if (!req.user || !req.user.isTeamLead) {
       req.flash('errors,', {msg: 'You are not authorized to view that!'});
       return res.redirect('back');  
     }
-    Sponsors.find({}, (err, list) => {
+    Sponsors.find({}, (err, spnsrList) => {
+        if (err) throw err; 
+    Teamleads.find({}, (err, leadsList) => {
         if (err) throw err;
-        res.render('crud', {
-            user:req.user,
+        return res.render('crud', {
+            user: req.user,
             activeCRUD: true,
-            sponsors: list
-        });     
-
+            teamleads: leadsList,
+            sponsors:  spnsrList
+        });
     });
-}
-exports.getDeleteSponsor = (req, res) => {
-    console.log("Deleting Sponsor");
-    Sponsors.findByIdAndRemove(req.params.id, (err) => {
-        if (err) throw err;
-        req.flash('success', {msg: 'Sucessfully Deleted'});
-        return res.redirect('back');
     });
 }
