@@ -20,6 +20,8 @@ passport.deserializeUser((id, done) => {
   });
 });
 
+
+// The main flow of Slack Authentication
 passport.use(new SlackStragety({
   clientID: clientID,
   clientSecret: clientSecret,
@@ -48,7 +50,7 @@ passport.use(new SlackStragety({
     });
   });
 }));
-
+// End Main Flow
   exports.isAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {
       return next();
