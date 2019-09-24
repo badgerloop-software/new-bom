@@ -8,7 +8,7 @@ const clientSecret = process.env.CLIENT_SECRET;
 const redirectURI = process.env.REDIRECT_URI;
 // const SECRET_CHANNEL = process.env.SECRET_CHANNEL;
 const SERVICES_TOKEN = process.env.SERVICES_TOKEN;
-const CHANNEL_ID = process.env.SECRET_CHANNEL
+const SECRET_CHANNEL = process.env.SECRET_CHANNEL
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
@@ -39,7 +39,7 @@ passport.use(new SlackStragety({
     };
     request(options, (err, res, body) => {
       if (err) throw new Error(err);
-      isTeamLead = findTeamLead(obj, profile);
+      isTeamLead = findTeamLead(body, profile);
       if (currentUser) {
         return updateCurrentUser(isTeamLead, currentUser, done)
       } else {
@@ -80,14 +80,16 @@ passport.use(new SlackStragety({
   }
 
   function findTeamLead(body, profile) {
+    let output = false; // Innocent until proven guilty
     let obj = JSON.parse(body);
     console.log(obj);
     let members = obj.group.members;
     let userID = profile.id;
     members.forEach((member) => {
+//	console.log(`${member} == ${profile.id} ??`);
       if (member == userID) {
-        return true;
+	  output = true;
       }
     });
-    return false;
+    return output;
   }
