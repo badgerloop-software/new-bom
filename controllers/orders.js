@@ -368,7 +368,8 @@ exports.getOrdering = (req, res) => {
           tax: order.tax,
           shipping: order.shipping,
           indvPrice: partCosts[i],
-          totalCost: totalCost
+          totalCost: totalCost,
+          link: order.link
         });
       } else {
        newPart = new Order({
