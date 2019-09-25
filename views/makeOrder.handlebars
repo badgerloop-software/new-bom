@@ -57,7 +57,7 @@
       <label for="link">Link to Purchase</label>
       <input class="form-control" type="text" name="link" id="link">
     </div>
-    <div class="form-group col=auto"> 
+    <div class="form-group col-auto"> 
       <label for="date">Needed By:</label>
       <input class="form-control" type="date" name="date" id="date">
     </div>
@@ -67,13 +67,13 @@
     <input class="form-control" type="text" name="comments" id="comments" rows="3" style="border: 2px red" id="comments">
   </div>
     <div class="form-row">
+    <input type="file" id="fileInput" onchange="Upload()" />
+  </div>
+    <div class="form-row">
     <div class="form-check ">
       <input type="checkbox" name="notARequest" id="notArequestCheck">
       <label for="notARequestCheck" class="form-check-label">I will/did purchase this myself (Make sure you get written or verbal approval)</label>
     </div>
-  </div>
-  <div class="form-row">
-    <input type="file" id="fileInput" onchange="Upload()" />
   </div>
   <div class="form-row">
     <div class="form-check">
