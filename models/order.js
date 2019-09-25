@@ -8,9 +8,9 @@ const OrderSchema = new mongoose.Schema({
   subteam: String,
   supplier: String,
   productNum: String,
-  quantity: Number,
+  quantity: String,
   totalCost: Number,
-  indvPrice: Number,
+  indvPrice: String,
   tax: Number,
   shipping: Number,
   tax: Number,
@@ -25,7 +25,8 @@ const OrderSchema = new mongoose.Schema({
   invoice: String,
   project: String,
   countsTowardPodCost: {type: Boolean, default: false},
-  needDate: String
+  needDate: String,
+  isDigikey: {type: Boolean, default: false},
 });
 
 OrderSchema.index({'$**': 'text'}, {

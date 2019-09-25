@@ -24,9 +24,9 @@
         <option id="Structural" value="Structural">Structural</option>
         <option id="Workshop" value="Workshop">Tools &amp; Workshop</option> --}}
 
-</select>
+      </select>
     </div>
-        <div class="form-group col-auto">
+    <div class="form-group col-auto">
       <label>Project</label>
       <input class="form-control" type="text" name="project" value="{{order.project}}">
     </div>
@@ -48,8 +48,14 @@
   <div class="form-row">
     <div class="form-group col-auto">
       <label>Quantity</label>
-      <input class="form-control" name="quantity" type="number" value="{{order.quantity}}">
+      <input class="form-control" name="quantity" type="text" value="{{order.quantity}}">
     </div>
+    {{!-- {{#if order.isDigikey}}
+    <div class="form-group col-auto">
+      <label>Total Cost: For Digikey Orders</label>
+      <input class="form-control" name="totalCost" type="text" value="{{order.totalCost}}" readonly>
+    </div>
+    {{/if}} --}}
   </div>
   <div class="form-row">
     <div class="form-group col-auto">
@@ -58,8 +64,7 @@
         <div class="input-group-prepend">
           <div class="input-group-text" style="padding-left: 0">$</div>
         </div>
-        <input class="form-control" aria-describedby="costHelp" value="{{order.indvPrice}}" name="cost" type="number" id="orderIndCost" step=".01"
-          min="0">
+        <input class="form-control" aria-describedby="costHelp" value="{{order.indvPrice}}" name="cost" type="text" id="orderIndCost" step=".01" min="0">
       </div>
     </div>
     <div class="form-group col-auto">
@@ -68,8 +73,8 @@
         <div class="input-group-prepend">
           <div class="input-group-text">$</div>
         </div>
-        <input class="form-control" value="{{order.shipping}}" aria-describedby="costHelp" name="shipping" type="number" id="orderShipping" step=".01"
-          min="0">
+        <input class="form-control" value="{{order.shipping}}" aria-describedby="costHelp" name="shipping" type="number"
+          id="orderShipping" step=".01" min="0">
       </div>
     </div>
     <div class="form-group col-auto">
@@ -78,19 +83,19 @@
         <div class="input-group-prepend">
           <div class="input-group-text">$</div>
         </div>
-        <input class="form-control" value="{{order.tax}}" aria-describedby="costHelp" name="tax" type="number" id="orderTax" step=".01"
-          min="0">
+        <input class="form-control" value="{{order.tax}}" aria-describedby="costHelp" name="tax" type="number"
+          id="orderTax" step=".01" min="0">
       </div>
     </div>
-        <div class="form-group col-auto">
+    <div class="form-group col-auto">
       <div class="form-check">
-      <input type="checkbox" name="podCost" {{#if order.countsTowardPodCost}} checked {{/if}}>
-      <label for="podCost">Counts toward pod cost?</label>
+        <input type="checkbox" name="podCost" {{#if order.countsTowardPodCost}} checked {{/if}}>
+        <label for="podCost">Counts toward pod cost?</label>
       </div>
     </div>
   </div>
   <div class="form-row">
-    <div class="form-group col=auto"> 
+    <div class="form-group col=auto">
       <label for="date">Needed By:</label>
       <input class="form-control" type="text" name="date" id="date" value="{{order.needDate}}" readonly>
     </div>
@@ -119,7 +124,7 @@
   </div>
   <div class="form-row">
     <label>Comments:</label>
-   <input name="comments" class="form-control" rows="5" value="{{order.comments}}"></input>
+    <input name="comments" class="form-control" rows="5" value="{{order.comments}}"></input>
   </div>
   <input style="display: none" name="id" value="{{order._id}}">
   <div class="form-row">
