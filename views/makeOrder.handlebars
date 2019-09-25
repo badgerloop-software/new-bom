@@ -67,7 +67,10 @@
     <input class="form-control" type="text" name="comments" id="comments" rows="3" style="border: 2px red" id="comments">
   </div>
     <div class="form-row">
-    <input type="file" id="fileInput" onchange="Upload()" />
+      <div class="col-auto">
+      <label for="fileInput">Click Here to Upload Digikey Excel File : <b>Note this will only work for DIGIKEY orders</b></label>
+    <input type="file" id="fileInput" onchange="Upload()" class="form-control" />
+    </div>
   </div>
     <div class="form-row">
     <div class="form-check ">
