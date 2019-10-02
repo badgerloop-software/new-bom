@@ -44,7 +44,7 @@
         <td><a href="{{this.link}}">Link</a></td>
         <td>{{this.comments}}</td>
         <td>{{#if this.invoice}}<a href="{{this.invoice}}">Invoice</a>{{else}} No Invoice Recorded {{/if}}</td>
-        <td>{{this.trackingNum}}</td>
+        <td>{{#if this.trackingNum}}<a href="http://www.google.com/search?q={{this.trackingNum}}" class="btn btn-primary">Track Order</a>{{else}} No Tracking Number Recorded{{/if}}</td>
         <td><a data-toggle="modal" data-target="#cancelModal" data-code="{{this._id}}" class="btn btn-sm btn-danger">Return Order</a></td>
         {{/each}}
       </tr>

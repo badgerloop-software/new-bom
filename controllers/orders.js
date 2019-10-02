@@ -333,6 +333,8 @@ exports.getOrdering = (req, res) => {
       return res.redirect('back');
     }
     if (!order.isDigikey) {
+    if (order.shipping === undefined) order.shipping = 0;
+    if (order.tax === undefined) order.tax = 0;
     order.purchaser = user.name;
     order.dateOrdered = new Date();
     order.isOrdered = true;
