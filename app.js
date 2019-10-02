@@ -77,6 +77,11 @@ app.get('/slack/auth', passport.authenticate('slack'));
 app.get('/slack/auth/redirect', passport.authenticate('slack'), (req, res) => res.redirect('/'));
 app.get('/logout', authController.getLogout);
 
+app.post('/slack/events', (req, res) => {
+  console.log(req);
+  return res.status(200).send();
+})
+
 app.get('/admin/dashboard', passportConfig.isAuthenticated, adminController.getDash);
 app.get('/admin/set', passportConfig.isAuthenticated, adminController.setUser);
 app.get('/admin/createbudget', passportConfig.isAuthenticated, adminController.createBudget);

@@ -333,7 +333,7 @@ exports.getApproving = (req, res) => {
   let orderID = req.params.id || req.query.q;
   if (!user || !user.isAdmin) {
     req.flash('errors', { msg: 'You are not authorized to approve an order' });
-    res.redirect('back');
+    return res.redirect('back');
   }
   Order.findOne({ _id: orderID }).select("_id").lean().then(exists => {
     if (!exists) {
