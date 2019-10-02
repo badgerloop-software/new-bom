@@ -106,7 +106,7 @@ exports.postMakeOrder = (req, res, next) => {
     console.log('Here');
     isDigikey = true; // Guilty
     console.log(req.body.cost);
-    totalCost = Number(req.body.isDigikeyOrder);
+    totalCost = Number(req.body.isDigikeyOrder).toFixed(2);
   } else totalCost = Number(req.body.cost) * Number(req.body.quantity);
   let order = new Order({
     requestor: req.body.requestor,

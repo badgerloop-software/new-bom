@@ -123,7 +123,7 @@
   <input style="display: none" name="id" value="{{order._id}}">
   <div class="form-row">
     <div class="form-group">
-      <button class="btn btn-success" type="submit">Edit Order</button>
+      <button class="btn btn-success" type="submit">Save Changes</button>
       <a class="btn btn-danger" href="/orders/cancel?q={{order._id}}">Cancel Order</a>
     </div>
   </div>
@@ -141,10 +141,11 @@
   <h3><small>Order pending approval</small></h3>
   {{/if}}
 </div>
+{{#unless order.isOrdered}}
 <div id="adminButtons">
   {{#if user.isFSC}}
   {{#if order.isApproved}}
-  <a href="/orders/place/{{order._id}}"><button>Finalize Order</button></a>
+  <a href="/orders/place/{{order._id}}"><button>I have ordered this</button></a>
   {{/if}}
   {{/if}}
   {{#if user.isAdmin}}
@@ -152,6 +153,7 @@
   <a href="/orders/approve/{{order._id}}"><button>Approve Order</button></a>
   {{/unless}}
   {{/if}}
+  {{/unless}}
 </div>
 <script>
   const DROPDOWN = document.getElementById('chooseSubteam');
