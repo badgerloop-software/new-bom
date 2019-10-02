@@ -324,13 +324,13 @@ exports.getOrdering = (req, res) => {
   let orderID = req.params.id;
   if (!user || !user.isFSC) {
     req.flash('errors', { msg: 'You are not authorized to place an order' });
-    res.redirect('/');
+   return res.redirect('/');
   }
   Order.findById(orderID, (err, order) => {
     if (err) throw err;
     if (!order) {
       req.flash('errors', { msg: 'Order ID does not exist' });
-      res.redirect('back');
+      return res.redirect('back');
     }
     if (!order.isDigikey) {
     order.purchaser = user.name;
@@ -339,7 +339,7 @@ exports.getOrdering = (req, res) => {
     order.save((err) => {
       if (err) throw err;
       req.flash('success', { msg: 'Item Updated' });
-      res.redirect('/orders/view');
+     return res.redirect('/orders/view');
     });
   } else {
     let numParts = order.item.split(',').length;
@@ -399,7 +399,7 @@ exports.getOrdering = (req, res) => {
     Order.findOneAndDelete({'_id': orderID}, (err) => {
       console.log('Order Deleted');
       req.flash('success', {msg: 'Item Updated'});
-      res.redirect('/orders/view');
+      return res.redirect('/orders/view');
     });
   }
   });
@@ -410,7 +410,7 @@ exports.getApproving = (req, res) => {
   let orderID = req.params.id || req.query.q;
   if (!user || !user.isAdmin) {
     req.flash('errors', { msg: 'You are not authorized to approve an order' });
-    res.redirect('back');
+   return res.redirect('back');
   }
   Order.findOne({ _id: orderID }).select("_id").lean().then(exists => {
     if (!exists) {
