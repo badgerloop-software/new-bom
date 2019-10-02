@@ -43,7 +43,7 @@
         <td>{{this.purchaser}}</td>
         <td><a href="{{this.link}}">Link</a></td>
         <td>{{this.comments}}</td>
-        <td><a href="{{this.invoice}}">Invoice</a></td>
+        <td>{{#if this.invoice}}<a href="{{this.invoice}}">Invoice</a>{{else}} No Invoice Recorded {{/if}}</td>
         <td>{{this.trackingNum}}</td>
         <td><a data-toggle="modal" data-target="#cancelModal" data-code="{{this._id}}" class="btn btn-sm btn-danger">Return Order</a></td>
         {{/each}}
