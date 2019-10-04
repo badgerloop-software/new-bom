@@ -13,22 +13,24 @@
 <h3>Team Lead</h3>
 {{/if}}
 <div class="container-fluid" id="home-grid">
-  <div class="card card-profile" id="home-right">
-    <div class="card-avatar">
-    <img class="img" src="https://badgerloop.com/images/teamleads/generic.jpg" />
-    </div>
-    <div class="card-body">
-      <h4 class="card-title">{{user.name}}</h4>
-      {{#if user.isFSC}}
-      <h6 class="card-category text-gray">Finance/Supply Chain Member</h6>
-      {{/if}}
-      {{#if user.isAdmin}}
-      <h6 class="card-category text-gray">Executitive Team Member</h6>
-      {{/if}}
-      {{#if user.isTeamLead}}
-      <h6 class="card-category text-gray">Team Lead</h6>
-      {{/if}}
-      <a href="/logout" class="btn btn-primary btn-round">Logout</a>
+  <div id="home-right">
+    <div class="card card-profile">
+      <div class="card-avatar">
+      <img class="img" src="https://badgerloop.com/images/teamleads/generic.jpg" />
+      </div>
+      <div class="card-body">
+        <h4 class="card-title">{{user.name}}</h4>
+        {{#if user.isFSC}}
+        <h6 class="card-category text-gray">Finance/Supply Chain Member</h6>
+        {{/if}}
+        {{#if user.isAdmin}}
+        <h6 class="card-category text-gray">Executitive Team Member</h6>
+        {{/if}}
+        {{#if user.isTeamLead}}
+        <h6 class="card-category text-gray">Team Lead</h6>
+        {{/if}}
+        <a href="/logout" class="btn btn-primary btn-round">Logout</a>
+      </div>
     </div>
   </div>
   <div class="row" id="home-left">

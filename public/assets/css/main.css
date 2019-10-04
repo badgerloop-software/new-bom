@@ -29,7 +29,7 @@
 #home-left {
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: 24% 24% 24%;
+  grid-template-columns: 24% 24% 24% 24%;
 }
 #home-right {
   grid-column: 3 ;
