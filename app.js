@@ -109,7 +109,7 @@ app.post('/teamleads/:id/delete', teamleadscontroller.teamleads_delete);
 app.post('/sponsors/upload', uploadSponsor.single('myFile'), (req, res) => {
   if (req.file) {
     console.log('Uploading file...');
-    fs.rename('uploads' + req.file.filename, 'uploads/sponsors' + req.file.originalname, function (err) {
+    fs.rename('uploads/sponsors' + req.file.filename, 'uploads/sponsors' + req.file.originalname, function (err) {
       if (err) console.log('ERROR: ' + err);
     });
     var filename = req.file.originalname;
