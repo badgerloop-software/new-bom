@@ -12,7 +12,11 @@
 }
 #orderForm {
   display: grid;
+  width: 50%;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-gap: 20px;
   grid-column-gap: 50px;
+}
+#orderForm label {
+  width: 100%;
 }
