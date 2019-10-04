@@ -197,6 +197,10 @@
                             <i class="material-icons">&#xE147;</i> 
                             <span>Add New Teamlead</span>
                         </a>
+                        <a href="#uploadImageModal" class="btn btn-success" data-code="teamleads" data-toggle="modal">
+                            <i class="material-icons">cloud_upload</i>
+                            <span>Upload Image</span>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -232,25 +236,6 @@
                     {{/each}}
                 </tbody>
             </table>
-        </div>
-    </div>
-    <div class="container">
-        <div class="table-wrapper">
-            <div class="table-title">
-                <div class="row">
-                    <div class="col-sm-6">
-                        <h2>Upload an Image to <b>Teamleads</b></h2>
-                    </div>
-                    <div class="col-sm-6">
-                        <form action="/teamleads/upload" enctype="multipart/form-data" method="POST">
-                            <input type="file" name="teamleadImg" id="teamleadImg" class="btn btn-default" required />
-                            <input type="submit" value="Upload" class="btn btn-info" />
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <p>{{status}}</p>
-            <p>{{filename}}</p>
         </div>
     </div>
     <!-- Edit Modal HTML -->
@@ -373,7 +358,7 @@
                             <i class="material-icons">&#xE147;</i> 
                             <span>Add New sponsor</span>
                         </a>
-                        <a href="#uploadImage" class="btn btn-success" data-toggle="modal">
+                        <a href="#uploadImageModal" class="btn btn-success" data-code="sponsors" data-toggle="modal">
                             <i class="material-icons">cloud_upload</i>
                             <span>Upload Image</span>
                         </a>
@@ -407,25 +392,6 @@
                     {{/each}}
                 </tbody>
             </table>
-        </div>
-    </div>
-    <div class="container">
-        <div class="table-wrapper">
-            <div class="table-title">
-                <div class="row">
-                    <div class="col-sm-6">
-                        <h2>Upload an Image to <b>Sponsors</b></h2>
-                    </div>
-                    <div class="col-sm-6">
-                        <form action="/sponsors/upload" enctype="multipart/form-data" method="post">
-                            <input type="file" name="sponsorImg" id="sponsorImg" class="btn btn-default" required />
-                            <input type="submit" value="Upload" class="btn btn-info" />
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <p>{{status}}</p>
-            <p>{{filename}}</p>
         </div>
     </div>
 
@@ -521,8 +487,8 @@
             </div>
         </div>
     </div>
-{{!--     <!-- Edit Modal HTML -->
-    <div id="uploadImage" class="modal fade">
+    <!-- Upload Modal HTML -->
+    <div id="uploadImageModal" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -534,14 +500,14 @@
                     <p>{{filename}}</p>
                 </div>
                 <div class="modal-footer">
-                    <form action="/sponsors/upload" enctype="multipart/form-data" method="POST">
-                        <input type="file" name="sponsorImg" id="sponsorImg" required>
+                    <form id="uploadImageForm" action="" enctype="multipart/form-data" method="POST">
+                        <input type="file" name="uploadImg" id="uploadImg" required>
                         <input type="submit" value="Upload" class="btn btn-info" />
                     </form>
                 </div>
             </div>
         </div>
-    </div> --}}
+    </div>
 
 </body>
 
@@ -581,4 +547,8 @@
         let code = button.data('code') // Extract info from data-* attributes
         document.getElementById('deleteTeamleadForm').action = `/teamleads/${code}/delete`;
     })
+    $('#uploadImageModal').on('show.bs.modal', function (event) {
+            let team = button.data('team') // Extract info from data-* attributes
+            document.getElementById('uploadImageForm').action = `/${(team)}/upload`;
+        })
 </script>
