@@ -548,7 +548,7 @@
         document.getElementById('deleteTeamleadForm').action = `/teamleads/${code}/delete`;
     })
     $('#uploadImageModal').on('show.bs.modal', function (event) {
-            let team = button.data('team') // Extract info from data-* attributes
-            document.getElementById('uploadImageForm').action = `/${(team)}/upload`;
-        })
+        let team = button.data('code') // Extract info from data-* attributes
+        document.getElementById('uploadImageForm').action = `/${(team)}/upload`;
+    })
 </script>
