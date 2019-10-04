@@ -14,63 +14,84 @@
 {{/if}}
 <div class="container-fluid">
   <div class="row">
-    <div class="col-sm-3">
-      <div class="card">
-        <div class="card-header card-header-danger">
-          <h4 class="card-title">Purchase Request</h4>
-          <i class="material-icons">attach_money</i>
+    <div class="col-lg-3 col-md-6 col-sm-6">
+      <div class="card card-stats">
+        <div class="card-header card-header-warning card-header-icon">
+          <div class="card-icon">
+            <i class="material-icons">attach_money</i>
+          </div>
+          <h3 class="card-title">Purchase Request</h3>
         </div>
-        <div class="card-body">
-          <a href="/orders/purchase" class="btn btn-lg btn-success">Visit BOM</a>
-        </div>
-      </div>
-    </div>
-{{#if user.isAdmin}}
-    <div class="col-sm-3">
-      <div class="card">
-        <div class="card-header card-header-danger">
-          <h4 class="card-title ">CRUD Pages</h4>
-          <i class="material-icons">edit</i>
-        </div>
-        <div class="card-body">
-          <a href="/crud" class="btn btn-lg btn-success">Edit Website</a>
+        <div class="card-footer">
+          <div class="stats">
+            <a href="/orders/purchase">Visit BOM</a>
+          </div>
         </div>
       </div>
     </div>
-{{/if}}
-    <div class="col-sm-3">
-      <div class="card">
-        <div class="card-header card-header-danger">
-          <h4 class="card-title ">Wiki</h4>
-          <i class="material-icons">menu_book</i>
+    {{#if user.isAdmin}}
+    <div class="col-lg-3 col-md-6 col-sm-6">
+      <div class="card card-stats">
+        <div class="card-header card-header-success card-header-icon">
+          <div class="card-icon">
+            <i class="material-icons">edit</i>
+          </div>
+          <h3 class="card-title">CRUD Actions</h3>
         </div>
-        <div class="card-body">
-          <a href="http://wiki.badgerloop.com" class="btn btn-lg btn-success">Visit the Wiki</a>
-        </div>
-      </div>
-    </div>
-    <div class="col-sm-3">
-      <div class="card">
-        <div class="card-header card-header-danger">
-          <h4 class="card-title ">Website</h4>
-          <i class="material-icons">computer</i>
-        </div>
-        <div class="card-body">
-          <a href="http://badgerloop.com" class="btn btn-lg btn-success">Visit Website</a>
+        <div class="card-footer">
+          <div class="stats">
+            <a href="/crud" class="btn btn-lg btn-success">Edit Website</a>
+          </div>
         </div>
       </div>
     </div>
-    <div class="col-sm-3">
-      <div class="card">
-        <div class="card-header card-header-danger">
-          <h4 class="card-title ">Slack</h4>
-          <i class="material-icons">chat</i>
+    {{/if}}
+    <div class="col-lg-3 col-md-6 col-sm-6">
+      <div class="card card-stats">
+        <div class="card-header card-header-danger card-header-icon">
+          <div class="card-icon">
+            <i class="material-icons">menu_book</i>
+          </div>
+          <h3 class="card-title">Wiki</h3>
         </div>
-        <div class="card-body">
+        <div class="card-footer">
+          <div class="stats">
+            <a href="http://wiki.badgerloop.com" class="btn btn-lg btn-success">Visit the Wiki</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-6">
+      <div class="card card-stats">
+        <div class="card-header card-header-info card-header-icon">
+          <div class="card-icon">
+            <i class="material-icons">computer</i>
+          </div>
+          <h3 class="card-title">Website</h3>
+        </div>
+        <div class="card-footer">
+          <div class="stats">
+            <a href="http://badgerloop.com" class="btn btn-lg btn-success">Visit Website</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-3 col-md-6 col-sm-6">
+    <div class="card card-stats">
+      <div class="card-header card-header-info card-header-icon">
+        <div class="card-icon">
+          <i class="fa fa-slack"></i>
+        </div>
+        <h3 class="card-title">Slack</h3>
+      </div>
+      <div class="card-footer">
+        <div class="stats">
           <a href="http://badgerloop.slack.com" class="btn btn-lg btn-success">Join Slack</a>
         </div>
       </div>
     </div>
+  </div>
   </div>
 </div>
 {{/if}} 
