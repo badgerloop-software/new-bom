@@ -362,8 +362,6 @@
                             <i class="material-icons">cloud_upload</i>
                             <span>Upload Image</span>
                         </a>
-                        <a href="#uploadImageModal" class="btn btn-success" data-code="sponsors" data-toggle="modal"><i class="material-icons"
-                                data-toggle="cloud_upload" title="Delete">&#xE872;</i></a>
                     </div>
                 </div>
             </div>
@@ -467,7 +465,6 @@
             </div>
         </div>
     </div>
-    </form>
     <!-- Delete Modal HTML -->
     <div id="deletesponsorModal" class="modal fade">
         <div class="modal-dialog">
@@ -490,7 +487,7 @@
         </div>
     </div>
     <!-- Upload Modal HTML -->
-    <div id="uploadImageModal" class="modal fade">
+    <div id="hi" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -510,6 +507,40 @@
             </div>
         </div>
     </div>
+        <div id="uploadImageModal" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="editSponsorForm" method="post">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Edit sponsor</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>Tier</label>
+                                <input id="editTier" name="tier" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Company</label>
+                                <input id="editCompany" name="company" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Website</label>
+                                <input id="editWebsite" name="website" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Logo</label>
+                                <input id="editLogo" name="logo" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+                            <input class="btn btn-info" type="submit" value="Save" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 
 </body>
 
