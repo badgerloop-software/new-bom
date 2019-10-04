@@ -60,9 +60,7 @@ passport.use(new SlackStragety({
 
   function updateCurrentUser(isTeamLead, user, profile, cb) {
     user.isTeamLead = isTeamLead;
-    console.log(profile);
-    console.log(profile.image_192);
-    user.picture = profile.image_192;
+    user.picture = profile.user.image_192;
     user.save((err) => {
       if (err) throw err;
       console.log('Current User is' + user);
