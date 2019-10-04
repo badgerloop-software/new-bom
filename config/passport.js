@@ -43,7 +43,7 @@ passport.use(new SlackStragety({
       if (err) throw new Error(err);
       isTeamLead = findTeamLead(body, profile);
       if (currentUser) {
-        return updateCurrentUser(isTeamLead, currentUser, done)
+        return updateCurrentUser(isTeamLead, currentUser, profile, done)
       } else {
         return createNewUser(profile, isTeamLead, done);
       }
@@ -59,8 +59,9 @@ passport.use(new SlackStragety({
     res.redirect('/');
   }
 
-  function updateCurrentUser(isTeamLead, user, cb) {
+  function updateCurrentUser(isTeamLead, user, profile, cb) {
     user.isTeamLead = isTeamLead;
+    user.picture = profile.image_192;
     user.save((err) => {
       if (err) throw err;
       console.log('Current User is' + user);
@@ -72,6 +73,7 @@ passport.use(new SlackStragety({
     console.log("You're new here");
     let newUser = new User({
       name: profile.displayName,
+      picture: profile.image_192,
       slackID: profile.id,
       isTeamLead: isTeamLead
     });
