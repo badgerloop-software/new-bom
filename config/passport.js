@@ -26,7 +26,7 @@ passport.use(new SlackStragety({
   clientID: clientID,
   clientSecret: clientSecret,
   skipUserProfile: false,
-  scope: ['identity.basic']
+  scope: ['identity.basic', 'identity.avatar']
 }, (accessToken, refreshToken, profile, done) => {
   console.log("Made it to the callback");
   User.findOne({ name: profile.displayName }).then((currentUser) => {
