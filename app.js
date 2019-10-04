@@ -26,6 +26,7 @@ const multer = require('multer');
 const uploadTeamlead = multer({ dest: './uploads/teamleads' });
 const uploadSponsor = multer({ dest: './uploads/sponsors' });
 const fs = require('fs');
+const shell = require('shelljs');
 
 const app = module.exports.app = express();
 const server = http.createServer(app);
@@ -109,9 +110,10 @@ app.post('/teamleads/:id/delete', teamleadscontroller.teamleads_delete);
 app.post('/sponsors/upload', uploadSponsor.single('sponsorImg'), (req, res) => {
   if (req.file) {
     console.log('Uploading file...');
-    fs.rename('uploads/sponsors/' + req.file.filename, 'uploads/sponsors/' + req.file.originalname, function (err) {
+    fs.rename('uploads/sponsors/' + req.file.filename, '/var/www/dev.badgerloop.com/public/images/sponsors/' + req.file.originalname, function (err) {
       if (err) console.log('ERROR: ' + err);
     });
+    // shell.mv('uploads/sponsors/' + req.file.filename', 'file2', 'dir/');
     var filename = req.file.originalname;
     var uploadStatus = 'File Uploaded Successfully';
   } else {
