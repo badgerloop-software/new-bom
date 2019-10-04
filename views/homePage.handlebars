@@ -1,7 +1,9 @@
 {{#unless user}}
 <a href="/slack/auth"><button class='btn'>Click here to login with Slack!</button></a>
 {{/unless}}
-  {{#if user}}
+{{#if user}}
+
+{{/if}}
 <div class="container-fluid">
   <div class="card card-profile">
     <div class="card-avatar">
@@ -21,7 +23,6 @@
       <a href="/logout" class="btn btn-primary btn-round">Logout</a>
     </div>
   </div>
-  {{/if}}
   <div class="row">
     <div class="col-lg-3 col-md-6 col-sm-6">
       <div class="card card-stats">
