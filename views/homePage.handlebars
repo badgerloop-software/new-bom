@@ -12,8 +12,8 @@
 {{#if user.isTeamLead}}
 <h3>Team Lead</h3>
 {{/if}}
-<div class="container-fluid">
-  <div class="card card-profile">
+<div class="container-fluid" id="home-grid">
+  <div class="card card-profile" id="home-right">
     <div class="card-avatar">
     <img class="img" src="https://badgerloop.com/images/teamleads/generic.jpg" />
     </div>
@@ -31,7 +31,7 @@
       <a href="/logout" class="btn btn-primary btn-round">Logout</a>
     </div>
   </div>
-  <div class="row">
+  <div class="row" id="home-left">
     <div class="col-lg-3 col-md-6 col-sm-6">
       <div class="card card-stats">
         <div class="card-header card-header-warning card-header-icon">
