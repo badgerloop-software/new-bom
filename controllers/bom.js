@@ -4,10 +4,6 @@ const Budgets = require('../models/budget');
 
 exports.getTableView = (req, res) => {
   let user = req.user;
-  if (!user.isFSC && !user.isAdmin) {
-    req.flash('errors', { msg: 'You are not authorized to view that' });
-    return res.redirect('/');
-  }
   Budgets.find({}, (err, budgets) => {
     if (err) throw err;
     if (budgets === {}) {
