@@ -338,7 +338,7 @@ function createSlackMessage(order, user) {
   } else {
     msg =
       `====${order.subteam}====
-  *Requestor*: ${order.requestor}
+  *Requestor*: <@${user.slackID}>
   *Items*: ${order.item}
   *Cost*: $${order.cost}
   *Link*: http://${URL}/orders/edit/${order.id}
