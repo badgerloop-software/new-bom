@@ -2,16 +2,6 @@
 <a href="/slack/auth"><button class='btn'>Click here to login with Slack!</button></a>
 {{/unless}}
 {{#if user}}
-<h2>Welcome {{user.name}}</h2>
-{{#if user.isFSC}}
-<h3>Finance/Supply Chain Member</h3>
-{{/if}}
-{{#if user.isAdmin}}
-<h3>Executitive Team Member</h3>
-{{/if}}
-{{#if user.isTeamLead}}
-<h3>Team Lead</h3>
-{{/if}}
 <div class="container-fluid" id="home-grid">
   <div id="home-right">
     <div class="card card-profile">
