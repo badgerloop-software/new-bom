@@ -15,7 +15,8 @@ exports.sponsors_create = function (req, res) {
         if (err) {
             return next(err);
         }
-        res.send('Sponsor Created successfully');
+        req.flash('success', { msg: `Sponsor created successfully!` });
+        return res.redirect('/crud');
     });
 };
 
@@ -39,13 +40,15 @@ exports.sponsors_list = function (req, res) {
 exports.sponsors_update = function (req, res) {
     sponsors.findByIdAndUpdate(req.params.id, { $set: req.body }, function (err, sponsors) {
         if (err) return next(err);
-        res.send('sponsor updated.');
+        req.flash('success', { msg: `Sponsor updated successfully!` });
+        return res.redirect('/crud');
     });
 };
 
 exports.sponsors_delete = function (req, res) {
     sponsors.findByIdAndRemove(req.params.id, function (err) {
         if (err) return next(err);
-        res.send('Deleted successfully!');
+        req.flash('success', { msg: `Sponsor deleted successfully!` });
+        return res.redirect('/crud');
     });
 };

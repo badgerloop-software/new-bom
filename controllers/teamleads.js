@@ -18,7 +18,8 @@ exports.teamleads_create = function (req, res) {
         if (err) {
             return next(err);
         }
-        res.send('Teamlead Created successfully');
+        req.flash('success', { msg: `Teamlead created successfully!` });
+        return res.redirect('/crud');
     });
 };
 
@@ -42,13 +43,15 @@ exports.teamleads_list = function (req, res) {
 exports.teamleads_update = function (req, res) {
     teamleads.findByIdAndUpdate(req.params.id, { $set: req.body }, function (err, teamleads) {
         if (err) return next(err);
-        res.send('teamlead udpated.');
+        req.flash('success', { msg: `Teamlead updated successfully!` });
+        return res.redirect('/crud');
     });
 };
 
 exports.teamleads_delete = function (req, res) {
     teamleads.findByIdAndRemove(req.params.id, function (err) {
         if (err) return next(err);
-        res.send('Deleted successfully!');
+        req.flash('success', { msg: `Teamlead deleted successfully!` });
+        return res.redirect('/crud');
     });
 };
