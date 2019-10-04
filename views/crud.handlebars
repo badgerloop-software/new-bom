@@ -487,7 +487,7 @@
         </div>
     </div>
     <!-- Upload Modal HTML -->
-    <div id="hi" class="modal fade">
+    <div id="uploadImageModal" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -499,7 +499,7 @@
                     <p>{{filename}}</p>
                 </div>
                 <div class="modal-footer">
-                    <form id="uploadImageForm" action="" enctype="multipart/form-data" method="POST">
+                    <form id="uploadImageForm" action="/sponsors/upload" enctype="multipart/form-data" method="POST">
                         <input type="file" name="uploadImg" id="uploadImg" required>
                         <input type="submit" value="Upload" class="btn btn-info" />
                     </form>
@@ -507,40 +507,6 @@
             </div>
         </div>
     </div>
-        <div id="uploadImageModal" class="modal fade">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <form id="editSponsorForm" method="post">
-                        <div class="modal-header">
-                            <h4 class="modal-title">Edit sponsor</h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label>Tier</label>
-                                <input id="editTier" name="tier" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Company</label>
-                                <input id="editCompany" name="company" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Website</label>
-                                <input id="editWebsite" name="website" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Logo</label>
-                                <input id="editLogo" name="logo" class="form-control" required>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                            <input class="btn btn-info" type="submit" value="Save" />
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
 
 </body>
 
@@ -579,9 +545,5 @@
         let button = $(event.relatedTarget) // Button that triggered the modal
         let code = button.data('code') // Extract info from data-* attributes
         document.getElementById('deleteTeamleadForm').action = `/teamleads/${code}/delete`;
-    })
-    $('#uploadImageModal').on('show.bs.modal', function (event) {
-        let team = button.data('code') // Extract info from data-* attributes
-        document.getElementById('uploadImageForm').action = `/${(team)}/upload`;
     })
 </script>
