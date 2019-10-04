@@ -242,7 +242,7 @@
                         <h2>Upload an Image to <b>Teamleads</b></h2>
                     </div>
                     <div class="col-sm-6">
-                        <form action="/upload/teamleads" enctype="multipart/form-data" method="POST">
+                        <form action="/teamleads/upload" enctype="multipart/form-data" method="POST">
                             <input type="file" name="myFile" id="myFile" class="btn btn-default" required />
                             <input type="submit" value="Upload" class="btn btn-info" />
                         </form>
@@ -417,7 +417,7 @@
                         <h2>Upload an Image to <b>Sponsors</b></h2>
                     </div>
                     <div class="col-sm-6">
-                        <form action="/upload/sponsors" enctype="multipart/form-data" method="POST">
+                        <form action="/sponsors/upload" enctype="multipart/form-data" method="POST">
                             <input type="file" name="myFile" id="myFile" class="btn btn-default" required />
                             <input type="submit" value="Upload" class="btn btn-info" />
                         </form>
@@ -534,7 +534,7 @@
                     <p>{{filename}}</p>
                 </div>
                 <div class="modal-footer">
-                    <form action="/upload" enctype="multipart/form-data" method="POST">
+                    <form action="/sponsors/upload" enctype="multipart/form-data" method="POST">
                         <input type="file" name="myFile" id="myFile" required>
                         <input type="submit" value="Upload" class="btn btn-info" />
                     </form>
