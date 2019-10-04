@@ -115,12 +115,12 @@ app.post('/sponsors/upload', uploadSponsor.single('sponsorImg'), (req, res) => {
     });
     // shell.mv('uploads/sponsors/' + req.file.filename', 'file2', 'dir/');
     var filename = req.file.originalname;
-    req.flash('success', { msg: `File Uploaded! Name of File: ${filename}` });
+    req.flash('success', { msg: `Sponsor Image Uploaded! Name of File: ${filename}` });
     return res.redirect('/crud');
   } else {
     console.log('No File Uploaded');
     var filename = 'FILE NOT UPLOADED';
-    req.flash('success', { msg: `File upload failed!` });
+    req.flash('success', { msg: `Sponsor image upload failed!` });
     return res.redirect('/crud');
   }
   /* ===== Add the function to save filename to database ===== */
@@ -133,12 +133,12 @@ app.post('/teamleads/upload', uploadTeamlead.single('teamleadImg'), (req, res) =
     });
     // shell.mv('uploads/sponsors/' + req.file.filename', 'file2', 'dir/');
     var filename = req.file.originalname;
-    req.flash('success', { msg: `File Uploaded! Name of File: ${filename}` });
+    req.flash('success', { msg: `Teamlead Image Uploaded! Name of File: ${filename}` });
     return res.redirect('/crud');
   } else {
     console.log('No File Uploaded');
     var filename = 'FILE NOT UPLOADED';
-    req.flash('success', { msg: `File upload failed!` });
+    req.flash('success', { msg: `Teamlead image upload failed!` });
     return res.redirect('/crud');
   }
   /* ===== Add the function to save filename to database ===== */
