@@ -115,12 +115,13 @@ app.post('/sponsors/upload', uploadSponsor.single('sponsorImg'), (req, res) => {
     });
     // shell.mv('uploads/sponsors/' + req.file.filename', 'file2', 'dir/');
     var filename = req.file.originalname;
-    var uploadStatus = 'File Uploaded Successfully';
+    req.flash('success', { msg: `File Uploaded! Name of File: ${filename}` });
+    return res.redirect('/crud');
   } else {
     console.log('No File Uploaded');
     var filename = 'FILE NOT UPLOADED';
-    var uploadStatus = 'File Upload Failed';
+    req.flash('success', { msg: `File upload failed!` });
+    return res.redirect('/crud');
   }
   /* ===== Add the function to save filename to database ===== */
-  res.render('crud', { status: uploadStatus, filename: `Name Of File: ${filename}` });
 });
