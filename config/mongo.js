@@ -1,4 +1,4 @@
 module.exports = {
-  bomURL : 'mongodb://localhost:27017/devBLBOM',
-  prodURL: 'mongodb://localhost:27017/DEV'
+  bomURL: 'mongodb://localhost:27017/' + process.env.bomDB,
+  prodURL: 'mongodb://localhost:27017/' + process.env.crudDB
 }
