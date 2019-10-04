@@ -2,7 +2,7 @@ const Sponsors = require('../models/sponsor');
 const Teamleads = require('../models/teamlead');
 
 exports.getCrud = (req, res) => {
-    if (!req.user || !req.user.isTeamLead) {
+    if (!req.user || !req.user.isAdmin) {
       req.flash('errors', {msg: 'You are not authorized to view that!'});
       return res.redirect('back');  
     }
