@@ -17,7 +17,7 @@ const eventsController = require('./controllers/events');
 const adminController = require('./controllers/admin');
 const budgetController = require('./controllers/budgets');
 const bomController = require('./controllers/bom');
-const crudController = require('./contårollers/crud');
+const crudController = require('./controllers/crud');
 const sponsorsController = require('./controllers/sponsors');
 const teamleadscontroller = require('./controllers/teamleads');
 
