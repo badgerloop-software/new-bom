@@ -4,59 +4,6 @@ const webhookURL = process.env.WEBHOOK_URL;
 const URL = process.env.LOCAL_URL;
 const request = require('request');
 
-
-function isURL(str) {
-  var urlRegex = '^(?!mailto:)(?:(?:http|https|ftp)://)(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))|localhost)(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?$';
-  var url = new RegExp(urlRegex, 'i');
-  return str.length < 2083 && url.test(str);
-}
-
-function createSlackMessage(order) {
-  let msg;
-  if (order.reimbursement) {
-    msg =
-      `====${order.subteam}====
-    *Requestor*: ${order.requestor}
-    *Items*: ${order.item}
-    *Cost*: $${order.cost}
-    *This is a reimbursement*
-    *Link*: http://${URL}/orders/edit/${order.id}
-  ==== ==== ====`
-  } else {
-    msg =
-      `====${order.subteam}====
-  *Requestor*: ${order.requestor}
-  *Items*: ${order.item}
-  *Cost*: $${order.cost}
-  *Link*: http://${URL}/orders/edit/${order.id}
-==== ==== ====`
-  }
-  let options = {
-    uri: webhookURL,
-    method: 'POST',
-    json: {
-      "text": msg,
-      "attachments": [
-        {
-          "fallback": `View this order at http://${URL}/orders/edit/${order.id}`,
-          "actions": [
-            {
-              "type": "button",
-              "text": "Approve Order 💵",
-              "url": `http://${URL}/orders/approve/${order.id}`,
-              "style": 'primary',
-            },
-            {
-              "type": "button",
-              "text": "Deny Order 🚫",
-              "url": `http://${URL}/orders/cancel?q=${order.id}`,
-              "style": 'danger'
-            }
-          ]
-        }
-      ]
-    }
-  };
   request(options, (err, res, body) => {
     if (!err && res.statusCode == 200) {
       console.log(body.id);
@@ -137,7 +84,7 @@ exports.postMakeOrder = (req, res, next) => {
       cost: totalCost,
       id: order._id
     }
-    createSlackMessage(orderObj);
+    createSlackMessage(orderObj, req.user);
     req.flash('success', {
       msg: 'Order Submitted'
     })
@@ -382,3 +329,56 @@ function deleteOrderFromBudget(budget, order, callback) {
   let update = { currentSpent: newCurrentSpent };
   Budget.findByIdAndUpdate(budgetID, update, { new: true }, callback);
 }
+
+function isURL(str) {
+  var urlRegex = '^(?!mailto:)(?:(?:http|https|ftp)://)(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))|localhost)(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?$';
+  var url = new RegExp(urlRegex, 'i');
+  return str.length < 2083 && url.test(str);
+}
+
+function createSlackMessage(order, user) {
+  let msg;
+  if (order.reimbursement) {
+    msg =
+      `====${order.subteam}====
+    *Requestor*: <@${user.slackID}>
+    *Items*: ${order.item}
+    *Cost*: $${order.cost}
+    *This is a reimbursement*
+    *Link*: http://${URL}/orders/edit/${order.id}
+  ==== ==== ====`
+  } else {
+    msg =
+      `====${order.subteam}====
+  *Requestor*: ${order.requestor}
+  *Items*: ${order.item}
+  *Cost*: $${order.cost}
+  *Link*: http://${URL}/orders/edit/${order.id}
+==== ==== ====`
+  }
+  let options = {
+    uri: webhookURL,
+    method: 'POST',
+    json: {
+      "text": msg,
+      "attachments": [
+        {
+          "fallback": `View this order at http://${URL}/orders/edit/${order.id}`,
+          "actions": [
+            {
+              "type": "button",
+              "text": "Approve Order 💵",
+              "url": `http://${URL}/orders/approve/${order.id}`,
+              "style": 'primary',
+            },
+            {
+              "type": "button",
+              "text": "Deny Order 🚫",
+              "url": `http://${URL}/orders/cancel?q=${order.id}`,
+              "style": 'danger'
+            }
+          ]
+        }
+      ]
+    }
+  };
