@@ -10,3 +10,9 @@
   min-height: 700px;
   min-width: 365px;
 }
+#orderForm {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 20px;
+  grid-column-gap: 50px;
+}
