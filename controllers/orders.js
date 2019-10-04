@@ -4,18 +4,6 @@ const webhookURL = process.env.WEBHOOK_URL;
 const URL = process.env.LOCAL_URL;
 const request = require('request');
 
-  request(options, (err, res, body) => {
-    if (!err && res.statusCode == 200) {
-      console.log(body.id);
-    }
-  })
-}
-
-function redirectToMain(req, res) {
-  req.flash('errors', { msg: 'You are not authorized to view that!' });
-  res.redirect('/');
-}
-
 exports.getMakeOrder = (req, res) => {
   Budget.find({}, (err, budgets) => {
     if (err) throw err;
@@ -204,17 +192,17 @@ exports.postEditOrder = (req, res) => {
           order.save((err) => {
             if (err) throw err;
             req.flash('success', { msg: 'Order Sucessfully Updated' });
-           return res.redirect('back');
+            return res.redirect('back');
           });
         });
       });
     } else {
-    order.save((err) => {
-      if (err) throw err;
-      req.flash('success', { msg: 'Order Sucessfully Updated' });
-     return res.redirect('back');
-    });
-  }
+      order.save((err) => {
+        if (err) throw err;
+        req.flash('success', { msg: 'Order Sucessfully Updated' });
+        return res.redirect('back');
+      });
+    }
   });
 }
 
@@ -382,3 +370,14 @@ function createSlackMessage(order, user) {
       ]
     }
   };
+  request(options, (err, res, body) => {
+    if (!err && res.statusCode == 200) {
+      console.log(body.id);
+    }
+  })
+}
+
+function redirectToMain(req, res) {
+  req.flash('errors', { msg: 'You are not authorized to view that!' });
+  res.redirect('/');
+}
