@@ -21,12 +21,12 @@
   width: 100%;
 }
 
-#home-left {
+#home-right {
   float: left;
   width: 25%;
   padding: 10px;
 }
-#home-right {
+#home-left {
   float: left;
   width: 72%;
   padding: 10px;
