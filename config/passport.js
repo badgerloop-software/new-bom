@@ -6,7 +6,6 @@ const User = require('../models/user');
 const clientID = process.env.CLIENT_ID;
 const clientSecret = process.env.CLIENT_SECRET;
 const redirectURI = process.env.REDIRECT_URI;
-// const SECRET_CHANNEL = process.env.SECRET_CHANNEL;
 const SERVICES_TOKEN = process.env.SERVICES_TOKEN;
 const SECRET_CHANNEL = process.env.SECRET_CHANNEL
 
@@ -61,6 +60,8 @@ passport.use(new SlackStragety({
 
   function updateCurrentUser(isTeamLead, user, profile, cb) {
     user.isTeamLead = isTeamLead;
+    console.log(profile);
+    console.log(profile.image_192);
     user.picture = profile.image_192;
     user.save((err) => {
       if (err) throw err;
