@@ -21,17 +21,13 @@
   width: 100%;
 }
 
-#home-grid {
-    display: grid;
-    grid-gap: 10px;
-		grid-template-columns:  74% 24%;
-	}
 #home-left {
-  display: grid;
-  grid-gap: 10px;
-  grid-template-columns: 24% 24% 24% 24%;
+  float: left;
+  width: 25%;
+  padding: 10px;
 }
 #home-right {
-  grid-column: 3 ;
-  grid-row: 1 / 10;
+  float: left;
+  width: 72%;
+  padding: 10px;
 }
