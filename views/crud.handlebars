@@ -197,7 +197,7 @@
                             <i class="material-icons">&#xE147;</i> 
                             <span>Add New Teamlead</span>
                         </a>
-                        <a href="#uploadImageModal" class="btn btn-success" data-code="teamleads" data-toggle="modal">
+                        <a href="#uploadTeamleadImageModal" class="btn btn-success" data-toggle="modal">
                             <i class="material-icons">cloud_upload</i>
                             <span>Upload Image</span>
                         </a>
@@ -345,6 +345,27 @@
             </div>
         </div>
     </div>
+    <!-- Upload Modal HTML -->
+    <div id="uploadTeamleadImageModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Upload a Teamlead Image</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>{{status}}</p>
+                    <p>{{filename}}</p>
+                </div>
+                <div class="modal-footer">
+                    <form id="uploadImageForm" action="/teamleads/upload" enctype="multipart/form-data" method="POST">
+                        <input type="file" name="teamleadImg" id="teamleadImg" required>
+                        <input type="submit" value="Upload" class="btn btn-info" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="container">
         <div class="table-wrapper">
@@ -358,7 +379,7 @@
                             <i class="material-icons">&#xE147;</i> 
                             <span>Add New sponsor</span>
                         </a>
-                        <a href="#uploadImageModal" class="btn btn-success" data-toggle="modal">
+                        <a href="#uploadSponsorImageModal" class="btn btn-success" data-toggle="modal">
                             <i class="material-icons">cloud_upload</i>
                             <span>Upload Image</span>
                         </a>
@@ -487,11 +508,11 @@
         </div>
     </div>
     <!-- Upload Modal HTML -->
-    <div id="uploadImageModal" class="modal fade">
+    <div id="uploadSponsorImageModal" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Upload an Image</h4>
+                    <h4 class="modal-title">Upload a Sponsor Image</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body">
@@ -500,7 +521,7 @@
                 </div>
                 <div class="modal-footer">
                     <form id="uploadImageForm" action="/sponsors/upload" enctype="multipart/form-data" method="POST">
-                        <input type="file" name="uploadImg" id="uploadImg" required>
+                        <input type="file" name="sponsorImg" id="sponsorImg" required>
                         <input type="submit" value="Upload" class="btn btn-info" />
                     </form>
                 </div>

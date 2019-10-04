@@ -125,7 +125,7 @@ app.post('/sponsors/upload', uploadSponsor.single('sponsorImg'), (req, res) => {
   }
   /* ===== Add the function to save filename to database ===== */
 });
-app.post('/teamleads/upload', uploadSponsor.single('sponsorImg'), (req, res) => {
+app.post('/teamleads/upload', uploadTeamlead.single('teamleadImg'), (req, res) => {
   if (req.file) {
     console.log('Uploading file...');
     fs.rename('uploads/teamleads/' + req.file.filename, '/var/www/dev.badgerloop.com/public/images/teamleads/' + req.file.originalname, function (err) {
