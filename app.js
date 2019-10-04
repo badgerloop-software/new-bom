@@ -1,5 +1,5 @@
 require('dotenv').config();
-let creds = require("creds.json");
+let creds = require("./creds.json");
 
 const PORT = process.env.PORT || 7001;
 console.log(process.env.CLIENT_ID);
@@ -17,7 +17,7 @@ const eventsController = require('./controllers/events');
 const adminController = require('./controllers/admin');
 const budgetController = require('./controllers/budgets');
 const bomController = require('./controllers/bom');
-const crudController = require('./controllers/crud');
+const crudController = require('./contårollers/crud');
 const sponsorsController = require('./controllers/sponsors');
 const teamleadscontroller = require('./controllers/teamleads');
 
