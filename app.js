@@ -27,7 +27,6 @@ const multer = require('multer');
 const uploadTeamlead = multer({ dest: './uploads/teamleads' });
 const uploadSponsor = multer({ dest: './uploads/sponsors' });
 const fs = require('fs');
-//const shell = require('shelljs');
 
 const app = module.exports.app = express();
 const server = http.createServer(app);
@@ -114,7 +113,6 @@ app.post('/sponsors/upload', uploadSponsor.single('sponsorImg'), (req, res) => {
     fs.rename('uploads/sponsors/' + req.file.filename, creds.IMAGES_FOLDER + '/sponsors/' + req.file.originalname, function (err) {
       if (err) console.log('ERROR: ' + err);
     });
-    // shell.mv('uploads/sponsors/' + req.file.filename', 'file2', 'dir/');
     var filename = req.file.originalname;
     req.flash('success', { msg: `Sponsor Image Uploaded! Name of File: ${filename}` });
     return res.redirect('/crud');
