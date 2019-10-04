@@ -1,21 +1,42 @@
 <h1>Make Purchase</h1>
 <form id="orderForm" action="/orders/purchase" method="POST">
   <div class="form-row">
+    <div class="form-group col-sm-2">
       <label>Requestor</label>
       <input class="form-control" name="requestor" type="text" value="{{user.name}}" readonly>
+    </div>
+    <div class="form-group col-sm-2">
+      <div class="input-group mb-3">
         <select class="form-control custom-select" name="subteam" id="subteamDropdown">
           {{!-- {{> teamsDropdown}} --}}
         </select>
+      </div>
+    </div>
+    <div class="form-group col-auto">
       <label>Project</label>
       <input class="form-control" type="text" name="project">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class='form-group col-auto'>
       <label>Item</label>
       <input class="form-control" name="item" type="text" required>
+    </div>
+    <div class="form-group col-auto">
       <label>Supplier</label>
       <input class="form-control" name="supplier" type="text" required>
+    </div>
+    <div class="form-group col-auto">
       <label>Product Number</label>
       <input class="form-control" name="productNum">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-auto">
       <label>Estimated Quantity</label>
       <input class="form-control" name="quantity" type="number" required>
+    </div>
+    <div class="form-group col-auto">
       <label>Estimated <b>Individual</b> Cost</label>
       <div class="input-group">
         <div class="input-group-prepend">
@@ -23,20 +44,40 @@
         </div>
         <input class="form-control" name="cost" type="number" step=".01" min="0" required>
       </div>
+    </div>
+    <div class="form-group col-auto">
       <div class="form-check">
       <input type="checkbox" name="podCost">
       <label for="podCost">Counts toward pod cost?</label>
       </div>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-auto">
       <label for="link">Link to Purchase</label>
       <input class="form-control" type="text" name="link" id="link">
+    </div>
+    <div class="form-group col=auto"> 
       <label for="date">Needed By:</label>
       <input class="form-control" type="date" name="date" id="date">
+    </div>
+  </div>
+    <div class="form-row">
     <label for="comments">Comments:</label>
     <input class="form-control" type="text" name="comments" rows="3" style="border: 2px red" id="comments">
+  </div>
+    <div class="form-row">
+    <div class="form-check ">
       <input type="checkbox" name="notARequest" id="notArequestCheck">
       <label for="notARequestCheck" class="form-check-label">I will/did purchase this myself (Make sure you get written or verbal approval)</label>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-check">
       <input type="checkbox" name="confirm" required>
       <label class="form-check-label">I have double checked that I need this item and all information is correct (required)</label>
+    </div>
+  </div>
   <br>
   <button class="btn btn-lg btn-success" type="submit">Submit Order</button>
 </form>
