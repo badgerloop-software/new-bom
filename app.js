@@ -26,7 +26,7 @@ const multer = require('multer');
 const uploadTeamlead = multer({ dest: './uploads/teamleads' });
 const uploadSponsor = multer({ dest: './uploads/sponsors' });
 const fs = require('fs');
-const shell = require('shelljs');
+//const shell = require('shelljs');
 
 const app = module.exports.app = express();
 const server = http.createServer(app);
