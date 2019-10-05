@@ -6,11 +6,10 @@
       <input class="form-control" name="requestor" type="text" value="{{user.name}}" readonly>
     </p>
     <p>
-      <div class="input-group mb-3">
-        <select class="form-control custom-select" name="subteam" id="subteamDropdown">
+      <label>Category</label>
+      <select class="form-control custom-select" name="subteam" id="subteamDropdown">
           {{!-- {{> teamsDropdown}} --}}
-        </select>
-      </div>
+      </select>
     </p>
     <p>
       <label>Project</label>
@@ -34,12 +33,7 @@
     </p>
     <p>
       <label>Estimated <b>Individual</b> Cost</label>
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <div class="input-group-text">$</div>
-        </div>
-        <input class="form-control" name="cost" type="number" step=".01" min="0" required>
-      </div>
+      <input class="form-control" name="cost" type="number" step=".01" min="0" value="$" required>
     </p>
     <p>
       <div class="form-check">
