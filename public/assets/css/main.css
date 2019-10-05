@@ -32,3 +32,53 @@
   width: 83%;
   padding: 10px;
 }
+
+
+#orderForm input,
+textarea,
+button {
+  width: 100%;
+  outline: 0;
+  border-width: 0 0 2px;
+  border-color: black;
+}
+#ordrForm input:focus {
+  border-color: red;
+}
+
+.wrapper {
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
+}
+.wrapper > * {
+  padding: 1em;
+}
+@media (min-width: 700px) {
+  .wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  .wrapper > * {
+    padding: 2em 2em;
+  }
+}
+
+
+#orderForm {
+  display: grid;
+  grid-template-columns: 25vw 25vw 25vw;
+  grid-gap: 20px;
+  grid-column-gap: 40px;
+  grid-auto-rows: .5fr;
+}
+#orderForm label {
+  display: block;
+}
+#orderForm p {
+  margin: 0;
+}
+
+#orderForm button,
+input,
+textarea {
+  padding: 1em;
+}
