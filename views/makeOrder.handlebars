@@ -1,24 +1,38 @@
 <h1>Make Purchase</h1>
 <div id="wrapper">
-<form id="orderForm" action="/orders/purchase" method="POST">
+  <form id="orderForm" action="/orders/purchase" method="POST">
+    <p>
       <label>Requestor</label>
       <input class="form-control" name="requestor" type="text" value="{{user.name}}" readonly>
+    </p>
+    <p>
       <div class="input-group mb-3">
         <select class="form-control custom-select" name="subteam" id="subteamDropdown">
           {{!-- {{> teamsDropdown}} --}}
         </select>
       </div>
+    </p>
+    <p>
       <label>Project</label>
       <input class="form-control" type="text" name="project">
-
+    </p>
+    <p>
       <label>Item</label>
       <input class="form-control" name="item" type="text" required>
+    </p>
+    <p>
       <label>Supplier</label>
       <input class="form-control" name="supplier" type="text" required>
+    </p>
+    <p>
       <label>Product Number</label>
       <input class="form-control" name="productNum">
+    </p>
+    <p>
       <label>Estimated Quantity</label>
       <input class="form-control" name="quantity" type="number" required>
+    </p>
+    <p>
       <label>Estimated <b>Individual</b> Cost</label>
       <div class="input-group">
         <div class="input-group-prepend">
@@ -26,25 +40,36 @@
         </div>
         <input class="form-control" name="cost" type="number" step=".01" min="0" required>
       </div>
+    </p>
+    <p>
       <div class="form-check">
-      <input type="checkbox" name="podCost">
-      <label for="podCost">Counts toward pod cost?</label>
+        <label for="podCost">Counts toward pod cost?</label>
+        <input type="checkbox" name="podCost">
       </div>
+    </p>
+    <p>
       <label for="link">Link to Purchase</label>
       <input class="form-control" type="text" name="link" id="link">
+    </p>
+    <p>
       <label for="date">Needed By:</label>
       <input class="form-control" type="date" name="date" id="date">
-
-    <label for="comments">Comments:</label>
-    <input class="form-control" type="text" name="comments" rows="3" style="border: 2px red" id="comments">
-      <input type="checkbox" name="notARequest" id="notArequestCheck">
+    </p>
+    <p>
+      <label for="comments">Comments:</label>
+      <input class="form-control" type="text" name="comments" rows="3" style="border: 2px red" id="comments">
+    </p>
+    <p>
       <label for="notARequestCheck" class="form-check-label">I will/did purchase this myself (Make sure you get written or verbal approval)</label>
-
+      <input type="checkbox" name="notARequest" id="notArequestCheck">
+    </p>
+    <p>
       <input type="checkbox" name="confirm" required>
       <label class="form-check-label">I have double checked that I need this item and all information is correct (required)</label>
-  <br>
-  <button class="btn btn-lg btn-success" type="submit">Submit Order</button>
-</form>
+    </p>
+    <br>
+    <button class="btn btn-lg btn-success" type="submit">Submit Order</button>
+  </form>
 </div>
 <script>
   const DROPDOWN = document.getElementById('subteamDropdown');
