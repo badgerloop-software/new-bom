@@ -353,12 +353,14 @@
                     <h4 class="modal-title">Upload a Teamlead Image</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
-                <div class="modal-body">
-                    <form id="uploadImageForm" action="/teamleads/upload" enctype="multipart/form-data" method="POST">
+                <form id="uploadImageForm" action="/teamleads/upload" enctype="multipart/form-data" method="POST">
+                    <div class="modal-body">
                         <input type="file" name="teamleadImg" id="teamleadImg" required>
+                    </div>
+                    <div class="modal-footer">
                         <input type="submit" value="Upload" class="btn btn-info" />
-                    </form>
-                </div>
+                    </div>                    
+                </form>
             </div>
         </div>
     </div>
@@ -511,12 +513,14 @@
                     <h4 class="modal-title">Upload a Sponsor Image</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
-                <div class="modal-body">
                     <form id="uploadImageForm" action="/sponsors/upload" enctype="multipart/form-data" method="POST">
-                        <input type="file" name="sponsorImg" id="sponsorImg" required>
-                        <input type="submit" value="Upload" class="btn btn-info" />
+                        <div class="modal-body">
+                            <input type="file" name="sponsorImg" id="sponsorImg" required>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="submit" value="Upload" class="btn btn-info" />
+                        </div>
                     </form>
-                </div>
             </div>
         </div>
     </div>
