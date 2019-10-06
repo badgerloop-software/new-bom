@@ -1,0 +1,5 @@
+{
+	"bomDB" : "devBLBOM",
+	"crudDB" : "DEV",
+	"IMAGES_FOLDER" : "/var/www/dev.badgerloop.com/public/images"
+}
