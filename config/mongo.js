@@ -1,3 +1,4 @@
+require('dotenv').load();
 const BOM = process.env.bomDB;
 const CRUD = process.env.crudDB;
 
