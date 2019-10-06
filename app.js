@@ -10,6 +10,7 @@ const flash = require('express-flash');
 const session = require('express-session');
 const passport = require('passport');
 const http = require('http');
+const multer = require('multer');
 
 const ordersController = require('./controllers/orders');
 const authController = require('./controllers/auth');
