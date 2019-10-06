@@ -59,8 +59,8 @@
     <input class="form-control" value="{{order.tax}}" aria-describedby="costHelp" name="tax" type="number" id="orderTax" step=".01" min="0">
   </p>
   <p>
-    <input type="checkbox" name="podCost" {{#if order.countsTowardPodCost}} checked {{/if}}>
     <label for="podCost">Counts toward pod cost?</label>
+    <input type="checkbox" name="podCost" {{#if order.countsTowardPodCost}} checked {{/if}}>
   </p>
   <p>
     <label for="date">Needed By:</label>
@@ -78,21 +78,23 @@
     <label for="invoice">Link to Invoice</label>
     <input class="form-control" type="text" name="invoice" value="{{order.invoice}}">
   </p>
-  <p>
-    {{#if order.link}}
-      <a target="_blank" href="{{order.link}}">Click here to Visit Link</a>
-    {{/if}}
-  </p>
+  {{#if order.link}}
+    <p>
+        <a target="_blank" href="{{order.link}}">Click here to Visit Link</a>
+    </p>
+  {{/if}}
   <p>
     <label>Comments:</label>
-    <input name="comments" class="form-control" rows="5" value="{{order.comments}}"></input>
+    <textarea name="comments" id="comments" cols="30" rows="7" value="{{order.comments}}"></textarea>
   </p>
   <p>
     <input style="display: none" name="id" value="{{order._id}}">
   </p>
   <p>
     <button class="btn btn-success" type="submit">Save Changes</button>
-    <a class="btn btn-danger" href="/orders/cancel?q={{order._id}}">Cancel Order</a>
+  </p>
+  <p>
+    <button class="btn btn-danger" href="/orders/cancel?q={{order._id}}">Cancel Order</button>
   </p>
 </form>
 <div id="status">
