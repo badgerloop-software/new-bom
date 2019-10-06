@@ -28,7 +28,7 @@ passport.use(new SlackStragety({
   scope: ['identity.basic', 'identity.avatar']
 }, (accessToken, refreshToken, profile, done) => {
   console.log("Made it to the callback");
-  User.findOne({ name: profile.displayName }).then((currentUser) => {
+  User.findOne({ "slackID": profile.id }).then((currentUser) => {
     let isTeamLead = false; // Innocent until proven guilty
     let options = {
       method: 'GET',
@@ -59,6 +59,7 @@ passport.use(new SlackStragety({
   }
 
   function updateCurrentUser(isTeamLead, user, profile, cb) {
+    user.name = profile.displayName
     user.isTeamLead = isTeamLead;
     user.picture = profile.user.image_192;
     user.save((err) => {
@@ -72,7 +73,7 @@ passport.use(new SlackStragety({
     console.log("You're new here");
     let newUser = new User({
       name: profile.displayName,
-      picture: profile.image_192,
+      picture: profile.user.image_192,
       slackID: profile.id,
       isTeamLead: isTeamLead
     });
