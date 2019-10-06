@@ -62,7 +62,6 @@ button {
   }
 }
 
-
 #orderForm {
   display: grid;
   grid-template-columns: 25vw 25vw 25vw;
@@ -76,9 +75,11 @@ button {
 #orderForm p {
   margin: 0;
 }
-
 #orderForm button,
 input,
 textarea {
   padding: 1em;
+}
+.full-width {
+  grid-column: 1 / 3;
 }
