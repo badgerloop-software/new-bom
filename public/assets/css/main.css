@@ -33,7 +33,7 @@
   padding: 10px;
 }
 
-#editForm, #makeForm input,
+#makeForm input,
 textarea,
 button {
   width: 100%;
@@ -41,23 +41,53 @@ button {
   border-width: 0 0 2px;
   border-color: black;
 }
-#editForm, #makeForm input:focus {
+#makeForm input:focus {
   border-color: red;
 }
-#editForm, #makeForm {
+#makeForm {
   display: grid;
   grid-template-columns: 25vw 25vw 25vw;
   grid-gap: 20px;
   grid-column-gap: 40px;
   grid-auto-rows: .5fr;
 }
-#editForm, #makeForm label {
+#makeForm label {
   display: block;
 }
-#editForm, #makeForm p {
+#makeForm p {
   margin: 0;
 }
-#editForm, #makeForm button,
+#makeForm button,
+input,
+textarea {
+  padding: 1em;
+}
+
+#editForm input,
+textarea,
+button {
+  width: 100%;
+  outline: 0;
+  border-width: 0 0 2px;
+  border-color: black;
+}
+#editForm input:focus {
+  border-color: red;
+}
+#editForm {
+  display: grid;
+  grid-template-columns: 25vw 25vw 25vw;
+  grid-gap: 20px;
+  grid-column-gap: 40px;
+  grid-auto-rows: .5fr;
+}
+#editForm label {
+  display: block;
+}
+#editForm p {
+  margin: 0;
+}
+#editForm button,
 input,
 textarea {
   padding: 1em;
