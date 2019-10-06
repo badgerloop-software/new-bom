@@ -1,72 +1,70 @@
 <h1>Make Purchase</h1>
 <br><br>
-<div id="wrapper">
-  <form id="orderForm" action="/orders/purchase" method="POST">
-    <p>
-      <label>Requestor</label>
-      <input class="form-control" name="requestor" type="text" value="{{user.name}}" readonly>
-    </p>
-    <p>
-      <label>Subteam</label>
-      <select class="form-control custom-select" name="subteam" id="subteamDropdown">
-          {{!-- {{> teamsDropdown}} --}}
-      </select>
-    </p>
-    <p>
-      <label>Project</label>
-      <input class="form-control" type="text" name="project">
-    </p>
-    <p>
-      <label>Item</label>
-      <input class="form-control" name="item" type="text" required>
-    </p>
-    <p>
-      <label>Supplier</label>
-      <input class="form-control" name="supplier" type="text" required>
-    </p>
-    <p>
-      <label>Product Number</label>
-      <input class="form-control" name="productNum">
-    </p>
-    <p>
-      <label>Estimated Quantity</label>
-      <input class="form-control" name="quantity" type="number" required>
-    </p>
-    <p>
-      <label>Estimated <b>Individual</b> Cost</label>
-      <input class="form-control" name="cost" type="number" step=".01" min="0" value="$" required>
-    </p>
-    <p>
-      <label for="podCost">Counts toward pod cost?</label>
-      <input type="checkbox" name="podCost">
-    </p>
-    <p>
-      <label for="link">Link to Purchase</label>
-      <input class="form-control" type="text" name="link" id="link">
-    </p>
-    <p>
-      <label for="date">Needed By:</label>
-      <input class="form-control" type="date" name="date" id="date">
-    </p>
-    <p>
-      <label for="fileInput">Click Here to Upload Digikey Excel File : <b>Note this will only work for DIGIKEY
-          orders</b></label>
-      <input type="file" id="fileInput" onchange="Upload()" class="form-control" />
-    </p>
-    <p class="full-width">
-      <label for="comments">Comments:</label>
-      <textarea name="comments" id="comments" cols="30" rows="7"></textarea>
-    </p>
-    <p>
-      <input type="checkbox" name="notARequest" id="notArequestCheck" required> I will/did purchase this myself (Make sure you get written or verbal approval)<br>
-      <input type="checkbox" name="confirm" required> I have double checked that I need this item and all information is correct (required)<br>
-    </p>
-    <br><br>
-    <p>
-      <button class="btn btn-lg btn-success" type="submit">Submit Order</button>
-    </p>
-  </form>
-</div>
+<form id="makeForm" action="/orders/purchase" method="POST">
+  <p>
+    <label>Requestor</label>
+    <input class="form-control" name="requestor" type="text" value="{{user.name}}" readonly>
+  </p>
+  <p>
+    <label>Subteam</label>
+    <select class="form-control custom-select" name="subteam" id="subteamDropdown">
+        {{!-- {{> teamsDropdown}} --}}
+    </select>
+  </p>
+  <p>
+    <label>Project</label>
+    <input class="form-control" type="text" name="project">
+  </p>
+  <p>
+    <label>Item</label>
+    <input class="form-control" name="item" type="text" required>
+  </p>
+  <p>
+    <label>Supplier</label>
+    <input class="form-control" name="supplier" type="text" required>
+  </p>
+  <p>
+    <label>Product Number</label>
+    <input class="form-control" name="productNum">
+  </p>
+  <p>
+    <label>Estimated Quantity</label>
+    <input class="form-control" name="quantity" type="number" required>
+  </p>
+  <p>
+    <label>Estimated <b>Individual</b> Cost</label>
+    <input class="form-control" name="cost" type="number" step=".01" min="0" value="$" required>
+  </p>
+  <p>
+    <label for="podCost">Counts toward pod cost?</label>
+    <input type="checkbox" name="podCost">
+  </p>
+  <p>
+    <label for="link">Link to Purchase</label>
+    <input class="form-control" type="text" name="link" id="link">
+  </p>
+  <p>
+    <label for="date">Needed By:</label>
+    <input class="form-control" type="date" name="date" id="date">
+  </p>
+  <p>
+    <label for="fileInput">Click Here to Upload Digikey Excel File : <b>Note this will only work for DIGIKEY
+        orders</b></label>
+    <input type="file" id="fileInput" onchange="Upload()" class="form-control" />
+  </p>
+  <p class="full-width">
+    <label for="comments">Comments:</label>
+    <textarea name="comments" id="comments" cols="30" rows="7"></textarea>
+  </p>
+  <p>
+    <input type="checkbox" name="notARequest" id="notArequestCheck" required> I will/did purchase this myself (Make sure you get written or verbal approval)<br>
+    <input type="checkbox" name="confirm" required> I have double checked that I need this item and all information is correct (required)<br>
+  </p>
+  <br><br>
+  <p>
+    <button class="btn btn-lg btn-success" type="submit">Submit Order</button>
+  </p>
+</form>
 
 <script>
   const DROPDOWN = document.getElementById('subteamDropdown');

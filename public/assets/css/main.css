@@ -46,36 +46,20 @@ button {
   border-color: red;
 }
 
-.wrapper {
-  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
-}
-.wrapper > * {
-  padding: 1em;
-}
-@media (min-width: 700px) {
-  .wrapper {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-  }
-  .wrapper > * {
-    padding: 2em 2em;
-  }
-}
-
-#orderForm {
+#orderForm, #makeForm {
   display: grid;
   grid-template-columns: 25vw 25vw 25vw;
   grid-gap: 20px;
   grid-column-gap: 40px;
   grid-auto-rows: .5fr;
 }
-#orderForm label {
+#orderForm, #makeForm label {
   display: block;
 }
-#orderForm p {
+#orderForm, #makeForm p {
   margin: 0;
 }
-#orderForm button,
+#orderForm, #makeForm button,
 input,
 textarea {
   padding: 1em;
