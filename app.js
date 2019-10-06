@@ -24,7 +24,6 @@ const teamleadscontroller = require('./controllers/teamleads');
 
 const passportConfig = require('./config/passport');
 
-const multer = require('multer');
 const uploadTeamlead = multer({ dest: './uploads/teamleads' });
 const uploadSponsor = multer({ dest: './uploads/sponsors' });
 const fs = require('fs');
