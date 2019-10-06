@@ -33,8 +33,7 @@
   padding: 10px;
 }
 
-
-#orderForm input,
+#editForm, #makeForm input,
 textarea,
 button {
   width: 100%;
@@ -42,24 +41,23 @@ button {
   border-width: 0 0 2px;
   border-color: black;
 }
-#ordrForm input:focus {
+#editForm, #makeForm input:focus {
   border-color: red;
 }
-
-#orderForm, #makeForm {
+#editForm, #makeForm {
   display: grid;
   grid-template-columns: 25vw 25vw 25vw;
   grid-gap: 20px;
   grid-column-gap: 40px;
   grid-auto-rows: .5fr;
 }
-#orderForm, #makeForm label {
+#editForm, #makeForm label {
   display: block;
 }
-#orderForm, #makeForm p {
+#editForm, #makeForm p {
   margin: 0;
 }
-#orderForm, #makeForm button,
+#editForm, #makeForm button,
 input,
 textarea {
   padding: 1em;
