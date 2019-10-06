@@ -13,7 +13,7 @@ exports.getMakeOrder = (req, res) => {
     } else {
       let budget = budgets[0];
       let teamList = budget.teamList;
-      return res.render('makeOrder', {
+      return res.render('bom/makeOrder', {
         user: req.user,
         activePurchase: true,
         teamList: teamList
@@ -104,7 +104,7 @@ exports.getViewOrders = (req, res) => {
     ).sort({ score: { $meta: 'textScore' } }).exec((err, results) => {
       if (err) throw err;
       console.log(results);
-      res.render('viewOrders', {
+      res.render('bom/viewOrders', {
         user: req.user,
         orders: results,
         activeView: true
@@ -114,7 +114,7 @@ exports.getViewOrders = (req, res) => {
     console.log(req.user);
     Order.find({ isOrdered: false }, (err, orders) => {
       if (err) throw err;
-      res.render('viewOrders', {
+      res.render('bom/viewOrders', {
         user: req.user,
         orders: orders,
         activeView: true
@@ -153,7 +153,7 @@ exports.getEditOrders = (req, res) => {
         if (!req.user.isFSC && !req.user.isAdmin) {
           return redirectToMain(req, res);
         } else {
-          res.render('editOrder', {
+          res.render('bom/editOrder', {
             user: req.user,
             order: selectedOrder,
             activeView: true,

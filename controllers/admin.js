@@ -48,7 +48,7 @@ exports.getDash = (req, res) => {
         if (err) handleError(err);
         Orders.find({ isApproved: false }).exec((err, list) => {
           if (err) handleError(err);
-          res.render('adminDash', {
+          res.render('bom/adminDash', {
             user: req.user,
             users: users,
             orders: orders,
@@ -96,7 +96,7 @@ exports.setUser = (req, res) => {
 }
 
 exports.createBudget = (req, res) => {
-  res.render('createBudget', {
+  res.render('bom/createBudget', {
     user: req.user
   })
 }
