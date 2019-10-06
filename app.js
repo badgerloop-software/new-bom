@@ -92,6 +92,12 @@ app.post('/budget/createBudget', budgetController.createBudgets);
 app.get('/budget/delete', passportConfig.isAuthenticated, budgetController.getDelete);
 app.get('/slack/reaction?challenge=:event', eventsController.getEvent);
 
+app.get('/calendar', passportConfig.isAuthenticated, (req, res) => {
+  res.render('calendar', {
+    user: req.user
+  });
+});
+
 app.get('/bom', passportConfig.isAuthenticated, bomController.getTableView);
 app.post('/bom', passportConfig.isAuthenticated, bomController.postTableView);
 
