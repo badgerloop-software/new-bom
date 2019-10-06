@@ -83,7 +83,7 @@
         <a target="_blank" href="{{order.link}}">Click here to Visit Link</a>
     </p>
   {{/if}}
-  <p>
+  <p class="full-width">
     <label>Comments:</label>
     <textarea name="comments" id="comments" cols="30" rows="7" value="{{order.comments}}"></textarea>
   </p>
@@ -92,8 +92,6 @@
   </p>
   <p>
     <button class="btn btn-success" type="submit">Save Changes</button>
-  </p>
-  <p>
     <button class="btn btn-danger" href="/orders/cancel?q={{order._id}}">Cancel Order</button>
   </p>
 </form>
