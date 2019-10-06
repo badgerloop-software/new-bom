@@ -29,11 +29,11 @@
   </p>
   <p>
     <label>Estimated Quantity</label>
-    <input class="form-control" name="quantity" id="quantity" type="number" required>
+    <input class="form-control" name="quantity" id="quantity" type="text" required>
   </p>
   <p>
     <label>Estimated <b>Individual</b> Cost</label>
-    <input class="form-control" name="cost" id="cost" type="number" step=".01" min="0" value="$" required>
+    <input class="form-control" name="cost" id="cost" type="text" step=".01" min="0" value="$" required>
   </p>
   <p>
     <label for="podCost">Counts toward pod cost?</label>
@@ -214,6 +214,6 @@
     isDigikeyOrder.name = 'isDigikeyOrder';
     isDigikeyOrder.style.display = 'none';
     isDigikeyOrder.value = getTotalCost();
-    document.getElementById('orderForm').appendChild(isDigikeyOrder);
+    document.getElementById('makeForm').appendChild(isDigikeyOrder);
   };
 </script>
