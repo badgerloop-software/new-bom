@@ -4,10 +4,6 @@ const Budgets = require('../models/budget');
 
 exports.getTableView = (req, res) => {
   let user = req.user;
-  if (!user.isFSC && !user.isAdmin) {
-    req.flash('errors', { msg: 'You are not authorized to view that' });
-    return res.redirect('/');
-  }
   Budgets.find({}, (err, budgets) => {
     if (err) throw err;
     if (budgets === {}) {
@@ -24,7 +20,7 @@ exports.getTableView = (req, res) => {
       ).sort({score: {$meta : 'textScore'}}).exec((err, results) => {
         if (err) throw err;
         console.log(results);
-        res.render('tableView', {
+        res.render('bom/tableView', {
           user: req.user,
           orders: results,
           activeBOM: true
@@ -33,7 +29,7 @@ exports.getTableView = (req, res) => {
     } else {
       Orders.find({ isOrdered: true }, null, { sort: { subteam: 1 } }, (err, orders) => {
         if (err) throw err;
-        res.render('tableView', {
+        res.render('bom/tableView', {
           user: req.user,
           orders: orders,
           budget: budget,

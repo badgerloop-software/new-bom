@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const mongoConfig = require('../config/mongo')
+const bomDB = mongoose.createConnection(mongoConfig.bomURL);
 
 const BudgetSchema = new mongoose.Schema({
   totalAllocated: {type: Number, default: 0},
@@ -29,4 +31,4 @@ BudgetSchema.methods.findTeamIndex = function(query) {
   return null;
 }
 
-module.exports = mongoose.model('Budgets', BudgetSchema);
+module.exports = bomDB.model('Budgets', BudgetSchema);

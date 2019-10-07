@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const mongoConfig = require('../config/mongo')
+const bomDB = mongoose.createConnection(mongoConfig.bomURL);
 
 mongoose.set('useCreateIndex', true);
 
@@ -8,9 +10,9 @@ const OrderSchema = new mongoose.Schema({
   subteam: String,
   supplier: String,
   productNum: String,
-  quantity: Number,
+  quantity: String,
   totalCost: Number,
-  indvPrice: Number,
+  indvPrice: String,
   tax: Number,
   shipping: Number,
   tax: Number,
@@ -25,7 +27,8 @@ const OrderSchema = new mongoose.Schema({
   invoice: String,
   project: String,
   countsTowardPodCost: {type: Boolean, default: false},
-  needDate: String
+  needDate: String,
+  isDigikey: {type: Boolean, default: false},
 });
 
 OrderSchema.index({'$**': 'text'}, {
@@ -37,5 +40,10 @@ OrderSchema.index({'$**': 'text'}, {
 //   productNum: 5,
 //   purchaser: 4
 // }
-})
-module.exports = mongoose.model('Orders', OrderSchema);
+});
+
+console.log('Imported First');
+
+let orderModel = bomDB.model('Orders', OrderSchema);
+module.exports = orderModel;
+

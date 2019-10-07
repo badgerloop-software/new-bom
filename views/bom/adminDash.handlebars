@@ -104,6 +104,7 @@
           <thead class="text-warning">
             <th>Name</th>
             <th>FSC Member</th>
+            <th>Team Lead</th>
             <th>Executitive Team Member</th>
           </thead>
           <tbody>
@@ -114,6 +115,11 @@
               <td><a href="/admin/set?u={{this.slackID}}&r=f&v=f" class="btn btn-small btn-success">Yes</a></td>
               {{else}}
               <td><a href="/admin/set?u={{this.slackID}}&r=f&v=t" class="btn btn-small btn-danger">No</a></td>
+              {{/if}}
+              {{#if this.isTeamLead}}
+              <td><a href="#" class="btn btn-small btn-success">Yes</a></td>
+              {{else}}
+              <td><a href="#" class="btn btn-small btn-danger">No</a></td>
               {{/if}}
               {{#if this.isAdmin}}
               <td><a href="/admin/set?u={{this.slackID}}&r=e&v=f" class="btn btn-small btn-success">Yes</a></td>
