@@ -1,91 +1,113 @@
 <!doctype html>
 <html>
+
 <head>
-<meta charset="utf-8">
-<title>Badgerloop Bill of Materials</title>
-<link href="./main.css" rel="stylesheet" type="text/css">
-<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
-<link href="../../assets/css/material-dashboard.css?v=2.1.1" rel="stylesheet" />
-<link href="../../assets/css/main.css" rel="stylesheet" />
-<link rel="icon" href="/favicon.ico">
-   <script src="../assets/js/core/jquery.min.js"></script>
-<script src="../../assets/js/handlebars.js"></script>
+  <meta charset="utf-8">
+  <title>My Badgerloop</title>
+  <link href="./main.css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" type="text/css"
+    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+  <link href="../../assets/css/material-dashboard.css?v=2.1.1" rel="stylesheet" />
+  <link href="../../assets/css/main.css" rel="stylesheet" />
+  <link rel="icon" href="/favicon.ico">
+  <script src="../assets/js/core/jquery.min.js"></script>
+  <script src="../../assets/js/handlebars.js"></script>
 </head>
 
 <body>
   <div class="sidebar" data-color="danger" data-background-color="white" data-image="../assets/img/sidebar-1.jpg">
-      <div class="logo">
-        <a href="/" class="simple-text logo-normal">
-          Badgerloop
-        </a>
+    <div class="logo">
+      <a href="/" class="simple-text logo-normal">
+        Badgerloop
+      </a>
+    </div>
+    <div class="sidebar-wrapper">
+      <ul class="nav">
+        <li class="nav-item {{#if activeDashboard}} active {{/if}}">
+          <a class="nav-link" href="/">
+            <i class="material-icons">dashboard</i>
+            <p>Dashboard</p>
+          </a>
+        </li>
+        <hr>
+        {{> account}}
+        {{#if user}}
+        <hr>
+        <li class="nav-item {{#if activePurchase}} active {{/if}}">
+          <a class="nav-link" href="/orders/purchase">
+            <i class="material-icons">attach_money</i>
+            <p>Make a purchase</p>
+          </a>
+        </li>
+        <li class="nav-item {{#if activeView}} active {{/if}}">
+          <a class="nav-link" href="/orders/view">
+            <i class="material-icons">library_books</i>
+            <p>View Requests</p>
+          </a>
+        </li>
+        {{#if user.isAdmin}}
+        <li class="nav-item {{#if activeAdmin}} active {{/if}} ">
+          <a class="nav-link" href="/admin/dashboard">
+            <i class="material-icons">bubble_chart</i>
+            <p>Administrative Access</p>
+          </a>
+        </li>
+        {{/if}}
+        <li class="nav-item {{#if activeBOM}} active {{/if}} ">
+          <a class="nav-link" href="/bom">
+            <i class="material-icons">grid_on</i>
+            <p>BOM</p>
+          </a>
+        </li>
+        {{#if user.isAdmin}}
+        <hr>
+        <li class="nav-item {{#if activeCRUD}} active {{/if}}">
+          <a class="nav-link" href="/crud">
+            <i class="material-icons">edit</i>
+            <p>Edit Website</p>
+          </a>
+        </li>
+        {{/if}}
+        <hr>
+        <li class="nav-item {{#if activeCalendar}} active {{/if}}">
+          <a class="nav-link" href="/calendar">
+            <i class="material-icons">calendar_today</i>
+            <p>View Calendar</p>
+          </a>
+        </li>
+        {{/if}}
+      </ul>
+    </div>
+  </div>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
+    <div class="container-fluid">
+      <div class="navbar-wrapper">
+        <a class="navbar-brand"></a>
       </div>
-      <div class="sidebar-wrapper">
-        <ul class="nav">
-          <li class="nav-item {{#if activeDashboard}} active {{/if}}">
-            <a class="nav-link" href="/">
-              <i class="material-icons">dashboard</i>
-              <p>Dashboard</p>
-            </a>
-          </li>
-          {{> account}}
-          {{#if user}}
-          <li class="nav-item {{#if activePurchase}} active {{/if}}">
-            <a class="nav-link" href="/orders/purchase">
-              <i class="material-icons">attach_money</i>
-              <p>Make a purchase</p>
-            </a>
-          </li>
-          <li class="nav-item {{#if activeView}} active {{/if}}">
-            <a class="nav-link" href="/orders/view">
-              <i class="material-icons">library_books</i>
-              <p>View Requests</p>
-            </a>
-          </li>
-          {{#if user.isAdmin}}
-          <li class="nav-item {{#if activeAdmin}} active {{/if}} ">
-            <a class="nav-link" href="/admin/dashboard">
-              <i class="material-icons">bubble_chart</i>
-              <p>Administrative Access</p>
-            </a>
-          </li>
-          {{/if}}
-          <li class="nav-item {{#if activeBOM}} active {{/if}} ">
-            <a class="nav-link" href="/bom">
-              <i class="material-icons">grid_on</i>
-              <p>BOM</p>
-            </a>
-          </li>
-          {{/if}}
-        </ul>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index"
+        aria-expanded="false" aria-label="Toggle navigation">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="navbar-toggler-icon icon-bar"></span>
+        <span class="navbar-toggler-icon icon-bar"></span>
+        <span class="navbar-toggler-icon icon-bar"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end">
+      </div>
+  </nav>
+  <div class="main-panel">
+    <div class="content">
+      <div class="container-fluid">
+        {{> flash}}
+        {{{body}}}
       </div>
     </div>
-          <!-- Navbar -->
-      <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
-        <div class="container-fluid">
-          <div class="navbar-wrapper">
-            <a class="navbar-brand"></a>
-          </div>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="navbar-toggler-icon icon-bar"></span>
-            <span class="navbar-toggler-icon icon-bar"></span>
-            <span class="navbar-toggler-icon icon-bar"></span>
-          </button>
-          <div class="collapse navbar-collapse justify-content-end">
-        </div>
-      </nav>
-    <div class="main-panel">
-      <div class="content">
-        <div class="container-fluid">
-            {{> flash}}
-         {{{body}}}
-        </div>
-      </div>
-      <script src="../assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
-      <script src="../assets/js/material-dashboard.js"></script>
-  <script src="../assets/js/core/popper.min.js"></script>
-  <script src="../assets/js/core/bootstrap-material-design.min.js"></script>
-  
+    <script src="../assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
+    <script src="../assets/js/material-dashboard.js"></script>
+    <script src="../assets/js/core/popper.min.js"></script>
+    <script src="../assets/js/core/bootstrap-material-design.min.js"></script>
+
 </body>
+
 </html>

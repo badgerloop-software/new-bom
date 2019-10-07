@@ -2,14 +2,140 @@
 <a href="/slack/auth"><button class='btn'>Click here to login with Slack!</button></a>
 {{/unless}}
 {{#if user}}
-<h2>Welcome {{user.name}}</h2>
-{{#if user.isFSC}}
-<h3>Finance/Supply Chain Member</h3>
-{{/if}}
-{{#if user.isAdmin}}
-<h3>Executitive Team Member</h3>
-{{/if}}
-{{#if user.isTeamLead}}
-<h3>Team Lead</h3>
-{{/if}}
-{{/if}}
+<div class="container-fluid" id="home-grid">
+  <div id="home-right">
+    <div class="card card-profile">
+      <div class="card-avatar">
+        {{#if user.picture}} <img class="img" src="{{user.picture}}"/>{{/if}}
+      </div>
+      <div class="card-body">
+        <h3 class="card-title">{{user.name}}</h3>
+        {{#if user.isFSC}}
+        <h6 class="card-category text-gray">Finance/Supply Chain Member</h6>
+        {{/if}}
+        {{#if user.isAdmin}}
+        <h6 class="card-category text-gray">Executitive Team Member</h6>
+        {{/if}}
+        {{#if user.isTeamLead}}
+        <h6 class="card-category text-gray">Team Lead</h6>
+        {{/if}}
+        <a href="/logout" class="btn btn-primary btn-round">Logout</a>
+      </div>
+    </div>
+  </div>
+  <div id="home-left">
+    <div class="row">
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card card-stats">
+          <div class="card-header card-header-warning card-header-icon">
+            <div class="card-icon">
+              <i class="material-icons">attach_money</i>
+            </div>
+            <h4 class="card-title">Purchase Request</h4>
+          </div>
+          <div class="card-footer">
+            <div class="stats">
+              <a href="/orders/purchase" class="btn btn-lg btn-success">Visit BOM</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{#if user.isTeamLead}}
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card card-stats">
+          <div class="card-header card-header-success card-header-icon">
+            <div class="card-icon">
+              <i class="material-icons">edit</i>
+            </div>
+            <h4 class="card-title">CRUD Actions</h4>
+          </div>
+          <div class="card-footer">
+            <div class="stats">
+              <a href="/crud" class="btn btn-lg btn-success">Edit Website</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{/if}}
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card card-stats">
+          <div class="card-header card-header-danger card-header-icon">
+            <div class="card-icon">
+              <i class="material-icons">menu_book</i>
+            </div>
+            <h4 class="card-title">Wiki</h4>
+          </div>
+          <div class="card-footer">
+            <div class="stats">
+              <a href="http://wiki.badgerloop.com" class="btn btn-lg btn-success">Visit the Wiki</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card card-stats">
+          <div class="card-header card-header-info card-header-icon">
+            <div class="card-icon">
+              <i class="material-icons">computer</i>
+            </div>
+            <h4 class="card-title">Website</h4>
+          </div>
+          <div class="card-footer">
+            <div class="stats">
+              <a href="http://badgerloop.com" class="btn btn-lg btn-success">Visit Website</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card card-stats">
+          <div class="card-header card-header-info card-header-icon">
+            <div class="card-icon">
+              <i class="fa fa-slack"></i>
+            </div>
+            <h4 class="card-title">Slack</h4>
+          </div>
+          <div class="card-footer">
+            <div class="stats">
+              <a href="http://badgerloop.slack.com" class="btn btn-lg btn-success">Join Slack</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card card-stats">
+          <div class="card-header card-header-danger card-header-icon">
+            <div class="card-icon">
+              <i class="fa fa-archive"></i>
+            </div>
+            <h4 class="card-title">Box</h4>
+          </div>
+          <div class="card-footer">
+            <div class="stats">
+              <a href="https://uwmadison.app.box.com/folder/4546654018" class="btn btn-lg btn-success">Open Box</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card card-stats">
+          <div class="card-header card-header-info card-header-icon">
+            <div class="card-icon">
+              <i class="fa fa-calendar" aria-hidden="true"></i>
+            </div>
+            <h4 class="card-title">Meetings Calendar</h4>
+          </div>
+          <div class="card-footer">
+            <div class="stats">
+              <a href="/calendar" class="btn btn-lg btn-success">Open Calendar</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{/if}} 
+{{!-- Keep this if statment at the bottom --}}

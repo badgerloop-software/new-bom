@@ -6,7 +6,6 @@ const User = require('../models/user');
 const clientID = process.env.CLIENT_ID;
 const clientSecret = process.env.CLIENT_SECRET;
 const redirectURI = process.env.REDIRECT_URI;
-// const SECRET_CHANNEL = process.env.SECRET_CHANNEL;
 const SERVICES_TOKEN = process.env.SERVICES_TOKEN;
 const SECRET_CHANNEL = process.env.SECRET_CHANNEL
 
@@ -20,14 +19,16 @@ passport.deserializeUser((id, done) => {
   });
 });
 
+
+// The main flow of Slack Authentication
 passport.use(new SlackStragety({
   clientID: clientID,
   clientSecret: clientSecret,
   skipUserProfile: false,
-  scope: ['identity.basic']
+  scope: ['identity.basic', 'identity.avatar']
 }, (accessToken, refreshToken, profile, done) => {
   console.log("Made it to the callback");
-  User.findOne({ name: profile.displayName }).then((currentUser) => {
+  User.findOne({ "slackID": profile.id }).then((currentUser) => {
     let isTeamLead = false; // Innocent until proven guilty
     let options = {
       method: 'GET',
@@ -41,14 +42,14 @@ passport.use(new SlackStragety({
       if (err) throw new Error(err);
       isTeamLead = findTeamLead(body, profile);
       if (currentUser) {
-        return updateCurrentUser(isTeamLead, currentUser, done)
+        return updateCurrentUser(isTeamLead, currentUser, profile, done)
       } else {
         return createNewUser(profile, isTeamLead, done);
       }
     });
   });
 }));
-
+// End Main Flow
   exports.isAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {
       return next();
@@ -57,8 +58,10 @@ passport.use(new SlackStragety({
     res.redirect('/');
   }
 
-  function updateCurrentUser(isTeamLead, user, cb) {
+  function updateCurrentUser(isTeamLead, user, profile, cb) {
+    user.name = profile.displayName
     user.isTeamLead = isTeamLead;
+    user.picture = profile.user.image_192;
     user.save((err) => {
       if (err) throw err;
       console.log('Current User is' + user);
@@ -70,6 +73,7 @@ passport.use(new SlackStragety({
     console.log("You're new here");
     let newUser = new User({
       name: profile.displayName,
+      picture: profile.user.image_192,
       slackID: profile.id,
       isTeamLead: isTeamLead
     });

@@ -4,71 +4,6 @@ const webhookURL = process.env.WEBHOOK_URL;
 const URL = process.env.LOCAL_URL;
 const request = require('request');
 
-
-function isURL(str) {
-  var urlRegex = '^(?!mailto:)(?:(?:http|https|ftp)://)(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))|localhost)(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?$';
-  var url = new RegExp(urlRegex, 'i');
-  return str.length < 2083 && url.test(str);
-}
-
-function createSlackMessage(order) {
-  let msg;
-  if (order.reimbursement) {
-    msg =
-      `====${order.subteam}====
-    *Requestor*: ${order.requestor}
-    *Items*: ${order.item}
-    *Cost*: $${order.cost}
-    *This is a reimbursement*
-    *Link*: http://${URL}/orders/edit/${order.id}
-  ==== ==== ====`
-  } else {
-    msg =
-      `====${order.subteam}====
-  *Requestor*: ${order.requestor}
-  *Items*: ${order.item}
-  *Cost*: $${order.cost}
-  *Link*: http://${URL}/orders/edit/${order.id}
-==== ==== ====`
-  }
-  let options = {
-    uri: webhookURL,
-    method: 'POST',
-    json: {
-      "text": msg,
-      "attachments": [
-        {
-          "fallback": `View this order at http://${URL}/orders/edit/${order.id}`,
-          "actions": [
-            {
-              "type": "button",
-              "text": "Approve Order 💵",
-              "url": `http://${URL}/orders/approve/${order.id}`,
-              "style": 'primary',
-            },
-            {
-              "type": "button",
-              "text": "Deny Order 🚫",
-              "url": `http://${URL}/orders/cancel?q=${order.id}`,
-              "style": 'danger'
-            }
-          ]
-        }
-      ]
-    }
-  };
-  request(options, (err, res, body) => {
-    if (!err && res.statusCode == 200) {
-      console.log(body.id);
-    }
-  })
-}
-
-function redirectToMain(req, res) {
-  req.flash('errors', { msg: 'You are not authorized to view that!' });
-  res.redirect('/');
-}
-
 exports.getMakeOrder = (req, res) => {
   Budget.find({}, (err, budgets) => {
     if (err) throw err;
@@ -78,7 +13,7 @@ exports.getMakeOrder = (req, res) => {
     } else {
       let budget = budgets[0];
       let teamList = budget.teamList;
-      return res.render('makeOrder', {
+      return res.render('bom/makeOrder', {
         user: req.user,
         activePurchase: true,
         teamList: teamList
@@ -147,7 +82,7 @@ exports.postMakeOrder = (req, res, next) => {
       cost: totalCost,
       id: order._id
     }
-    createSlackMessage(orderObj);
+    createSlackMessage(orderObj, req.user);
     req.flash('success', {
       msg: 'Order Submitted'
     })
@@ -169,7 +104,7 @@ exports.getViewOrders = (req, res) => {
     ).sort({ score: { $meta: 'textScore' } }).exec((err, results) => {
       if (err) throw err;
       console.log(results);
-      res.render('viewOrders', {
+      res.render('bom/viewOrders', {
         user: req.user,
         orders: results,
         activeView: true
@@ -179,7 +114,7 @@ exports.getViewOrders = (req, res) => {
     console.log(req.user);
     Order.find({ isOrdered: false }, (err, orders) => {
       if (err) throw err;
-      res.render('viewOrders', {
+      res.render('bom/viewOrders', {
         user: req.user,
         orders: orders,
         activeView: true
@@ -218,7 +153,7 @@ exports.getEditOrders = (req, res) => {
         if (!req.user.isFSC && !req.user.isAdmin) {
           return redirectToMain(req, res);
         } else {
-          res.render('editOrder', {
+          res.render('bom/editOrder', {
             user: req.user,
             order: selectedOrder,
             activeView: true,
@@ -272,17 +207,17 @@ exports.postEditOrder = (req, res) => {
           order.save((err) => {
             if (err) throw err;
             req.flash('success', { msg: 'Order Sucessfully Updated' });
-           return res.redirect('back');
+            return res.redirect('back');
           });
         });
       });
     } else {
-    order.save((err) => {
-      if (err) throw err;
-      req.flash('success', { msg: 'Order Sucessfully Updated' });
-     return res.redirect('back');
-    });
-  }
+      order.save((err) => {
+        if (err) throw err;
+        req.flash('success', { msg: 'Order Sucessfully Updated' });
+        return res.redirect('back');
+      });
+    }
   });
 }
 
@@ -412,7 +347,7 @@ exports.getApproving = (req, res) => {
   let orderID = req.params.id || req.query.q;
   if (!user || !user.isAdmin) {
     req.flash('errors', { msg: 'You are not authorized to approve an order' });
-   return res.redirect('back');
+    return res.redirect('back');
   }
   Order.findOne({ _id: orderID }).select("_id").lean().then(exists => {
     if (!exists) {
@@ -460,4 +395,68 @@ function deleteOrderFromBudget(budget, order, callback) {
   newCurrentSpent[teamIndex] -= order.totalCost;
   let update = { currentSpent: newCurrentSpent };
   Budget.findByIdAndUpdate(budgetID, update, { new: true }, callback);
+}
+
+function isURL(str) {
+  var urlRegex = '^(?!mailto:)(?:(?:http|https|ftp)://)(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))|localhost)(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?$';
+  var url = new RegExp(urlRegex, 'i');
+  return str.length < 2083 && url.test(str);
+}
+
+function createSlackMessage(order, user) {
+  let msg;
+  if (order.reimbursement) {
+    msg =
+      `====${order.subteam}====
+    *Requestor*: <@${user.slackID}>
+    *Items*: ${order.item}
+    *Cost*: $${order.cost}
+    *This is a reimbursement*
+    *Link*: http://${URL}/orders/edit/${order.id}
+  ==== ==== ====`
+  } else {
+    msg =
+      `====${order.subteam}====
+  *Requestor*: <@${user.slackID}>
+  *Items*: ${order.item}
+  *Cost*: $${order.cost}
+  *Link*: http://${URL}/orders/edit/${order.id}
+==== ==== ====`
+  }
+  let options = {
+    uri: webhookURL,
+    method: 'POST',
+    json: {
+      "text": msg,
+      "attachments": [
+        {
+          "fallback": `View this order at http://${URL}/orders/edit/${order.id}`,
+          "actions": [
+            {
+              "type": "button",
+              "text": "Approve Order 💵",
+              "url": `http://${URL}/orders/approve/${order.id}`,
+              "style": 'primary',
+            },
+            {
+              "type": "button",
+              "text": "Deny Order 🚫",
+              "url": `http://${URL}/orders/cancel?q=${order.id}`,
+              "style": 'danger'
+            }
+          ]
+        }
+      ]
+    }
+  };
+  request(options, (err, res, body) => {
+    if (!err && res.statusCode == 200) {
+      console.log(body.id);
+    }
+  })
+}
+
+function redirectToMain(req, res) {
+  req.flash('errors', { msg: 'You are not authorized to view that!' });
+  res.redirect('/');
 }
