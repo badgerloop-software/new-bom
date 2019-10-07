@@ -22,6 +22,71 @@ The new Badgerloops apps site! This web app combines the BOM (bill of materials)
 
 ## File Structure
 ``` 
+├── README.md
+├── app.js
+├── config
+│   ├── mongo.js
+│   └── passport.js
+├── controllers
+│   ├── admin.js
+│   ├── auth.js
+│   ├── bom.js
+│   ├── budgets.js
+│   ├── crud.js
+│   ├── events.js
+│   ├── orders.js
+│   ├── sponsors.js
+│   ├── teamleads.js
+│   └── utils.js
+├── models
+│   ├── budget.js
+│   ├── order.js
+│   ├── sponsor.js
+│   ├── teamlead.js
+│   └── user.js
+├── package-lock.json
+├── package.json
+├── public
+│   └── assets
+│       ├── css
+│       │   ├── main.css
+│       │   ├── material-dashboard-rtl.css
+│       │   ├── material-dashboard.css
+│       │   └── material-dashboard.css.map
+│       ├── js
+│       │   ├── browser.default.js
+│       │   ├── core
+│       │   │   ├── bootstrap-material-design.min.js
+│       │   │   ├── jquery.min.js
+│       │   │   └── popper.min.js
+│       │   ├── createBudget.js
+│       │   ├── customHelpers.js
+│       │   ├── handlebars.js
+│       │   ├── material-dashboard.js
+│       │   └── plugins
+│       │       └── perfect-scrollbar.jquery.min.js
+│       └── scss
+│           └── material-dashboard.scss
+├── uploads
+│   ├── sponsors
+│   └── teamleads
+└── views
+    ├── bom
+    │   ├── adminDash.handlebars
+    │   ├── createBudget.handlebars
+    │   ├── editOrder.handlebars
+    │   ├── makeOrder.handlebars
+    │   ├── tableView.handlebars
+    │   └── viewOrders.handlebars
+    ├── calendar.handlebars
+    ├── crud.handlebars
+    ├── homePage.handlebars
+    ├── layouts
+    │   └── main.handlebars
+    └── partials
+        ├── account.handlebars
+        ├── flash.handlebars
+        └── teamsDropdown.handlebars
 ```
 
 ## Contributing
