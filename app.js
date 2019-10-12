@@ -23,11 +23,6 @@ const teamleadscontroller = require('./controllers/teamleads');
 
 const passportConfig = require('./config/passport');
 
-const multer = require('multer');
-const uploadTeamlead = multer({ dest: './uploads/teamleads' });
-const uploadSponsor = multer({ dest: './uploads/sponsors' });
-const fs = require('fs');
-
 const app = module.exports.app = express();
 const server = http.createServer(app);
 server.listen(PORT);
@@ -100,45 +95,11 @@ app.get('/sponsors/:id', sponsorsController.sponsors_details);
 app.get('/sponsors/', sponsorsController.sponsors_list);
 app.post('/sponsors/:id/update', sponsorsController.sponsors_update);
 app.post('/sponsors/:id/delete', sponsorsController.sponsors_delete);
+app.post('/sponsors/upload', sponsorsController.sponsors_upload);
 
 app.post('/teamleads/create', teamleadscontroller.teamleads_create);
 app.get('/teamleads/:id', teamleadscontroller.teamleads_details);
 app.get('/teamleads/', teamleadscontroller.teamleads_list);
 app.post('/teamleads/:id/update', teamleadscontroller.teamleads_update);
 app.post('/teamleads/:id/delete', teamleadscontroller.teamleads_delete);
-
-app.post('/sponsors/upload', uploadSponsor.single('sponsorImg'), (req, res) => {
-  if (req.file) {
-    console.log('Uploading file...');
-    fs.rename('uploads/sponsors/' + req.file.filename, creds.IMAGES_FOLDER + '/sponsors/' + req.file.originalname, function (err) {
-      if (err) console.log('ERROR: ' + err);
-    });
-    var filename = req.file.originalname;
-    req.flash('success', { msg: `Sponsor Image Uploaded! Name of File: ${filename}` });
-    return res.redirect('/crud');
-  } else {
-    console.log('No File Uploaded');
-    var filename = 'FILE NOT UPLOADED';
-    req.flash('success', { msg: `Sponsor image upload failed!` });
-    return res.redirect('/crud');
-  }
-  /* ===== Add the function to save filename to database ===== */
-});
-app.post('/teamleads/upload', uploadTeamlead.single('teamleadImg'), (req, res) => {
-  if (req.file) {
-    console.log('Uploading file...');
-    fs.rename('uploads/teamleads/' + req.file.filename, creds.IMAGES_FOLDER + '/teamleads/' + req.file.originalname, function (err) {
-      if (err) console.log('ERROR: ' + err);
-    });
-    // shell.mv('uploads/sponsors/' + req.file.filename', 'file2', 'dir/');
-    var filename = req.file.originalname;
-    req.flash('success', { msg: `Teamlead Image Uploaded! Name of File: ${filename}` });
-    return res.redirect('/crud');
-  } else {
-    console.log('No File Uploaded');
-    var filename = 'FILE NOT UPLOADED';
-    req.flash('success', { msg: `Teamlead image upload failed!` });
-    return res.redirect('/crud');
-  }
-  /* ===== Add the function to save filename to database ===== */
-});
+app.post('/teamleads/upload', teamleadscontroller.teamleads_upload);
