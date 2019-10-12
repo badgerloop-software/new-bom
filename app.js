@@ -17,6 +17,7 @@ const adminController = require('./controllers/admin');
 const budgetController = require('./controllers/budgets');
 const bomController = require('./controllers/bom');
 const crudController = require('./controllers/crud');
+const crudLogController = require('./controllers/crudLog');
 const sponsorsController = require('./controllers/sponsors');
 const teamleadscontroller = require('./controllers/teamleads');
 const utilsController = require('./controllers/utils');
@@ -69,6 +70,7 @@ app.get('/orders/approve/:id', ordersController.getApproving);
 
 // Crud Routes
 app.get('/crud', crudController.getCrud);
+app.get('/crudLog', crudLogController.getCrudLogs);
 //app.get('/crud/sponsors/delete/:id', crudController.getDeleteSponsor);
 
 
