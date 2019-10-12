@@ -122,14 +122,6 @@ exports.teamleads_delete = function (req, res) {
 };
 
 exports.teamleads_upload = function (req, res) {
-    let logs = new Logs(
-        {
-            time: year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds,
-            name: req.user.name,
-            action: "uploaded teamlead image",
-            field: "Image name: " + req.body.req.file.originalname,
-        }
-    );
     var uploadTeamlead = multer({ storage: storage }).single('`teamleadImg`');
     uploadTeamlead(req, res, function (err) {
         if (err) {
@@ -141,14 +133,21 @@ exports.teamleads_upload = function (req, res) {
         fs.rename('uploads/teamleads/' + req.file.filename, creds.IMAGES_FOLDER + '/teamleads/' + req.file.originalname, function (err) {
             if (err) console.log('ERROR: ' + err);
         });
-        // shell.mv('uploads/sponsors/' + req.file.filename', 'file2', 'dir/');
         var filename = req.file.originalname;
+        let logs = new Logs(
+            {
+                time: year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds,
+                name: req.user.name,
+                action: "uploaded teamlead image",
+                field: "Image name: " + req.body.req.filename,
+            }
+        );
+        logs.save(function (err) {
+            if (err) {
+                return next(err);
+            }
+        });
         req.flash('success', { msg: `Teamlead Image Uploaded! Name of File: ${filename}` });
         return res.redirect('/crud');
-    });
-    logs.save(function (err) {
-        if (err) {
-            return next(err);
-        }
     });
 };
