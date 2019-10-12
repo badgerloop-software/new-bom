@@ -10,4 +10,4 @@ let LogsSchema = new mongoose.Schema({
 });
 
 // Export the model
-module.exports = prodDB.model('Logs', logSchema);
+module.exports = prodDB.model('Logs', LogsSchema);
