@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const mongoConfig = require('../config/mongo')
 const prodDB = mongoose.createConnection(mongoConfig.prodURL);
 
-let SponsorsSchema = new mongoose.Schema({
+let LogsSchema = new mongoose.Schema({
     time: { type: String, required: false, max: 100 },
     name: { type: String, required: false, max: 100 },
     action: { type: String, required: false, max: 500 },
