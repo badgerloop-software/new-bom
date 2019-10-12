@@ -27,7 +27,7 @@ const passportConfig = require('./config/passport');
 
 const uploadTeamlead = multer({ dest: './uploads/teamleads' });
 const uploadSponsor = multer({ dest: './uploads/sponsors' });
-const Logs = require('../models/log');
+const Logs = require('./models/log');
 const fs = require('fs');
 
 let date_ob = new Date();
