@@ -109,7 +109,7 @@ exports.teamleads_delete = function (req, res) {
             field: "Teamlead Name: " + req.body.Name,
         }
     );
-    teamleads.findByIdAndRemove(req.params.id, { $set: req.body }, function (err) {
+    teamleads.findByIdAndRemove(req.params.id, function (err) {
         if (err) return next(err);
         req.flash('success', { msg: `Teamlead deleted successfully!` });
         return res.redirect('/crud');
@@ -121,7 +121,7 @@ exports.teamleads_delete = function (req, res) {
     });
 };
 
-exports.teamleads_upload = uploadTeamlead.single('teamleadImg'), function (req, res) {
+exports.teamleads_upload = function (req, res) {
     let logs = new Logs(
         {
             time: year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds,
@@ -130,8 +130,14 @@ exports.teamleads_upload = uploadTeamlead.single('teamleadImg'), function (req, 
             field: "Image name: " + req.body.req.file.originalname,
         }
     );
-    if (req.file) {
-        console.log('Uploading file...');
+    var uploadTeamlead = multer({ storage: storage }).single('`teamleadImg`');
+    uploadTeamlead(req, res, function (err) {
+        if (err) {
+            console.log('No File Uploaded');
+            var filename = 'FILE NOT UPLOADED';
+            req.flash('success', { msg: `Teamlead image upload failed!` });
+            return res.redirect('/crud');
+        }
         fs.rename('uploads/teamleads/' + req.file.filename, creds.IMAGES_FOLDER + '/teamleads/' + req.file.originalname, function (err) {
             if (err) console.log('ERROR: ' + err);
         });
@@ -139,16 +145,10 @@ exports.teamleads_upload = uploadTeamlead.single('teamleadImg'), function (req, 
         var filename = req.file.originalname;
         req.flash('success', { msg: `Teamlead Image Uploaded! Name of File: ${filename}` });
         return res.redirect('/crud');
-    } else {
-        console.log('No File Uploaded');
-        var filename = 'FILE NOT UPLOADED';
-        req.flash('success', { msg: `Teamlead image upload failed!` });
-        return res.redirect('/crud');
-    }
+    });
     logs.save(function (err) {
         if (err) {
             return next(err);
         }
     });
-    /* ===== Add the function to save filename to database ===== */
 };
