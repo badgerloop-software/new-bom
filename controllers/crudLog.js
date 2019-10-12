@@ -8,8 +8,7 @@ exports.getCrudLogs = (req, res) => {
     Logs.find({}, (err, logsList) => {
         if (err) throw err;
         return res.render('crudLog', {
-            user: req.user,
-            logs: logsList,
+            logs: logsList
         });
     });
 }
