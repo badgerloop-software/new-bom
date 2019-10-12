@@ -1,5 +1,6 @@
 const teamleads = require('../models/teamlead');
 const Teamleads = require('../models/teamlead');
+const Logs = require('./models/log');
 
 exports.teamleads_create = function (req, res) {
     let teamleads = new Teamleads(
