@@ -122,8 +122,7 @@ exports.teamleads_delete = function (req, res) {
 };
 
 exports.teamleads_upload = function (req, res) {
-    var uploadTeamlead = multer({ storage: storage }).single('`teamleadImg`');
-    uploadTeamlead(req, res, function (err) {
+    uploadTeamlead.single('`teamleadImg`'), (req, res, function (err) {
         if (err) {
             console.log('No File Uploaded');
             var filename = 'FILE NOT UPLOADED';
