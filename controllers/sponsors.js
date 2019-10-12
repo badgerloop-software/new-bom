@@ -1,5 +1,6 @@
 const sponsors = require('../models/sponsor');
 const Sponsors = require('../models/sponsor');
+const Logs = require('../models/log');
 
 const multer = require('multer');
 const uploadSponsor = multer({ dest: './uploads/sponsors' });
@@ -16,6 +17,23 @@ exports.sponsors_create = function (req, res) {
     );
 
     sponsors.save(function (err) {
+        if (err) {
+            return next(err);
+        }
+        req.flash('success', { msg: `Sponsor created successfully!` });
+        return res.redirect('/crud');
+    });
+
+    let logs = new Logs(
+        {
+            time: Date.now(),
+            name: req.user,
+            action: "create",
+            company: req.body.company,
+        }
+    );
+
+    logs.save(function (err) {
         if (err) {
             return next(err);
         }
