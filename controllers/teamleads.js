@@ -109,7 +109,7 @@ exports.teamleads_delete = function (req, res) {
             field: "Teamlead Name: " + req.body.Name,
         }
     );
-    teamleads.findByIdAndRemove(req.params.id, function (err) {
+    teamleads.findByIdAndRemove(req.params.id, { $set: req.body }, function (err) {
         if (err) return next(err);
         req.flash('success', { msg: `Teamlead deleted successfully!` });
         return res.redirect('/crud');
