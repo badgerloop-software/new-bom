@@ -1,31 +1,5 @@
 const teamleads = require('../models/teamlead');
 const Teamleads = require('../models/teamlead');
-const Logs = require('../models/log');
-
-const multer = require('multer');
-const uploadTeamlead = multer({ dest: './uploads/teamleads' });
-const fs = require('fs');
-
-let date_ob = new Date();
-
-// current date
-// adjust 0 before single digit date
-let date = ("0" + date_ob.getDate()).slice(-2);
-
-// current month
-let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
-
-// current year
-let year = date_ob.getFullYear();
-
-// current hours
-let hours = date_ob.getHours();
-
-// current minutes
-let minutes = date_ob.getMinutes();
-
-// current seconds
-let seconds = date_ob.getSeconds();
 
 exports.teamleads_create = function (req, res) {
     let teamleads = new Teamleads(
@@ -119,34 +93,4 @@ exports.teamleads_delete = function (req, res) {
             return next(err);
         }
     });
-};
-
-exports.teamleads_upload = function() {
-    uploadTeamlead.single('`teamleadImg`'), function (req, res, next) {
-        if (err) {
-            console.log('No File Uploaded');
-            var filename = 'FILE NOT UPLOADED';
-            req.flash('success', { msg: `Teamlead image upload failed!` });
-            return res.redirect('/crud');
-        }
-        fs.rename('uploads/teamleads/' + req.file.filename, creds.IMAGES_FOLDER + '/teamleads/' + req.file.originalname, function (err) {
-            if (err) console.log('ERROR: ' + err);
-        });
-        var filename = req.file.originalname;
-        let logs = new Logs(
-            {
-                time: year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds,
-                name: req.user.name,
-                action: "uploaded teamlead image",
-                field: "Image name: " + req.body.req.filename,
-            }
-        );
-        logs.save(function (err) {
-            if (err) {
-                return next(err);
-            }
-        });
-        req.flash('success', { msg: `Teamlead Image Uploaded! Name of File: ${filename}` });
-        return res.redirect('/crud');
-    };
 };
