@@ -59,25 +59,21 @@ exports.teamleads_delete = function (req, res) {
     });
 };
 
-exports.teamleads_upload = function(req, res) {
-    console.log("HEREEEEE");
-    const request = req;
-    const response = res;
-    uploadTeamlead.single('teamleadImg'), (request, response) => {
-        if (request.file) {
+exports.teamleads_upload = uploadTeamlead.single('teamleadImg'), (req, res) => {
+        if (req.file) {
             console.log('Uploading file...');
-            fs.rename('uploads/teamleads/' + request.file.filename, creds.IMAGES_FOLDER + '/teamleads/' + request.file.originalname, function (err) {
+            fs.rename('uploads/teamleads/' + req.file.filename, creds.IMAGES_FOLDER + '/teamleads/' + req.file.originalname, function (err) {
                 if (err) console.log('ERROR: ' + err);
             });
-            // shell.mv('uploads/sponsors/' + request.file.filename', 'file2', 'dir/');
-            var filename = request.file.originalname;
-            request.flash('success', { msg: `Teamlead Image Uploaded! Name of File: ${filename}` });
-            return response.redirect('/crud');
+            // shell.mv('uploads/sponsors/' + req.file.filename', 'file2', 'dir/');
+            var filename = req.file.originalname;
+            req.flash('success', { msg: `Teamlead Image Uploaded! Name of File: ${filename}` });
+            return res.redirect('/crud');
         } else {
             console.log('No File Uploaded');
             var filename = 'FILE NOT UPLOADED';
-            request.flash('success', { msg: `Teamlead image upload failed!` });
-            return response.redirect('/crud');
+            req.flash('success', { msg: `Teamlead image upload failed!` });
+            return res.redirect('/crud');
         }
         /* ===== Add the function to save filename to database ===== */
     };
