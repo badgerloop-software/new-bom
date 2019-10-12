@@ -122,7 +122,7 @@ exports.teamleads_delete = function (req, res) {
 };
 
 exports.teamleads_upload = function (req, res) {
-    uploadTeamlead.single('`teamleadImg`'), (req, res, function (err) {
+    uploadTeamlead.single('`teamleadImg`'), (function (err) {
         if (err) {
             console.log('No File Uploaded');
             var filename = 'FILE NOT UPLOADED';
