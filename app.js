@@ -142,7 +142,7 @@ app.post('/sponsors/upload', uploadSponsor.single('sponsorImg'), (req, res) => {
         time: year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds,
         name: req.user.name,
         action: "uploaded sponsor image",
-        field: "Image name: " + req.body.req.filename,
+        field: "Image name: " + filename,
       }
     );
     logs.save(function (err) {
@@ -172,7 +172,7 @@ app.post('/teamleads/upload', uploadTeamlead.single('teamleadImg'), (req, res) =
         time: year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds,
         name: req.user.name,
         action: "uploaded teamlead image",
-        field: "Image name: " + req.body.req.filename,
+        field: "Image name: " + filename,
       }
     );
     logs.save(function (err) {
