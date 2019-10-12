@@ -6,7 +6,7 @@ let LogsSchema = new mongoose.Schema({
     time: { type: String, required: false, max: 100 },
     name: { type: String, required: false, max: 100 },
     action: { type: String, required: false, max: 500 },
-    company: { type: String, required: false, max: 100 },
+    field: { type: String, required: false, max: 100 },
 });
 
 // Export the model
