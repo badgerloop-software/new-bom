@@ -37,14 +37,6 @@ exports.sponsors_create = function (req, res) {
         }
     );
 
-    sponsors.save(function (err) {
-        if (err) {
-            return next(err);
-        }
-        req.flash('success', { msg: `Sponsor created successfully!` });
-        return res.redirect('/crud');
-    });
-
     let logs = new Logs(
         {
             time: year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds,
@@ -54,12 +46,17 @@ exports.sponsors_create = function (req, res) {
         }
     );
 
-    logs.save(function (err) {
+    sponsors.save(function (err) {
         if (err) {
             return next(err);
         }
         req.flash('success', { msg: `Sponsor created successfully!` });
         return res.redirect('/crud');
+    });
+    logs.save(function (err) {
+        if (err) {
+            return next(err);
+        }
     });
 };
 
