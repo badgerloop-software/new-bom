@@ -112,6 +112,11 @@ exports.sponsors_delete = function (req, res) {
         req.flash('success', { msg: `Sponsor deleted successfully!` });
         return res.redirect('/crud');
     });
+    logs.save(function (err) {
+        if (err) {
+            return next(err);
+        }
+    });
 };
 
 exports.sponsors_upload = function (req, res) {
