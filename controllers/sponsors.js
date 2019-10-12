@@ -104,7 +104,7 @@ exports.sponsors_delete = function (req, res) {
             time: year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds,
             name: req.user.name,
             action: "delete sponsor",
-            field: "Comapny Name: " + req.body.company,
+            field: "Company Name: " + req.body.company,
         }
     );
     sponsors.findByIdAndRemove(req.params.id, function (err) {
