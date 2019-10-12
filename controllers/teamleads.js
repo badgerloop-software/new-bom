@@ -84,22 +84,22 @@ exports.teamleads_update = function (req, res) {
 };
 
 exports.teamleads_delete = function (req, res) {
-    let logs = new Logs(
-        {
-            time: year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds,
-            name: req.user.name,
-            action: "delete teamlead",
-            field: "Teamlead Name: " + req.body.Name,
-        }
-    );
     teamleads.findByIdAndRemove(req.params.id, function (err) {
         if (err) return next(err);
+        let logs = new Logs(
+            {
+                time: year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds,
+                name: req.user.name,
+                action: "delete teamlead",
+                field: "Teamlead Name: " + req.body.Name,
+            }
+        );
+        logs.save(function (err) {
+            if (err) {
+                return next(err);
+            }
+        });
         req.flash('success', { msg: `Teamlead deleted successfully!` });
         return res.redirect('/crud');
-    });
-    logs.save(function (err) {
-        if (err) {
-            return next(err);
-        }
     });
 };
