@@ -13,7 +13,7 @@ exports.getMakeOrder = (req, res) => {
     } else {
       let budget = budgets[0];
       let teamList = budget.teamList;
-      return res.render('makeOrder', {
+      return res.render('bom/makeOrder', {
         user: req.user,
         activePurchase: true,
         teamList: teamList
@@ -23,8 +23,8 @@ exports.getMakeOrder = (req, res) => {
 }
 
 exports.postMakeOrder = (req, res, next) => {
-  let totalCost = req.body.cost * req.body.quantity;
   let notARequest = req.body.notARequest;
+  console.log(req.body.cost);
   if (req.body.link && !isURL(req.body.link)) {
     req.flash('errors', { msg: 'That is not a valid link, be sure to include http://' });
     return res.redirect('back')
@@ -33,7 +33,16 @@ exports.postMakeOrder = (req, res, next) => {
   if (req.body.podCost === 'on') {
     podCost = true
   }
-  let needDate = req.body.date.toString()
+  let needDate = req.body.date.toString();
+  let isDigikey = false; // Innocent until proven guilty
+  let indvPrice = req.body.cost;
+  let totalCost;
+  if (req.body.isDigikeyOrder) {
+    console.log('Here');
+    isDigikey = true; // Guilty
+    console.log(req.body.cost);
+    totalCost = Number(req.body.isDigikeyOrder).toFixed(2);
+  } else totalCost = Number(req.body.cost) * Number(req.body.quantity);
   let order = new Order({
     requestor: req.body.requestor,
     item: req.body.item,
@@ -42,12 +51,13 @@ exports.postMakeOrder = (req, res, next) => {
     productNum: req.body.productNum,
     quantity: req.body.quantity,
     totalCost: totalCost,
-    indvPrice: req.body.cost,
+    indvPrice: indvPrice,
     link: req.body.link,
     comments: req.body.comments,
     project: req.body.project,
     countsTowardPodCost: podCost,
-    needDate: needDate
+    needDate: needDate,
+    isDigikey: isDigikey,
   });
 
   if (notARequest) {
@@ -94,7 +104,7 @@ exports.getViewOrders = (req, res) => {
     ).sort({ score: { $meta: 'textScore' } }).exec((err, results) => {
       if (err) throw err;
       console.log(results);
-      res.render('viewOrders', {
+      res.render('bom/viewOrders', {
         user: req.user,
         orders: results,
         activeView: true
@@ -104,7 +114,7 @@ exports.getViewOrders = (req, res) => {
     console.log(req.user);
     Order.find({ isOrdered: false }, (err, orders) => {
       if (err) throw err;
-      res.render('viewOrders', {
+      res.render('bom/viewOrders', {
         user: req.user,
         orders: orders,
         activeView: true
@@ -143,7 +153,7 @@ exports.getEditOrders = (req, res) => {
         if (!req.user.isFSC && !req.user.isAdmin) {
           return redirectToMain(req, res);
         } else {
-          res.render('editOrder', {
+          res.render('bom/editOrder', {
             user: req.user,
             order: selectedOrder,
             activeView: true,
@@ -158,7 +168,6 @@ exports.getEditOrders = (req, res) => {
 
 exports.postEditOrder = (req, res) => {
   let orderID = req.body.id;
-  let totalCost = (req.body.cost * req.body.quantity) + Number(req.body.shipping) + Number(req.body.tax);
   let podCost = false;
   console.log(req.body.podCost)
   if (req.body.podCost === 'on') {
@@ -168,6 +177,12 @@ exports.postEditOrder = (req, res) => {
   Order.findById(orderID, (err, order) => {
     if (err) throw err;
     let oldCost = order.totalCost;
+    let totalCost;
+    if (!order.isDigikey) {
+      totalCost = (req.body.cost * req.body.quantity) + Number(req.body.shipping) + Number(req.body.tax);
+    } else {
+      totalCost = 0;
+    }
     order.requestor = req.body.requestor;
     order.item = req.body.item;
     order.subteam = req.body.subteam;
@@ -182,9 +197,9 @@ exports.postEditOrder = (req, res) => {
     order.comments = req.body.comments;
     order.link = req.body.link;
     order.invoice = req.body.invoice;
-    order.project = req.body.project,
-      order.countsTowardPodCost = podCost,
-      order.needDate = needDate
+    order.project = req.body.project;
+    order.countsTowardPodCost = podCost;
+    order.needDate = needDate;
     if (order.isApproved) {
       Budget.find({}, (err, list) => {
         updateBudget(list[0], order, oldCost, (err) => {
@@ -244,22 +259,86 @@ exports.getOrdering = (req, res) => {
   let orderID = req.params.id;
   if (!user || !user.isFSC) {
     req.flash('errors', { msg: 'You are not authorized to place an order' });
-    res.redirect('/');
+   return res.redirect('/');
   }
   Order.findById(orderID, (err, order) => {
     if (err) throw err;
     if (!order) {
       req.flash('errors', { msg: 'Order ID does not exist' });
-      res.redirect('back');
+      return res.redirect('back');
     }
+    if (!order.isDigikey) {
+    if (order.shipping === undefined) order.shipping = 0;
+    if (order.tax === undefined) order.tax = 0;
     order.purchaser = user.name;
     order.dateOrdered = new Date();
     order.isOrdered = true;
     order.save((err) => {
       if (err) throw err;
       req.flash('success', { msg: 'Item Updated' });
-      res.redirect('/orders/view');
+     return res.redirect('/orders/view');
     });
+  } else {
+    let numParts = order.item.split(',').length;
+    let partNames = order.item.split(',');
+    let partQuantities = order.quantity.split(',');
+    let partNumbers = order.productNum.split(',');
+    let partCosts = order.indvPrice.split(',');
+    for (let i=0; i< numParts; i++) {
+      let newPart;
+      let totalCost = Number(partCosts[i] * partQuantities[i]).toFixed(2);
+      if (i == 0) {
+         newPart = new Order({
+          isApproved: true,
+          isOrdered: true,
+          purchaser: user.name,
+          dateOrdered: new Date(),
+          supplier: 'Digikey',
+          item: partNames[i],
+          quantity: partQuantities[i],
+          productNum: partNumbers[i],
+          trackingNum: order.trackingNum,
+          subteam: order.subteam,
+          requestor: order.requestor,
+          dateRequested: order.dateRequested,
+          invoice: order.invoice,
+          tax: order.tax,
+          shipping: order.shipping,
+          indvPrice: partCosts[i],
+          totalCost: totalCost,
+          link: order.link
+        });
+      } else {
+       newPart = new Order({
+        isApproved: true,
+        isOrdered: true,
+        purchaser: user.name,
+        dateOrdered: new Date(),
+        supplier: 'Digikey',
+        item: partNames[i],
+        quantity: partQuantities[i],
+        productNum: partNumbers[i],
+        trackingNum: order.trackingNum,
+        subteam: order.subteam,
+        requestor: order.requestor,
+        dateRequested: order.dateRequested,
+        invoice: order.invoice,
+        tax: 0,
+        shipping: 0,
+        indvPrice: partCosts[i],
+        totalCost: totalCost
+      });
+    }
+      newPart.save((err) => {
+        console.log('New Part Made');
+      });
+    }
+    Order.findOneAndDelete({'_id': orderID}, (err) => {
+      console.log('Order Deleted');
+      req.flash('success', {msg: 'Item Updated'});
+      return res.redirect('/orders/view');
+    });
+  }
   });
 }
 

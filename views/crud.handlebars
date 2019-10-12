@@ -353,12 +353,14 @@
                     <h4 class="modal-title">Upload a Teamlead Image</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
-                <div class="modal-body">
-                    <form id="uploadImageForm" action="/teamleads/upload" enctype="multipart/form-data" method="POST">
+                <form id="uploadImageForm" action="/teamleads/upload" enctype="multipart/form-data" method="POST">
+                    <div class="modal-body">
                         <input type="file" name="teamleadImg" id="teamleadImg" required>
+                    </div>
+                    <div class="modal-footer">
                         <input type="submit" value="Upload" class="btn btn-info" />
-                    </form>
-                </div>
+                    </div>                    
+                </form>
             </div>
         </div>
     </div>
@@ -511,12 +513,14 @@
                     <h4 class="modal-title">Upload a Sponsor Image</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
-                <div class="modal-body">
                     <form id="uploadImageForm" action="/sponsors/upload" enctype="multipart/form-data" method="POST">
-                        <input type="file" name="sponsorImg" id="sponsorImg" required>
-                        <input type="submit" value="Upload" class="btn btn-info" />
+                        <div class="modal-body">
+                            <input type="file" name="sponsorImg" id="sponsorImg" required>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="submit" value="Upload" class="btn btn-info" />
+                        </div>
                     </form>
-                </div>
             </div>
         </div>
     </div>
@@ -530,10 +534,10 @@
         let array = code.split(',');
         let id = array[4].trim();
         document.getElementById('editSponsorForm').action = `/sponsors/${id}/update`;
-        document.getElementById('editTier').value = array[0];
-        document.getElementById('editCompany').value = array[1];
-        document.getElementById('editWebsite').value = array[2];
-        document.getElementById('editLogo').value = array[3];
+        document.getElementById('editTier').value = array[0].trim();
+        document.getElementById('editCompany').value = array[1].trim();
+        document.getElementById('editWebsite').value = array[2].trim();
+        document.getElementById('editLogo').value = array[3].trim();
     })
     $('#deletesponsorModal').on('show.bs.modal', function (event) {
         let button = $(event.relatedTarget); // Button that triggered the modal
@@ -546,12 +550,12 @@
         let array = code.split(',');
         let id = array[6].trim();
         document.getElementById('editTeamleadForm').action = `/teamleads/${id}/update`;
-        document.getElementById('editTeam').value = array[0];
-        document.getElementById('editPosition').value = array[1];
-        document.getElementById('editName').value = array[2];
-        document.getElementById('editMajor').value = array[3];
-        document.getElementById('editYear').value = array[4];
-        document.getElementById('editPicture').value = array[5];
+        document.getElementById('editTeam').value = array[0].trim();
+        document.getElementById('editPosition').value = array[1].trim();
+        document.getElementById('editName').value = array[2].trim();
+        document.getElementById('editMajor').value = array[3].trim();
+        document.getElementById('editYear').value = array[4].trim();
+        document.getElementById('editPicture').value = array[5].trim();
 
     })
     $('#deleteteamleadModal').on('show.bs.modal', function (event) {

@@ -33,8 +33,7 @@
   padding: 10px;
 }
 
-
-#orderForm input,
+#makeForm input,
 textarea,
 button {
   width: 100%;
@@ -42,43 +41,60 @@ button {
   border-width: 0 0 2px;
   border-color: black;
 }
-#ordrForm input:focus {
+#makeForm input:focus {
   border-color: red;
 }
-
-.wrapper {
-  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
-}
-.wrapper > * {
-  padding: 1em;
-}
-@media (min-width: 700px) {
-  .wrapper {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-  }
-  .wrapper > * {
-    padding: 2em 2em;
-  }
-}
-
-
-#orderForm {
+#makeForm {
   display: grid;
   grid-template-columns: 25vw 25vw 25vw;
   grid-gap: 20px;
   grid-column-gap: 40px;
   grid-auto-rows: .5fr;
 }
-#orderForm label {
+#makeForm label {
   display: block;
 }
-#orderForm p {
+#makeForm p {
   margin: 0;
 }
-
-#orderForm button,
+#makeForm button,
 input,
 textarea {
   padding: 1em;
+}
+
+#editForm input,
+textarea,
+button {
+  width: 100%;
+  outline: 0;
+  border-width: 0 0 2px;
+  border-color: black;
+}
+#editForm input:focus {
+  border-color: red;
+}
+#editForm {
+  display: grid;
+  grid-template-columns: 25vw 25vw 25vw;
+  grid-gap: 20px;
+  grid-column-gap: 40px;
+  grid-auto-rows: .5fr;
+}
+#editForm label {
+  display: block;
+}
+#editForm p {
+  margin: 0;
+}
+#editForm button,
+input,
+textarea {
+  padding: 1em;
+}
+.full-width {
+  grid-column: 1 / 3;
+}
+.full-width2 {
+  grid-column: 1 / 4;
 }
