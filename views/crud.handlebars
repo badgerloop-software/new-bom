@@ -335,6 +335,10 @@
                     </div>
                     <div class="modal-body">
                         <p>Are you sure you want to delete these Records?</p>
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input id="deleteName" name="Name" class="form-control" required>
+                        </div>
                         <p class="text-warning"><small>This action cannot be undone.</small></p>
                     </div>
                     <div class="modal-footer">
@@ -495,6 +499,10 @@
                     </div>
                     <div class="modal-body">
                         <p>Are you sure you want to delete these Records?</p>
+                        <div class="form-group">
+                            <label>Company</label>
+                            <input id="deleteSponsor" name="company" class="form-control" required>
+                        </div>
                         <p class="text-warning"><small>This action cannot be undone.</small></p>
                     </div>
                     <div class="modal-footer">
@@ -545,6 +553,7 @@
         let array = code.split(',');
         let id = array[0].trim();
         document.getElementById('deleteSponsorForm').action = `/sponsors/${id}/delete`;
+        document.getElementById('deleteSponsor').value = array[1].trim();
     })
     $('#editteamleadModal').on('show.bs.modal', function (event) {
         let button = $(event.relatedTarget) // Button that triggered the modal
@@ -566,5 +575,6 @@
         let array = code.split(',');
         let id = array[0].trim();
         document.getElementById('deleteTeamleadForm').action = `/teamleads/${id}/delete`;
+        document.getElementById('deleteName').value = array[1].trim();
     })
 </script>
