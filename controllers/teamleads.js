@@ -59,7 +59,7 @@ exports.teamleads_delete = function (req, res) {
     });
 };
 
-exports.teamleads_upload = uploadTeamlead.single('teamleadImg'), (req, res) => {
+exports.teamleads_upload = uploadTeamlead.single('teamleadImg'), function (req, res) {
     if (req.file) {
         console.log('Uploading file...');
         fs.rename('uploads/teamleads/' + req.file.filename, creds.IMAGES_FOLDER + '/teamleads/' + req.file.originalname, function (err) {
