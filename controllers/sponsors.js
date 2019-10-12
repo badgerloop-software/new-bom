@@ -1,6 +1,6 @@
 const sponsors = require('../models/sponsor');
 const Sponsors = require('../models/sponsor');
-const Logs = require('./models/log');
+const Logs = require('../models/log');
 
 exports.sponsors_create = function (req, res) {
     let sponsors = new Sponsors(
