@@ -541,8 +541,10 @@
     })
     $('#deletesponsorModal').on('show.bs.modal', function (event) {
         let button = $(event.relatedTarget); // Button that triggered the modal
-        let code = button.data('code').trim(); // Extract info from data-* attributes
-        document.getElementById('deleteSponsorForm').action = `/sponsors/${code}/delete`;
+        let code = button.data('code') // Extract info from data-* attributes
+        let array = code.split(',');
+        let id = array[0].trim();
+        document.getElementById('deleteSponsorForm').action = `/sponsors/${id}/delete`;
     })
     $('#editteamleadModal').on('show.bs.modal', function (event) {
         let button = $(event.relatedTarget) // Button that triggered the modal
@@ -561,6 +563,8 @@
     $('#deleteteamleadModal').on('show.bs.modal', function (event) {
         let button = $(event.relatedTarget) // Button that triggered the modal
         let code = button.data('code') // Extract info from data-* attributes
-        document.getElementById('deleteTeamleadForm').action = `/teamleads/${code}/delete`;
+        let array = code.split(',');
+        let id = array[0].trim();
+        document.getElementById('deleteTeamleadForm').action = `/teamleads/${id}/delete`;
     })
 </script>
