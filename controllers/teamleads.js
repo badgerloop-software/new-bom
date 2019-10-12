@@ -121,8 +121,8 @@ exports.teamleads_delete = function (req, res) {
     });
 };
 
-exports.teamleads_upload = function (req, res) {
-    uploadTeamlead.single('`teamleadImg`'), (function (err) {
+exports.teamleads_upload = function() {
+    uploadTeamlead.single('`teamleadImg`'), function (req, res, next) {
         if (err) {
             console.log('No File Uploaded');
             var filename = 'FILE NOT UPLOADED';
@@ -148,5 +148,5 @@ exports.teamleads_upload = function (req, res) {
         });
         req.flash('success', { msg: `Teamlead Image Uploaded! Name of File: ${filename}` });
         return res.redirect('/crud');
-    });
+    };
 };
