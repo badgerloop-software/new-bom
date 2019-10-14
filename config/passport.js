@@ -86,7 +86,6 @@ passport.use(new SlackStragety({
   function findTeamLead(body, profile) {
     let output = false; // Innocent until proven guilty
     let obj = JSON.parse(body);
-    console.log(obj);
     let members = obj.group.members;
     let userID = profile.id;
     members.forEach((member) => {

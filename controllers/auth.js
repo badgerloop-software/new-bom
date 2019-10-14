@@ -16,10 +16,8 @@ exports.getAuthRedirect = (req, res) => {
   request(options, (err, response, body) => {
     let JSONresponse = JSON.parse(body);
     if(!JSONresponse.ok) {
-      console.log(JSONresponse);
       res.send('Error encountered: \n' + JSON.stringify(JSONresponse)).status(200).end();
     } else {
-      console.log(JSONresponse);
       res.send('Success!');
     }
   })
