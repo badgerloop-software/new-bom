@@ -18,6 +18,7 @@ const adminController = require('./controllers/admin');
 const budgetController = require('./controllers/budgets');
 const bomController = require('./controllers/bom');
 const crudController = require('./controllers/crud');
+const crudLogController = require('./controllers/crudLog');
 const sponsorsController = require('./controllers/sponsors');
 const teamleadscontroller = require('./controllers/teamleads');
 const utilsController = require('./controllers/utils');
@@ -26,13 +27,21 @@ const passportConfig = require('./config/passport');
 
 const uploadTeamlead = multer({ dest: './uploads/teamleads' });
 const uploadSponsor = multer({ dest: './uploads/sponsors' });
+const Logs = require('./models/log');
 const fs = require('fs');
+
+let date_ob = new Date();
+let date = ("0" + date_ob.getDate()).slice(-2);
+let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+let year = date_ob.getFullYear();
+let hours = date_ob.getHours();
+let minutes = date_ob.getMinutes();
+let seconds = date_ob.getSeconds();
 
 const app = module.exports.app = express();
 const server = http.createServer(app);
 server.listen(PORT);
 console.log(`The party is happening on ${PORT}, who do you know here?`)
-
 
 app.set('view engine', 'handlebars');
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
@@ -75,6 +84,7 @@ app.get('/orders/approve/:id', ordersController.getApproving);
 
 // Crud Routes
 app.get('/crud', crudController.getCrud);
+app.get('/crudLog', crudLogController.getCrudLogs);
 //app.get('/crud/sponsors/delete/:id', crudController.getDeleteSponsor);
 
 
@@ -127,6 +137,19 @@ app.post('/sponsors/upload', uploadSponsor.single('sponsorImg'), (req, res) => {
       if (err) console.log('ERROR: ' + err);
     });
     var filename = req.file.originalname;
+    let logs = new Logs(
+      {
+        time: year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds,
+        name: req.user.name,
+        action: "uploaded sponsor image",
+        field: "Image name: " + filename,
+      }
+    );
+    logs.save(function (err) {
+      if (err) {
+        return next(err);
+      }
+    });
     req.flash('success', { msg: `Sponsor Image Uploaded! Name of File: ${filename}` });
     return res.redirect('/crud');
   } else {
@@ -135,7 +158,6 @@ app.post('/sponsors/upload', uploadSponsor.single('sponsorImg'), (req, res) => {
     req.flash('success', { msg: `Sponsor image upload failed!` });
     return res.redirect('/crud');
   }
-  /* ===== Add the function to save filename to database ===== */
 });
 app.post('/teamleads/upload', uploadTeamlead.single('teamleadImg'), (req, res) => {
   if (req.file) {
@@ -145,6 +167,19 @@ app.post('/teamleads/upload', uploadTeamlead.single('teamleadImg'), (req, res) =
     });
     // shell.mv('uploads/sponsors/' + req.file.filename', 'file2', 'dir/');
     var filename = req.file.originalname;
+    let logs = new Logs(
+      {
+        time: year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds,
+        name: req.user.name,
+        action: "uploaded teamlead image",
+        field: "Image name: " + filename,
+      }
+    );
+    logs.save(function (err) {
+      if (err) {
+        return next(err);
+      }
+    });
     req.flash('success', { msg: `Teamlead Image Uploaded! Name of File: ${filename}` });
     return res.redirect('/crud');
   } else {
@@ -153,5 +188,4 @@ app.post('/teamleads/upload', uploadTeamlead.single('teamleadImg'), (req, res) =
     req.flash('success', { msg: `Teamlead image upload failed!` });
     return res.redirect('/crud');
   }
-  /* ===== Add the function to save filename to database ===== */
 });
