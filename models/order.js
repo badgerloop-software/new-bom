@@ -42,8 +42,6 @@ OrderSchema.index({'$**': 'text'}, {
 // }
 });
 
-console.log('Imported First');
-
 let orderModel = bomDB.model('Orders', OrderSchema);
 module.exports = orderModel;
 

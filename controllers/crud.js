@@ -10,7 +10,6 @@ exports.getCrud = (req, res) => {
         if (err) throw err; 
     Teamleads.find({}, (err, leadsList) => {
         if (err) throw err;
-	console.log(leadsList);
         return res.render('crud', {
             user: req.user,
             activeCRUD: true,
