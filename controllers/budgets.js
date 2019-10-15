@@ -29,7 +29,6 @@ function createMongoBudget(req, res, teamList, budgetList) {
 
 exports.createBudgets = (req, res) => {
   const NUMTEAMS = req.body.numTeams;
-  console.log(NUMTEAMS)
   let namesArray = [];
   let budgetsArray = [];
   for (let i = 0; i < NUMTEAMS; i++) {
