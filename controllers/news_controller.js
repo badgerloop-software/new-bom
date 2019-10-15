@@ -1,5 +1,5 @@
 const news = require('../models/news');
-const news = require('../models/news');
+const News = require('../models/news');
 const Logs = require('../models/log');
 
 let date_ob = new Date();
