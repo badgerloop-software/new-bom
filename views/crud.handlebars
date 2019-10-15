@@ -533,6 +533,57 @@
         </div>
     </div>
 
+    <div class="container">
+        <div class="table-wrapper">
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h2>Manage <b>News Posts</b></h2>
+                    </div>
+                    <div class="col-sm-6">
+                        <a href="#addteamleadModal" class="btn btn-success" data-toggle="modal">
+                            <i class="material-icons">&#xE147;</i>
+                            <span>Add New News Post</span>
+                        </a>
+                        <a href="#uploadTeamleadImageModal" class="btn btn-success" data-toggle="modal">
+                            <i class="material-icons">cloud_upload</i>
+                            <span>Upload Image</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Image Name</th>
+                        <th>Sub Heading</th>
+                        <th>Body</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each news}}
+                    <tr>
+                        <td>{{this.title}}</td>
+                        <td>{{this.imgName}}</td>
+                        <td>{{this.subHeading}}</td>
+                        <td>{{this.body}}</td>
+                        <td>
+                            <a href="#editteamleadModal" class="edit"
+                                data-code="{{this.Team}}, {{this.Position}}, {{this.Name}}, {{this.Major}}, {{this.Year}}, {{this.Picture}}, {{this._id}}"
+                                data-toggle="modal"><i class="material-icons" data-toggle="tooltip"
+                                    title="Edit">&#xE254;</i></a>
+                            <a href="#deleteteamleadModal" class="delete" data-code="{{this._id}}, {{this.Name}}"
+                                data-toggle="modal"><i class="material-icons" data-toggle="tooltip"
+                                    title="Delete">&#xE872;</i></a>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 </body>
 
 <script>

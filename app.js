@@ -21,6 +21,7 @@ const crudController = require('./controllers/crud');
 const crudLogController = require('./controllers/crudLog');
 const sponsorsController = require('./controllers/sponsors');
 const teamleadscontroller = require('./controllers/teamleads');
+const newsController = require('./controllers/news_controller');
 const utilsController = require('./controllers/utils');
 
 const passportConfig = require('./config/passport');
@@ -129,6 +130,13 @@ app.get('/teamleads/:id', teamleadscontroller.teamleads_details);
 app.get('/teamleads/', teamleadscontroller.teamleads_list);
 app.post('/teamleads/:id/update', teamleadscontroller.teamleads_update);
 app.post('/teamleads/:id/delete', teamleadscontroller.teamleads_delete);
+
+// News Routes
+app.post('/news/create', newsController.news_create);
+app.get('/news/:id', newsController.news_details);
+app.get('/news/', newsController.news_list);
+app.post('/news/:id/update', newsController.news_update);
+app.post('/news/:id/delete', newsController.news_delete);
 
 app.post('/sponsors/upload', uploadSponsor.single('sponsorImg'), (req, res) => {
   if (req.file) {
