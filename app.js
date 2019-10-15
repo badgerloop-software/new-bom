@@ -21,12 +21,14 @@ const crudController = require('./controllers/crud');
 const crudLogController = require('./controllers/crudLog');
 const sponsorsController = require('./controllers/sponsors');
 const teamleadscontroller = require('./controllers/teamleads');
+const newsController = require('./controllers/news_controller');
 const utilsController = require('./controllers/utils');
 
 const passportConfig = require('./config/passport');
 
 const uploadTeamlead = multer({ dest: './uploads/teamleads' });
 const uploadSponsor = multer({ dest: './uploads/sponsors' });
+const uploadNews = multer({ dest: './uploads/news' });
 const Logs = require('./models/log');
 const fs = require('fs');
 
@@ -130,6 +132,13 @@ app.get('/teamleads/', teamleadscontroller.teamleads_list);
 app.post('/teamleads/:id/update', teamleadscontroller.teamleads_update);
 app.post('/teamleads/:id/delete', teamleadscontroller.teamleads_delete);
 
+// News Routes
+app.post('/news/create', newsController.news_create);
+app.get('/news/:id', newsController.news_details);
+app.get('/news/', newsController.news_list);
+app.post('/news/:id/update', newsController.news_update);
+app.post('/news/:id/delete', newsController.news_delete);
+
 app.post('/sponsors/upload', uploadSponsor.single('sponsorImg'), (req, res) => {
   if (req.file) {
     console.log('Uploading file...');
@@ -186,6 +195,36 @@ app.post('/teamleads/upload', uploadTeamlead.single('teamleadImg'), (req, res) =
     console.log('No File Uploaded');
     var filename = 'FILE NOT UPLOADED';
     req.flash('success', { msg: `Teamlead image upload failed!` });
+    return res.redirect('/crud');
+  }
+});
+app.post('/news/upload', uploadNews.single('newsImg'), (req, res) => {
+  if (req.file) {
+    console.log('Uploading file...');
+    fs.rename('uploads/news/' + req.file.filename, process.env.IMAGES_FOLDER + '/' + req.file.originalname, function (err) {
+      if (err) console.log('ERROR: ' + err);
+    });
+    // shell.mv('uploads/sponsors/' + req.file.filename', 'file2', 'dir/');
+    var filename = req.file.originalname;
+    let logs = new Logs(
+      {
+        time: year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds,
+        name: req.user.name,
+        action: "uploaded news image",
+        field: "Image name: " + filename,
+      }
+    );
+    logs.save(function (err) {
+      if (err) {
+        return next(err);
+      }
+    });
+    req.flash('success', { msg: `News Image Uploaded! Name of File: ${filename}` });
+    return res.redirect('/crud');
+  } else {
+    console.log('No File Uploaded');
+    var filename = 'FILE NOT UPLOADED';
+    req.flash('success', { msg: `News image upload failed!` });
     return res.redirect('/crud');
   }
 });
