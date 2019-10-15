@@ -28,6 +28,7 @@ const passportConfig = require('./config/passport');
 
 const uploadTeamlead = multer({ dest: './uploads/teamleads' });
 const uploadSponsor = multer({ dest: './uploads/sponsors' });
+const uploadNews = multer({ dest: './uploads/news' });
 const Logs = require('./models/log');
 const fs = require('fs');
 
@@ -194,6 +195,36 @@ app.post('/teamleads/upload', uploadTeamlead.single('teamleadImg'), (req, res) =
     console.log('No File Uploaded');
     var filename = 'FILE NOT UPLOADED';
     req.flash('success', { msg: `Teamlead image upload failed!` });
+    return res.redirect('/crud');
+  }
+});
+app.post('/news/upload', uploadNews.single('newsImg'), (req, res) => {
+  if (req.file) {
+    console.log('Uploading file...');
+    fs.rename('uploads/news/' + req.file.filename, process.env.IMAGES_FOLDER + '/' + req.file.originalname, function (err) {
+      if (err) console.log('ERROR: ' + err);
+    });
+    // shell.mv('uploads/sponsors/' + req.file.filename', 'file2', 'dir/');
+    var filename = req.file.originalname;
+    let logs = new Logs(
+      {
+        time: year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds,
+        name: req.user.name,
+        action: "uploaded news image",
+        field: "Image name: " + filename,
+      }
+    );
+    logs.save(function (err) {
+      if (err) {
+        return next(err);
+      }
+    });
+    req.flash('success', { msg: `News Image Uploaded! Name of File: ${filename}` });
+    return res.redirect('/crud');
+  } else {
+    console.log('No File Uploaded');
+    var filename = 'FILE NOT UPLOADED';
+    req.flash('success', { msg: `News image upload failed!` });
     return res.redirect('/crud');
   }
 });
