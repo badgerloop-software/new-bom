@@ -51,7 +51,7 @@ exports.news_details = function (req, res) {
 };
 
 exports.news_list = function (req, res) {
-    sponsors.find(function (err, news) {
+    news.find(function (err, news) {
         if (err) {
             console.log(err);
         } else {
