@@ -599,19 +599,19 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label>Title</label>
-                            <input id="editTitle" name="title" class="form-control" required>
+                            <input id="addTitle" name="title" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>Image Name</label>
-                            <input id="editImgName" name="imgName" class="form-control" required>
+                            <input id="addImgName" name="imgName" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>Sub Heading</label>
-                            <input id="editSubHeading" name="subHeading" class="form-control" required>
+                            <input id="addSubHeading" name="subHeading" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>Body</label>
-                            <input id="editBody" name="body" class="form-control" required>
+                            <input id="addBody" name="body" class="form-control" required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -756,7 +756,6 @@
         document.getElementById('editImgName').value = array[1].trim();
         document.getElementById('editSubHeading').value = array[2].trim();
         document.getElementById('editBody').value = array[3].trim();
-
     })
     $('#deleteNewsModal').on('show.bs.modal', function (event) {
         let button = $(event.relatedTarget) // Button that triggered the modal
