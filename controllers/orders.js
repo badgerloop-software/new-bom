@@ -201,10 +201,13 @@ exports.postEditOrder = (req, res) => {
     order.countsTowardPodCost = podCost;
     order.needDate = needDate;
     if (order.isOrdered) {
+	    console.log("This item has already been ordered, updating BOM");
       Budget.find({}, (err, list) => {
         updateBudget(list[0], order, oldCost, (err) => {
+		console.log("Made it");
           if (err) throw err;
           order.save((err) => {
+		  console.log("Saved");
             if (err) throw err;
             req.flash('success', { msg: 'Order Sucessfully Updated' });
             return res.redirect('back');
@@ -278,6 +281,7 @@ exports.getOrdering = (req, res) => {
         Budget.find({}, (err, list) => {
           if (err) throw new Error(err);
           updateBudget(list[0], order, null, (err, list) => {
+            console.log("Updated Budget");
             req.flash('success', { msg: 'Order Updated' });
             return res.redirect('/orders/view');
           });
@@ -379,10 +383,13 @@ exports.getApproving = (req, res) => {
 
 function updateBudget(budget, order, oldCost, callback) {
   budgetID = budget._id;
+	console.log(`${budgetID} is the budgetID`);
   teamIndex = budget.findTeamIndex(order.subteam);
+	console.log(`${teamIndex} is the teamIndex`);
   let newCurrentSpent = budget.currentSpent;
   if (oldCost) newCurrentSpent[teamIndex] -= oldCost;
   newCurrentSpent[teamIndex] += order.totalCost;
+	console.log(`${oldCost} is oldCost ${order.totalCost} is new cost`);
   let update = { currentSpent: newCurrentSpent };
   Budget.findByIdAndUpdate(budgetID, update, { new: true }, callback);
 }
