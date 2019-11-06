@@ -460,7 +460,7 @@ function createSlackMessage(order, user) {
 function createSlackResponse(order, user) {
   let msg;
   msg =
-    `Request for ${order.item} has been approved by @${user.name}!`
+    `Request for ${order.item} has been approved by <@${user.name}>!`
   let options = {
     uri: webhookURL,
     method: 'POST',
