@@ -369,6 +369,7 @@ exports.getApproving = (req, res) => {
           if (err) throw err;
           order.save((err) => {
             if (err) throw err;
+            createSlackMessage(order, user);
             req.flash('success', { msg: 'Order Approved' });
             return res.redirect('/orders/view');
           });
