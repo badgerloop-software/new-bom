@@ -259,7 +259,7 @@ exports.getOrdering = (req, res) => {
   let orderID = req.params.id;
   if (!user || !user.isFSC) {
     req.flash('errors', { msg: 'You are not authorized to place an order' });
-   return res.redirect('/');
+    return res.redirect('/');
   }
   Order.findById(orderID, (err, order) => {
     if (err) throw err;
@@ -268,77 +268,77 @@ exports.getOrdering = (req, res) => {
       return res.redirect('back');
     }
     if (!order.isDigikey) {
-    if (order.shipping === undefined) order.shipping = 0;
-    if (order.tax === undefined) order.tax = 0;
-    order.purchaser = user.name;
-    order.dateOrdered = new Date();
-    order.isOrdered = true;
-    order.save((err) => {
-      if (err) throw err;
-      req.flash('success', { msg: 'Item Updated' });
-     return res.redirect('/orders/view');
-    });
-  } else {
-    let numParts = order.item.split(',').length;
-    let partNames = order.item.split(',');
-    let partQuantities = order.quantity.split(',');
-    let partNumbers = order.productNum.split(',');
-    let partCosts = order.indvPrice.split(',');
-    for (let i=0; i< numParts; i++) {
-      let newPart;
-      let totalCost = Number(partCosts[i] * partQuantities[i]).toFixed(2);
-      if (i == 0) {
-         newPart = new Order({
-          isApproved: true,
-          isOrdered: true,
-          purchaser: user.name,
-          dateOrdered: new Date(),
-          supplier: 'Digikey',
-          item: partNames[i],
-          quantity: partQuantities[i],
-          productNum: partNumbers[i],
-          trackingNum: order.trackingNum,
-          subteam: order.subteam,
-          requestor: order.requestor,
-          dateRequested: order.dateRequested,
-          invoice: order.invoice,
-          tax: order.tax,
-          shipping: order.shipping,
-          indvPrice: partCosts[i],
-          totalCost: totalCost,
-          link: order.link
+      if (order.shipping === undefined) order.shipping = 0;
+      if (order.tax === undefined) order.tax = 0;
+      order.purchaser = user.name;
+      order.dateOrdered = new Date();
+      order.isOrdered = true;
+      order.save((err) => {
+        if (err) throw err;
+        req.flash('success', { msg: 'Item Updated' });
+        return res.redirect('/orders/view');
+      });
+    } else {
+      let numParts = order.item.split(',').length;
+      let partNames = order.item.split(',');
+      let partQuantities = order.quantity.split(',');
+      let partNumbers = order.productNum.split(',');
+      let partCosts = order.indvPrice.split(',');
+      for (let i = 0; i < numParts; i++) {
+        let newPart;
+        let totalCost = Number(partCosts[i] * partQuantities[i]).toFixed(2);
+        if (i == 0) {
+          newPart = new Order({
+            isApproved: true,
+            isOrdered: true,
+            purchaser: user.name,
+            dateOrdered: new Date(),
+            supplier: 'Digikey',
+            item: partNames[i],
+            quantity: partQuantities[i],
+            productNum: partNumbers[i],
+            trackingNum: order.trackingNum,
+            subteam: order.subteam,
+            requestor: order.requestor,
+            dateRequested: order.dateRequested,
+            invoice: order.invoice,
+            tax: order.tax,
+            shipping: order.shipping,
+            indvPrice: partCosts[i],
+            totalCost: totalCost,
+            link: order.link
+          });
+        } else {
+          newPart = new Order({
+            isApproved: true,
+            isOrdered: true,
+            purchaser: user.name,
+            dateOrdered: new Date(),
+            supplier: 'Digikey',
+            item: partNames[i],
+            quantity: partQuantities[i],
+            productNum: partNumbers[i],
+            trackingNum: order.trackingNum,
+            subteam: order.subteam,
+            requestor: order.requestor,
+            dateRequested: order.dateRequested,
+            invoice: order.invoice,
+            tax: 0,
+            shipping: 0,
+            indvPrice: partCosts[i],
+            totalCost: totalCost
+          });
+        }
+        newPart.save((err) => {
+          console.log('New Part Made');
         });
-      } else {
-       newPart = new Order({
-        isApproved: true,
-        isOrdered: true,
-        purchaser: user.name,
-        dateOrdered: new Date(),
-        supplier: 'Digikey',
-        item: partNames[i],
-        quantity: partQuantities[i],
-        productNum: partNumbers[i],
-        trackingNum: order.trackingNum,
-        subteam: order.subteam,
-        requestor: order.requestor,
-        dateRequested: order.dateRequested,
-        invoice: order.invoice,
-        tax: 0,
-        shipping: 0,
-        indvPrice: partCosts[i],
-        totalCost: totalCost
+      }
+      Order.findOneAndDelete({ '_id': orderID }, (err) => {
+        console.log('Order Deleted');
+        req.flash('success', { msg: 'Item Updated' });
+        return res.redirect('/orders/view');
       });
     }
-      newPart.save((err) => {
-        console.log('New Part Made');
-      });
-    }
-    Order.findOneAndDelete({'_id': orderID}, (err) => {
-      console.log('Order Deleted');
-      req.flash('success', {msg: 'Item Updated'});
-      return res.redirect('/orders/view');
-    });
-  }
   });
 }
 
@@ -369,6 +369,7 @@ exports.getApproving = (req, res) => {
           if (err) throw err;
           order.save((err) => {
             if (err) throw err;
+            createSlackResponse(orderObj, req.user);
             req.flash('success', { msg: 'Order Approved' });
             return res.redirect('/orders/view');
           });
@@ -449,14 +450,26 @@ function createSlackMessage(order, user) {
       ]
     }
   };
-  request(options, (err, res, body) => {
-    if (!err && res.statusCode == 200) {
-      console.log(body.id);
-    }
-  })
-}
 
-function redirectToMain(req, res) {
-  req.flash('errors', { msg: 'You are not authorized to view that!' });
-  res.redirect('/');
-}
+  function createSlackResponse(order, user) {
+    let msg;
+    msg =
+      `<equest for ${order.item} has been approved by @${user.slackID}!`
+    let options = {
+      uri: webhookURL,
+      method: 'POST',
+      json: {
+        "text": msg,
+      }
+    };
+    request(options, (err, res, body) => {
+      if (!err && res.statusCode == 200) {
+        console.log(body.id);
+      }
+    })
+  }
+
+  function redirectToMain(req, res) {
+    req.flash('errors', { msg: 'You are not authorized to view that!' });
+    res.redirect('/');
+  }
