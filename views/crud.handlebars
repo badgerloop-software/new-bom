@@ -574,10 +574,11 @@
                         <td>{{this.body}}</td>
                         <td>
                             <a href="#editNewsModal" class="edit"
-                                data-code="{{this.title}}, {{this.imgName}}, {{this.subHeading}}, {{this.body}}, {{this._id}}"
+                                data-code="{{this.title}},, {{this.imgName}},, {{this.subHeading}},, {{this.body}},, {{this._id}}"
                                 data-toggle="modal"><i class="material-icons" data-toggle="tooltip"
                                     title="Edit">&#xE254;</i></a>
-                            <a href="#deleteNewsModal" class="delete" data-code="{{this._id}}, {{this.title}}" data-toggle="modal">
+                            <a href="#deleteNewsModal" class="delete" data-code="{{this._id}}, {{this.title}}"
+                                data-toggle="modal">
                                 <i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i>
                             </a>
                         </td>
@@ -611,7 +612,7 @@
                         </div>
                         <div class="form-group">
                             <label>Body</label>
-                            <input id="addBody" name="body" class="form-control" required>
+                            <textarea name="body" class="form-control" id="addBody" rows="10" required></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -646,7 +647,7 @@
                         </div>
                         <div class="form-group">
                             <label>Body</label>
-                            <input id="editBody" name="body" class="form-control" required>
+                            <textarea name="body" class="form-control" id="editBody" rows="10" required></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -749,7 +750,7 @@
     $('#editNewsModal').on('show.bs.modal', function (event) {
         let button = $(event.relatedTarget) // Button that triggered the modal
         let code = button.data('code') // Extract info from data-* attributes
-        let array = code.split(',');
+        let array = code.split(',,');
         let id = array[4].trim();
         document.getElementById('editNewsForm').action = `/news/${id}/update`;
         document.getElementById('editTitle').value = array[0].trim();

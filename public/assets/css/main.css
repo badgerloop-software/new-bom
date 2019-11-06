@@ -46,7 +46,7 @@ button {
 }
 #makeForm {
   display: grid;
-  grid-template-columns: 25vw 25vw 25vw;
+  grid-template-columns: 25vw 30vw 25vw;
   grid-gap: 20px;
   grid-column-gap: 40px;
   grid-auto-rows: .5fr;
@@ -97,4 +97,10 @@ textarea {
 }
 .full-width2 {
   grid-column: 1 / 4;
+}
+.currencyinput {
+  border: 1px inset #ccc;
+}
+.currencyinput input {
+  border: 0;
 }
