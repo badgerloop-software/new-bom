@@ -370,6 +370,7 @@ exports.getApproving = (req, res) => {
           order.save((err) => {
             if (err) throw err;
             createSlackResponse(order, user);
+            createSlackReminder(order, user);
             req.flash('success', { msg: 'Order Approved' });
             return res.redirect('/orders/view');
           });
@@ -463,6 +464,23 @@ function createSlackResponse(order, user) {
     `Request for ${order.item} has been approved by <@${user.slackID}>!`
   let options = {
     uri: webhookURL,
+    method: 'POST',
+    json: {
+      "text": msg,
+    }
+  };
+  request(options, (err, res, body) => {
+    if (!err && res.statusCode == 200) {
+      console.log(body.id);
+    }
+  })
+}
+function createSlackReminder(order, user) {
+  let msg;
+  msg =
+    `Request for ${order.item} needs approval in purchasing chanel!!`
+  let options = {
+    uri: 'https://hooks.slack.com/services/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',
     method: 'POST',
     json: {
       "text": msg,
