@@ -1,7 +1,6 @@
 require('dotenv').config();
 
 const PORT = process.env.PORT || 7001;
-console.log(process.env.CLIENT_ID);
 const express = require('express');
 const exphbs = require('express-handlebars');
 const bodyParser = require('body-parser');

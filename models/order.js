@@ -3,6 +3,7 @@ const mongoConfig = require('../config/mongo')
 const bomDB = mongoose.createConnection(mongoConfig.bomURL);
 
 mongoose.set('useCreateIndex', true);
+mongoose.set('useFindAndModify', false);
 
 const OrderSchema = new mongoose.Schema({
   requestor: String,

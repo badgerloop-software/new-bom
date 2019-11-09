@@ -200,11 +200,14 @@ exports.postEditOrder = (req, res) => {
     order.project = req.body.project;
     order.countsTowardPodCost = podCost;
     order.needDate = needDate;
-    if (order.isApproved) {
+    if (order.isOrdered) {
+	    console.log("This item has already been ordered, updating BOM");
       Budget.find({}, (err, list) => {
         updateBudget(list[0], order, oldCost, (err) => {
+		console.log("Made it");
           if (err) throw err;
           order.save((err) => {
+		  console.log("Saved");
             if (err) throw err;
             req.flash('success', { msg: 'Order Sucessfully Updated' });
             return res.redirect('back');
@@ -233,7 +236,7 @@ exports.getCancelOrder = (req, res) => {
     }
     Order.findById(req.query.q, (err, order) => {
       if (err) throw err;
-      if (order.isPurchased || order.isApproved) {
+      if (order.isOrdered) {
         Budget.find({}, (err, list) => {
           deleteOrderFromBudget(list[0], order, () => {
             Order.deleteOne({ '_id': req.query.q }, (err) => {
@@ -259,7 +262,7 @@ exports.getOrdering = (req, res) => {
   let orderID = req.params.id;
   if (!user || !user.isFSC) {
     req.flash('errors', { msg: 'You are not authorized to place an order' });
-   return res.redirect('/');
+    return res.redirect('/');
   }
   Order.findById(orderID, (err, order) => {
     if (err) throw err;
@@ -268,77 +271,89 @@ exports.getOrdering = (req, res) => {
       return res.redirect('back');
     }
     if (!order.isDigikey) {
-    if (order.shipping === undefined) order.shipping = 0;
-    if (order.tax === undefined) order.tax = 0;
-    order.purchaser = user.name;
-    order.dateOrdered = new Date();
-    order.isOrdered = true;
-    order.save((err) => {
-      if (err) throw err;
-      req.flash('success', { msg: 'Item Updated' });
-     return res.redirect('/orders/view');
-    });
-  } else {
-    let numParts = order.item.split(',').length;
-    let partNames = order.item.split(',');
-    let partQuantities = order.quantity.split(',');
-    let partNumbers = order.productNum.split(',');
-    let partCosts = order.indvPrice.split(',');
-    for (let i=0; i< numParts; i++) {
-      let newPart;
-      let totalCost = Number(partCosts[i] * partQuantities[i]).toFixed(2);
-      if (i == 0) {
-         newPart = new Order({
-          isApproved: true,
-          isOrdered: true,
-          purchaser: user.name,
-          dateOrdered: new Date(),
-          supplier: 'Digikey',
-          item: partNames[i],
-          quantity: partQuantities[i],
-          productNum: partNumbers[i],
-          trackingNum: order.trackingNum,
-          subteam: order.subteam,
-          requestor: order.requestor,
-          dateRequested: order.dateRequested,
-          invoice: order.invoice,
-          tax: order.tax,
-          shipping: order.shipping,
-          indvPrice: partCosts[i],
-          totalCost: totalCost,
-          link: order.link
+      if (order.shipping === undefined) order.shipping = 0;
+      if (order.tax === undefined) order.tax = 0;
+      order.purchaser = user.name;
+      order.dateOrdered = new Date();
+      order.isOrdered = true;
+      order.save((err) => {
+        if (err) throw err;
+        Budget.find({}, (err, list) => {
+          if (err) throw new Error(err);
+          updateBudget(list[0], order, null, (err, list) => {
+            console.log("Updated Budget");
+            req.flash('success', { msg: 'Order Updated' });
+            return res.redirect('/orders/view');
+          });
         });
-      } else {
-       newPart = new Order({
-        isApproved: true,
-        isOrdered: true,
-        purchaser: user.name,
-        dateOrdered: new Date(),
-        supplier: 'Digikey',
-        item: partNames[i],
-        quantity: partQuantities[i],
-        productNum: partNumbers[i],
-        trackingNum: order.trackingNum,
-        subteam: order.subteam,
-        requestor: order.requestor,
-        dateRequested: order.dateRequested,
-        invoice: order.invoice,
-        tax: 0,
-        shipping: 0,
-        indvPrice: partCosts[i],
-        totalCost: totalCost
+      });
+    } else {
+      let numParts = order.item.split(',').length;
+      let partNames = order.item.split(',');
+      let partQuantities = order.quantity.split(',');
+      let partNumbers = order.productNum.split(',');
+      let partCosts = order.indvPrice.split(',');
+      for (let i = 0; i < numParts; i++) {
+        let newPart;
+        let totalCost = Number(partCosts[i] * partQuantities[i]).toFixed(2);
+        if (i == 0) {
+          newPart = new Order({
+            isApproved: true,
+            isOrdered: true,
+            purchaser: user.name,
+            dateOrdered: new Date(),
+            supplier: 'Digikey',
+            item: partNames[i],
+            quantity: partQuantities[i],
+            productNum: partNumbers[i],
+            trackingNum: order.trackingNum,
+            subteam: order.subteam,
+            requestor: order.requestor,
+            dateRequested: order.dateRequested,
+            invoice: order.invoice,
+            tax: order.tax,
+            shipping: order.shipping,
+            indvPrice: partCosts[i],
+            totalCost: totalCost,
+            link: order.link
+          });
+        Budget.find({}, (err, list) => {
+        if (err) throw new Error(err);
+        updateBudget(list[0], order, null, (err, budget) => {
+          console.log('budget updated')
+        });
+      });
+        } else {
+          newPart = new Order({
+            isApproved: true,
+            isOrdered: true,
+            purchaser: user.name,
+            dateOrdered: new Date(),
+            supplier: 'Digikey',
+            item: partNames[i],
+            quantity: partQuantities[i],
+            productNum: partNumbers[i],
+            trackingNum: order.trackingNum,
+            subteam: order.subteam,
+            requestor: order.requestor,
+            dateRequested: order.dateRequested,
+            invoice: order.invoice,
+            tax: 0,
+            shipping: 0,
+            indvPrice: partCosts[i],
+            totalCost: totalCost
+          });
+        }
+        newPart.save((err) => {
+          console.log('New Part Made');
+        });
+      }
+      Order.findOneAndDelete({ '_id': orderID }, (err) => {
+        console.log('Order Deleted');
+        req.flash('success', { msg: 'Item Updated' });
+        return res.redirect('/orders/view');
       });
     }
-      newPart.save((err) => {
-        console.log('New Part Made');
-      });
-    }
-    Order.findOneAndDelete({'_id': orderID}, (err) => {
-      console.log('Order Deleted');
-      req.flash('success', {msg: 'Item Updated'});
-      return res.redirect('/orders/view');
-    });
-  }
   });
 }
 
@@ -356,10 +371,7 @@ exports.getApproving = (req, res) => {
     }
     Order.findById(orderID, (err, order) => {
       order.isApproved = true;
-      let budgetID = null;
-      let update;
-      let teamIndex = null
-      Budget.find({}, (err, budgets) => {
+      order.save((err) => {
         if (err) throw err;
         if (budgets === {}) {
           req.flash('errors', { msg: 'The Budget has not been initalized' });
@@ -378,14 +390,18 @@ exports.getApproving = (req, res) => {
       });
     });
   });
-}
+};
+
 
 function updateBudget(budget, order, oldCost, callback) {
   budgetID = budget._id;
+	console.log(`${budgetID} is the budgetID`);
   teamIndex = budget.findTeamIndex(order.subteam);
+	console.log(`${teamIndex} is the teamIndex`);
   let newCurrentSpent = budget.currentSpent;
   if (oldCost) newCurrentSpent[teamIndex] -= oldCost;
   newCurrentSpent[teamIndex] += order.totalCost;
+	console.log(`${oldCost} is oldCost ${order.totalCost} is new cost`);
   let update = { currentSpent: newCurrentSpent };
   Budget.findByIdAndUpdate(budgetID, update, { new: true }, callback);
 }
