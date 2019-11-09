@@ -496,7 +496,7 @@ function createSlackReminder(order, user) {
   msg =
     `Request for ${order.item} needs approval in purchasing chanel!!`
   let options = {
-    uri: 'https://hooks.slack.com/services/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',
+    uri: webhookURL2,
     method: 'POST',
     json: {
       "text": msg,
