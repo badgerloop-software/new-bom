@@ -469,7 +469,7 @@ function createSlackMessage(order, user) {
   };
   request(options, (err, res, body) => {
     if (!err && res.statusCode == 200) {
-      console.log(body.id);
+      console.log(body);
     }
   })
 }
@@ -483,23 +483,7 @@ function createSlackResponse(order, user) {
     method: 'POST',
     json: {
       "text": msg,
-    }
-  };
-  request(options, (err, res, body) => {
-    if (!err && res.statusCode == 200) {
-      console.log(body.id);
-    }
-  })
-}
-function createSlackReminder(order, user) {
-  let msg;
-  msg =
-    `Request for ${order.item} needs approval in purchasing chanel!!`
-  let options = {
-    uri: webhookURL2,
-    method: 'POST',
-    json: {
-      "text": msg,
+      "thread_ts": "1482960137.003543"
     }
   };
   request(options, (err, res, body) => {
