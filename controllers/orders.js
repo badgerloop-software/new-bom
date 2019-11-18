@@ -468,6 +468,7 @@ function createSlackMessage(order, user) {
     }
   };
   request(options, (err, res, body) => {
+    console.log(res);
     if (!err && res.statusCode == 200) {
       console.log(body);
     }
