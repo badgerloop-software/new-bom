@@ -1,0 +1,29 @@
+<div class="card">
+  <h1>Edit Budget Allocations</h1>
+  <h4><small>I made this with absolutely no help from Luke even though I asked him a million times</small></h4>
+  <form id="form" method="POST" action="/budget/createBudget">
+    <div id="inputs">
+      {{#each settings}}
+      <div class="form-row">
+        <div class="col">
+          <input type="text" class="form-control nameInputs" value="{{this.name}}">
+        </div>
+        <div class="col">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span>$</span>
+              <input type="number" class="form-control" name="budget{{@index}}" value="{{this.budget}}">
+              <div class="input-group-append">
+                <span>.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{/each}}
+</div>
+<button type="submit" class="form-control btn btn-success">Finalize Budget</button>
+</form>
+</div>
+<script src="../../assets/js/createBudget.js"></script>

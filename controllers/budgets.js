@@ -1,9 +1,28 @@
 const Budgets = require('../models/budget');
 
 exports.getEdit = (req, res) => {
-  res.send('Edit Budget');
+  if(!req.user || (!req.user.isFSC && !req.user.isAdmin)) {
+    req.flash('error', {msg: 'You are not authorized to do this'});
+  }
+  Budgets.findOne({}, (err, budget) => {
+    if (err) throw err;
+    console.log(budget);
+    res.render('bom/editBudget', {
+      user: req.user,
+      settings: mongoObjectToHBS(budget)
+    });
+  });
 }
-
+function mongoObjectToHBS(mongoObject) {
+  let obj = {};
+  let len = mongoObject.teamList.length;
+  let teamList = mongoObject.teamList;
+  let budgetList = mongoObject.setBudgets;
+  for(let i=0;i<len;i++) {
+    obj[i] = {"name" : teamList[i], "budget":budgetList[i]};
+  }
+  return obj;
+}
 function createMongoBudget(req, res, teamList, budgetList) {
   if (req.user.isFSC || req.user.isAdmin) {
     let currentSpent = [];
