@@ -1,12 +1,13 @@
-<div class="card">
+<div style="background: white;">
   <h1>Edit Budget Allocations</h1>
   <h4><small>I made this with absolutely no help from Luke even though I asked him a million times</small></h4>
-  <form id="form" method="POST" action="/budget/createBudget">
+  <form id="form" method="POST" action="/budget/editBudget">
+    <input name="numTeams" value="{{numTeams}}" style="display: none;">
     <div id="inputs">
       {{#each settings}}
       <div class="form-row">
         <div class="col">
-          <input type="text" class="form-control nameInputs" value="{{this.name}}">
+          <input type="text" class="form-control nameInputs" value="{{this.name}}" readonly>
         </div>
         <div class="col">
           <div class="input-group mb-3">
@@ -20,7 +21,6 @@
           </div>
         </div>
       </div>
-    </div>
     {{/each}}
 </div>
 <button type="submit" class="form-control btn btn-success">Finalize Budget</button>

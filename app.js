@@ -110,6 +110,7 @@ app.get('/budget/edit', passportConfig.isAuthenticated, budgetController.getEdit
 app.post('/budget/createBudget', budgetController.createBudgets);
 app.get('/budget/delete', passportConfig.isAuthenticated, budgetController.getDelete);
 app.get('/budget/editBudget', budgetController.getEdit);
+app.post('/budget/editBudget', budgetController.postEdit);
 
 // Utilities Routes
 app.get('/calendar', passportConfig.isAuthenticated, utilsController.getCal);
