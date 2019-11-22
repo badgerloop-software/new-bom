@@ -3,7 +3,6 @@ const Budget = require('../models/budget');
 const webhookURL = process.env.WEBHOOK_URL;
 const URL = process.env.LOCAL_URL;
 const request = require('request');
-const FSCLead = "UG46HDHS7";
 
 exports.getMakeOrder = (req, res) => {
   Budget.find({}, (err, budgets) => {
@@ -374,20 +373,9 @@ exports.getApproving = (req, res) => {
       order.isApproved = true;
       order.save((err) => {
         if (err) throw err;
-        if (budgets === {}) {
-          req.flash('errors', { msg: 'The Budget has not been initalized' });
-          return res.redirect('/');
-        }
-        updateBudget(budgets[0], order, null, (err, doc) => {
-          if (err) throw err;
-          order.save((err) => {
-            if (err) throw err;
-            createSlackResponse(order, user);
-            createSlackReminder(order, user);
-            req.flash('success', { msg: 'Order Approved' });
-            return res.redirect('/orders/view');
-          });
-        });
+        createSlackResponse(order, user);
+        req.flash('success', { msg: 'Order Approved' });
+        return res.redirect('/orders/view');
       });
     });
   });
@@ -478,7 +466,7 @@ function createSlackMessage(order, user) {
 function createSlackResponse(order, user) {
   let msg;
   msg =
-    `<@${FSCLead}> Request for ${order.item} has been approved by <@${user.slackID}>!`
+    `Request for ${order.item} has been approved by <@${user.slackID}>!`
   let options = {
     uri: webhookURL,
     method: 'POST',
