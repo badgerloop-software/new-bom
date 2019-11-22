@@ -3,6 +3,7 @@ const Budget = require('../models/budget');
 const webhookURL = process.env.WEBHOOK_URL;
 const URL = process.env.LOCAL_URL;
 const request = require('request');
+const fscLead = "UG46HDHS7";
 
 exports.getMakeOrder = (req, res) => {
   Budget.find({}, (err, budgets) => {
@@ -466,7 +467,7 @@ function createSlackMessage(order, user) {
 function createSlackResponse(order, user) {
   let msg;
   msg =
-    `Request for ${order.item} has been approved by <@${user.slackID}>!`
+    `<@${fscLead}>Request for ${order.item} has been approved by <@${user.slackID}>!`
   let options = {
     uri: webhookURL,
     method: 'POST',
