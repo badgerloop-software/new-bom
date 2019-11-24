@@ -22,6 +22,7 @@ const sponsorsController = require('./controllers/sponsors');
 const teamleadscontroller = require('./controllers/teamleads');
 const newsController = require('./controllers/news_controller');
 const utilsController = require('./controllers/utils');
+const vendorsController = require('./controllers/vendors');
 
 const passportConfig = require('./config/passport');
 
@@ -132,6 +133,12 @@ app.get('/teamleads/:id', teamleadscontroller.teamleads_details);
 app.get('/teamleads/', teamleadscontroller.teamleads_list);
 app.post('/teamleads/:id/update', teamleadscontroller.teamleads_update);
 app.post('/teamleads/:id/delete', teamleadscontroller.teamleads_delete);
+
+// Vendor Routes
+app.get('/vendors/list', passportConfig.isAuthenticated, vendorsController.getListVendors);
+app.post('/vendors/add', passportConfig.isAuthenticated, vendorsController.postAddVendor);
+app.get('/vendors/delete', passportConfig.isAuthenticated, vendorsController.getDeleteVendor);
+app.get('/vendors/getPass', passportConfig.isAuthenticated, vendorsController.getPassword);
 
 // News Routes
 app.post('/news/create', newsController.news_create);

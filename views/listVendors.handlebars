@@ -1,0 +1,79 @@
+{{#if showPass}}
+<script>
+  window.onload = function init() {
+    $('#showPassModal').modal('show');
+  }
+</script>
+{{/if}}
+<div class="row">
+  {{#each vendors}}
+  <div class="col-sm col-xs-12">
+    <div class="card">
+      <div class="card-header">
+        <h2>{{this.name}}</h2>
+      </div>
+      <div class="card-body">
+        <h3>Username: {{this.username}}</h3>
+        <a href="/vendors/getPass?q={{this._id}}" class="btn btn-sm">Show Password</a>
+        <hr>
+        <a href="#" class="btn btn-sm btn-success">Edit Vendor</a> <a href="/vendors/delete?q={{this._id}}" class="btn btn-sm btn-danger">Delete Vendor</a>
+      </div>
+    </div>
+  </div>
+  {{else}}
+  <p>No Vendors Registered</p>
+  {{/each}}
+</div>
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addModal">
+  Add A Vendor
+</button>
+
+
+
+
+
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addModalLabel">Create new Vendor</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/vendors/add" method="POST">
+          <p>Passwords are encrypted before being stored</p>
+          <input type="text" name="name" placeholder="Vendor Name">
+          <input type="text" name="username" placeholder="Vendor Login Username">
+          <input type="text" name="password" placeholder="Vendor Login Password">
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-success">Save changes</button>
+        </form>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{{#if showPass}}
+<div class="modal fade" id="showPassModal" tabindex="-1" role="dialog" aria-labelledby="showPassModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="showPassModalLabel">Password</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h3>{{showPass}}</h3>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{{/if}}
