@@ -4,6 +4,10 @@ const CIPHER_TECHNIQUE = process.env.CIPHER;
 const SECRET_WORD = process.env.SECRET_WORD;
 
 exports.getListVendors = (req, res) => {
+  if (!req.user || !req.user.isAdmin) {
+    req.flash('errors', {msg: 'You are unauthorized to access that'});
+    return res.redirect('back');
+  }
   vendorsList = VENDOR.find({}, (err, list) => {
     if (err) throw new Error(err);
     res.render('listVendors', {
