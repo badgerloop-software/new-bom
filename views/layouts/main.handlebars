@@ -57,6 +57,12 @@
             <p>View Requests</p>
           </a>
         </li>
+        <li class="nav-item {{#if activeVendor}} active {{/if}} ">
+          <a class="nav-link" href="/vendors/list">
+            <i class="material-icons">credit_card</i>
+            <p>Vendor Credentials</p>
+          </a>
+        </li>
         {{/unless}}
         {{/if}}
         {{#if user.isAdmin}}
@@ -64,12 +70,6 @@
           <a class="nav-link" href="/admin/dashboard">
             <i class="material-icons">bubble_chart</i>
             <p>Administrative Access</p>
-          </a>
-        </li>
-        <li class="nav-item {{#if activeVendor}} active {{/if}} ">
-          <a class="nav-link" href="/vendors/list">
-            <i class="material-icons">credit_card</i>
-            <p>Vendor Credentials</p>
           </a>
         </li>
         {{/if}}
