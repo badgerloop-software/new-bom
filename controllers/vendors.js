@@ -67,3 +67,31 @@ exports.getDeleteVendor = (req, res) => {
     return res.redirect('/vendors/list');
     });
 }
+
+exports.postEditVendor = (req, res) => {
+  const ID = req.body.mongoID;
+  const NEW_NAME = req.body.name;
+  const NEW_USERNAME = req.body.username;
+  const NEW_PASSWORD = req.body.password;
+  const CIPHER = CRYPTO.createCipheriv(String(CIPHER_TECHNIQUE), `${SECRET_WORD}`,"");
+  let newEncrypted = CIPHER.update(NEW_PASSWORD,'utf8', 'base64');
+  newEncrypted += CIPHER.final('base64');
+  let update = {
+    "name": NEW_NAME,
+    "username": NEW_USERNAME,
+    "password": newEncrypted
+  }
+  if (!NEW_PASSWORD) {
+    update = {
+      "name": NEW_NAME,
+      "username": NEW_USERNAME
+    }
+  }
+  VENDOR.findByIdAndUpdate(ID, update, (err, doc) => {
+    if (err) throw err;
+    console.log(`New Doc =`);
+    console.log(doc);
+    req.flash('success',{msg: 'Vendor Updated'});
+    return res.redirect('/vendors/list');
+  });
+}

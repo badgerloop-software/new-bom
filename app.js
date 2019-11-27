@@ -139,6 +139,7 @@ app.get('/vendors/list', passportConfig.isAuthenticated, vendorsController.getLi
 app.post('/vendors/add', passportConfig.isAuthenticated, vendorsController.postAddVendor);
 app.get('/vendors/delete', passportConfig.isAuthenticated, vendorsController.getDeleteVendor);
 app.get('/vendors/getPass', passportConfig.isAuthenticated, vendorsController.getPassword);
+app.post('/vendors/edit', passportConfig.isAuthenticated, vendorsController.postEditVendor);
 
 // News Routes
 app.post('/news/create', newsController.news_create);
