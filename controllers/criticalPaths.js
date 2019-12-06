@@ -1,7 +1,7 @@
 const cp = require('../models/cp');
 const Cp = require('../models/cp');
 
-exports.sponsors_create = function (req, res) {
+exports.cp_create = function (req, res) {
     let cp = new Cp(
         {
             title: req.body.title,
