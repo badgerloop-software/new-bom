@@ -150,11 +150,11 @@ app.post('/news/:id/update', newsController.news_update);
 app.post('/news/:id/delete', newsController.news_delete);
 
 // CPB Routes
-app.post('/cpb/create', cpbController.cp_create);
-app.get('/cpb/:id', cpbController.cp_details);
-app.get('/cpb/', cpbController.cp_list);
-app.post('/cpb/:id/update', cpbController.cp_update);
-app.post('/cpb/:id/delete', cpbController.cp_delete);
+app.post('/criticalPaths/create', cpbController.cp_create);
+app.get('/criticalPaths/:id', cpbController.cp_details);
+app.get('/criticalPaths/', cpbController.cp_list);
+app.post('/criticalPaths/:id/update', cpbController.cp_update);
+app.post('/criticalPaths/:id/delete', cpbController.cp_delete);
 
 app.post('/sponsors/upload', uploadSponsor.single('sponsorImg'), (req, res) => {
   if (req.file) {
