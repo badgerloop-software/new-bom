@@ -28,7 +28,7 @@ exports.cp_details = function (req, res) {
 };
 
 exports.cp_list = function (req, res) {
-    sponsors.find(function (err, cp) {
+    cp.find(function (err, cp) {
         if (err) {
             console.log(err);
         } else {
