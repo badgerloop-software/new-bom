@@ -147,6 +147,12 @@
                     <div class="col-sm-6">
                         <h2>Critical Paths</b></h2>
                     </div>
+                    <div class="col-sm-6">
+                        <a href="#addCPModal" class="btn btn-success" data-toggle="modal">
+                            <i class="material-icons">&#xE147;</i>
+                            <span>Add New Critical Path</span>
+                        </a>
+                    </div>
                 </div>
             </div>
             <table class="table table-striped table-hover">
@@ -159,7 +165,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {{#each CritcalPaths}}
+                    {{#each critcalPaths}}
                     <tr>
                         <td>{{this.title}}</td>
                         <td>{{this.description}}</td>
