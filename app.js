@@ -155,7 +155,7 @@ app.get('/cpb', cpbController.getCriticalPaths);
 
 app.post('/criticalPaths/create', criticalPathsController.cp_create);
 app.get('/criticalPaths/:id', criticalPathsController.cp_details);
-app.get('/criticalPaths/', criticalPathsController.cp_list);
+app.get('/criticalpaths/', criticalPathsController.cp_list);
 app.post('/criticalPaths/:id/update', criticalPathsController.cp_update);
 app.post('/criticalPaths/:id/delete', criticalPathsController.cp_delete);
 
