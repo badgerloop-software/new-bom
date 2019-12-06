@@ -154,7 +154,7 @@ app.post('/news/:id/delete', newsController.news_delete);
 app.get('/cpb', cpbController.getCriticalPaths);
 
 app.post('/criticalPaths/create', criticalPathsController.cp_create);
-app.get('/criticalPaths/:id', cpbContcriticalPathsControllerroller.cp_details);
+app.get('/criticalPaths/:id', criticalPathsController.cp_details);
 app.get('/criticalPaths/', criticalPathsController.cp_list);
 app.post('/criticalPaths/:id/update', criticalPathsController.cp_update);
 app.post('/criticalPaths/:id/delete', criticalPathsController.cp_delete);

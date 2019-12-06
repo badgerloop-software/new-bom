@@ -18,11 +18,6 @@ exports.cp_create = function (req, res) {
         req.flash('success', { msg: `Critical Path created successfully!` });
         return res.redirect('/cpb');
     });
-    logs.save(function (err) {
-        if (err) {
-            return next(err);
-        }
-    });
 };
 
 exports.cp_details = function (req, res) {
