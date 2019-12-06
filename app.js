@@ -151,7 +151,7 @@ app.post('/news/:id/update', newsController.news_update);
 app.post('/news/:id/delete', newsController.news_delete);
 
 // CPB Routes
-app.get('/cpb', cpb.getCriticalPaths);
+app.get('/cpb', cpb.cpbController);
 
 app.post('/criticalPaths/create', criticalPathsController.cp_create);
 app.get('/criticalPaths/:id', cpbContcriticalPathsControllerroller.cp_details);
