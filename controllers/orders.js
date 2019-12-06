@@ -392,7 +392,7 @@ function updateBudget(budget, order, oldCost, callback) {
   if (oldCost) newCurrentSpent[teamIndex] -= oldCost;
   newCurrentSpent[teamIndex] += order.totalCost;
 	console.log(`${oldCost} is oldCost ${order.totalCost} is new cost`);
-  let update = { currentSpent: newCurrentSpent };
+    let update = { currentSpent: newCurrentSpent };
   Budget.findByIdAndUpdate(budgetID, update, { new: true }, callback);
 }
 
