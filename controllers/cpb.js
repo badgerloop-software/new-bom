@@ -7,7 +7,7 @@ exports.getCriticalPaths = (req, res) => {
     }
     cps.find({}, (err, cpsList) => {
         if (err) throw err;
-        return res.render('crudLog', {
+        return res.render('cpb', {
             cps: cpsList,
             activeCPB: true
         });
