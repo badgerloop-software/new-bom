@@ -23,6 +23,7 @@ const teamleadscontroller = require('./controllers/teamleads');
 const newsController = require('./controllers/news_controller');
 const utilsController = require('./controllers/utils');
 const vendorsController = require('./controllers/vendors');
+const cpbController = require('./controllers/criticalPaths');
 
 const passportConfig = require('./config/passport');
 
@@ -147,6 +148,13 @@ app.get('/news/:id', newsController.news_details);
 app.get('/news/', newsController.news_list);
 app.post('/news/:id/update', newsController.news_update);
 app.post('/news/:id/delete', newsController.news_delete);
+
+// CPB Routes
+app.post('/cp/create', cpbController.cp_create);
+app.get('/cp/:id', cpbController.cp_details);
+app.get('/cp/', cpbController.cp_list);
+app.post('/cp/:id/update', cpbController.cp_update);
+app.post('/cp/:id/delete', cpbController.cp_delete);
 
 app.post('/sponsors/upload', uploadSponsor.single('sponsorImg'), (req, res) => {
   if (req.file) {
