@@ -39,12 +39,18 @@
             <i class="material-icons">attach_money</i>
             <p>Make a purchase</p>
           </a>
-        {{#if user.isAdmin}}
+          {{#if user.isAdmin}}
         </li>
         <li class="nav-item {{#if activeView}} active {{/if}}">
           <a class="nav-link" href="/orders/view">
             <i class="material-icons">library_books</i>
             <p>View Requests</p>
+          </a>
+        </li>
+        <li class="nav-item {{#if activeVendor}} active {{/if}} ">
+          <a class="nav-link" href="/vendors/list">
+            <i class="material-icons">credit_card</i>
+            <p>Vendor Credentials</p>
           </a>
         </li>
         {{/if}}
@@ -55,6 +61,12 @@
           <a class="nav-link" href="/orders/view">
             <i class="material-icons">library_books</i>
             <p>View Requests</p>
+          </a>
+        </li>
+        <li class="nav-item {{#if activeVendor}} active {{/if}} ">
+          <a class="nav-link" href="/vendors/list">
+            <i class="material-icons">credit_card</i>
+            <p>Vendor Credentials</p>
           </a>
         </li>
         {{/unless}}
