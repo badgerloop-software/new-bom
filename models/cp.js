@@ -10,4 +10,4 @@ let CriticalPathSchema = new mongoose.Schema({
 });
 
 // Export the model
-module.exports = prodDB.model('CritcalPaths', CriticalPathSchema);
+module.exports = prodDB.model('critcalPaths', CriticalPathSchema);
