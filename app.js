@@ -23,7 +23,8 @@ const teamleadscontroller = require('./controllers/teamleads');
 const newsController = require('./controllers/news_controller');
 const utilsController = require('./controllers/utils');
 const vendorsController = require('./controllers/vendors');
-const cpbController = require('./controllers/criticalPaths');
+const criticalPathsController = require('./controllers/criticalPaths');
+const cpbController = require('./controllers/cpb');
 
 const passportConfig = require('./config/passport');
 
@@ -150,11 +151,13 @@ app.post('/news/:id/update', newsController.news_update);
 app.post('/news/:id/delete', newsController.news_delete);
 
 // CPB Routes
-app.post('/criticalPaths/create', cpbController.cp_create);
-app.get('/criticalPaths/:id', cpbController.cp_details);
-app.get('/criticalPaths/', cpbController.cp_list);
-app.post('/criticalPaths/:id/update', cpbController.cp_update);
-app.post('/criticalPaths/:id/delete', cpbController.cp_delete);
+app.get('/cpb', cpb.getCriticalPaths);
+
+app.post('/criticalPaths/create', criticalPathsController.cp_create);
+app.get('/criticalPaths/:id', cpbContcriticalPathsControllerroller.cp_details);
+app.get('/criticalPaths/', criticalPathsController.cp_list);
+app.post('/criticalPaths/:id/update', criticalPathsController.cp_update);
+app.post('/criticalPaths/:id/delete', criticalPathsController.cp_delete);
 
 app.post('/sponsors/upload', uploadSponsor.single('sponsorImg'), (req, res) => {
   if (req.file) {
