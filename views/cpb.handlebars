@@ -231,19 +231,19 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label>Title</label>
-                            <input name="Title" type="text" class="form-control" required>
+                            <input id="editTitle" name="Title" type="text" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>Description</label>
-                            <input name="Description" type="text" class="form-control" required>
+                            <input id="editTitle" name="Description" type="text" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>Assignee</label>
-                            <input name="assignee" type="text" class="form-control" required>
+                            <input id="editAssignee" name="assignee" type="text" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>Due</label>
-                            <input name="due" type="date" class="form-control" required>
+                            <input id="editDue" name="due" type="date" class="form-control" required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -281,3 +281,25 @@
     </div>
 
 </body>
+
+<script>
+    $('#editCPModal').on('show.bs.modal', function (event) {
+        let button = $(event.relatedTarget) // Button that triggered the modal
+        let code = button.data('code') // Extract info from data-* attributes
+        let array = code.split(',');
+        let id = array[4].trim();
+        document.getElementById('editCPForm').action = `/criticalPaths/${id}/update`;
+        document.getElementById('editTitle').value = array[0].trim();
+        document.getElementById('editDescription').value = array[1].trim();
+        document.getElementById('editAssignee').value = array[2].trim();
+        document.getElementById('editDue').value = array[3].trim();
+    })
+    $('#deleteCPModal').on('show.bs.modal', function (event) {
+        let button = $(event.relatedTarget); // Button that triggered the modal
+        let code = button.data('code') // Extract info from data-* attributes
+        let array = code.split(',');
+        let id = array[0].trim();
+        document.getElementById('deleteCPForm').action = `/sponsors/${id}/delete`;
+        document.getElementById('deleteName').value = array[1].trim();
+    })
+</script>
