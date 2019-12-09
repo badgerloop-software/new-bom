@@ -299,7 +299,7 @@
         let code = button.data('code') // Extract info from data-* attributes
         let array = code.split(',');
         let id = array[0].trim();
-        document.getElementById('deleteCPForm').action = `/sponsors/${id}/delete`;
+        document.getElementById('deleteCPForm').action = `/criticalPaths/${id}/delete`;
         document.getElementById('deleteName').value = array[1].trim();
     })
 </script>
