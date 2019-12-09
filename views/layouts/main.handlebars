@@ -95,10 +95,19 @@
         </li>
         {{/if}}
         {{#if user.isAdmin}}
-        <li class="nav-item {{#if activeAdmin}} active {{/if}} ">
+        <li class="nav-item {{#if activeCRUDLOG}} active {{/if}} ">
           <a class="nav-link" href="/crudLog">
             <i class="material-icons">list</i>
             <p>CRUD Logs</p>
+          </a>
+        </li>
+        {{/if}}
+        <hr>
+        {{#if user.isAdmin}}
+        <li class="nav-item {{#if activeCPB}} active {{/if}} ">
+          <a class="nav-link" href="/cpb">
+            <i class="material-icons">notification_important</i>
+            <p>Critical Path Bot</p>
           </a>
         </li>
         {{/if}}

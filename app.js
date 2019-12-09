@@ -23,6 +23,8 @@ const teamleadscontroller = require('./controllers/teamleads');
 const newsController = require('./controllers/news_controller');
 const utilsController = require('./controllers/utils');
 const vendorsController = require('./controllers/vendors');
+const criticalPathsController = require('./controllers/criticalPaths');
+const cpbController = require('./controllers/cpb');
 
 const passportConfig = require('./config/passport');
 
@@ -99,7 +101,6 @@ app.post('/slack/events', (req, res) => {
   console.log(req);
   return res.status(200).send();
 })
-app.get('/slack/reaction?challenge=:event', eventsController.getEvent);
 
 // Admin Routes
 app.get('/admin/dashboard', passportConfig.isAuthenticated, adminController.getDash);
@@ -147,6 +148,15 @@ app.get('/news/:id', newsController.news_details);
 app.get('/news/', newsController.news_list);
 app.post('/news/:id/update', newsController.news_update);
 app.post('/news/:id/delete', newsController.news_delete);
+
+// CPB Routes
+app.get('/cpb', cpbController.getCriticalPaths);
+
+app.post('/criticalPaths/create', criticalPathsController.cp_create);
+app.get('/criticalPaths/:id', criticalPathsController.cp_details);
+app.get('/criticalpaths/', criticalPathsController.cp_list);
+app.post('/criticalPaths/:id/update', criticalPathsController.cp_update);
+app.post('/criticalPaths/:id/delete', criticalPathsController.cp_delete);
 
 app.post('/sponsors/upload', uploadSponsor.single('sponsorImg'), (req, res) => {
   if (req.file) {

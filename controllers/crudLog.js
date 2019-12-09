@@ -8,7 +8,8 @@ exports.getCrudLogs = (req, res) => {
     Logs.find({}, (err, logsList) => {
         if (err) throw err;
         return res.render('crudLog', {
-            logs: logsList
+            logs: logsList,
+            activeCRUDLOG: true
         });
     });
 }
