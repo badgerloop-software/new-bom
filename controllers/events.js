@@ -9,10 +9,10 @@ var j = schedule.scheduleJob('*/1 * * * *', function (fireDate) { //uses node-sc
     console.log(cpsList);
     let msg =
       `==== CURRENT CRITICAL PATH ====
-    *Title*: ${cpsList[0].title}
-    *Description*: ${cpsList[0].description}
-    *Assignee*: ${cpsList[0].assignee}
-    *Due* ${cpsList[0].due}`;
+    *Title*: ${cpsList[cpsList.length-1].title}
+    *Description*: ${cpsList[cpsList.length-1].description}
+    *Assignee*: ${cpsList[cpsList.length -1].assignee}
+    *Due* ${cpsList[cpsList.length - 1].due}`;
     var options = {
       msg: msg,
       method: 'POST',
