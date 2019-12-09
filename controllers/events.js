@@ -8,11 +8,12 @@ var j = schedule.scheduleJob('0 10 * * *', function (fireDate) { //uses node-sch
     if (err) throw err;
     console.log(cpsList);
     let msg =
-      `==== CURRENT CRITICAL PATH ====
+    `:alert:  CURRENT CRITICAL PATH  :alert:
     *Title*: ${cpsList[cpsList.length-1].title}
     *Description*: ${cpsList[cpsList.length-1].description}
     *Assignee*: ${cpsList[cpsList.length -1].assignee}
-    *Due* ${cpsList[cpsList.length - 1].due}`;
+    *Due* ${cpsList[cpsList.length - 1].due}
+    *Days until Reveal*: ${Math.ceil((reveal.getTime()-today.getTime())/(one_day))}`;
     var options = {
       msg: msg,
       method: 'POST',
