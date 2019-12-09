@@ -1,6 +1,7 @@
 var request = require("request");
 const cps = require('../models/cp');
 var schedule = require('node-schedule');
+const URL = process.env.APPS_TOKEN;
 
 var j = schedule.scheduleJob('*/1 * * * *', function (fireDate) { //uses node-schedule to run once every minute (cron format)
   cps.find({}, (err, cpsList) => {
@@ -18,7 +19,7 @@ var j = schedule.scheduleJob('*/1 * * * *', function (fireDate) { //uses node-sc
       url: 'https://slack.com/api/chat.postMessage',
       headers:
       {
-        Authorization: 'Bearer xoxb-782416144855-856860949009-aIfxev3o0FIAWYSyEzRp0DeM',
+        Authorization: 'Bearer ' + URL,
         'Content-Type': 'application/json'
       },
       body: { channel: 'CNS3SCTCZ', text: msg },
