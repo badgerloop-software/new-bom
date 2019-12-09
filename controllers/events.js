@@ -3,7 +3,7 @@ const cps = require('../models/cp');
 var schedule = require('node-schedule');
 const URL = process.env.APPS_TOKEN;
 
-var j = schedule.scheduleJob('0 10 * * *', function (fireDate) { //uses node-schedule to run once every day at 10am (cron format)
+var j = schedule.scheduleJob('*/1 * * * *', function (fireDate) { //uses node-schedule to run once every day at 10am (cron format)
   cps.find({}, (err, cpsList) => {
     if (err) throw err;
     console.log(cpsList);
