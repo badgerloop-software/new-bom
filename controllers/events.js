@@ -22,7 +22,7 @@ var j = schedule.scheduleJob('0 10 * * *', function (fireDate) { //uses node-sch
         Authorization: 'Bearer ' + URL,
         'Content-Type': 'application/json'
       },
-      body: { channel: 'CNS3SCTCZ', text: msg },
+      body: { channel: 'GLU74HK46', text: msg },
       json: true
     };
     request(options, function (error, response, body) {
