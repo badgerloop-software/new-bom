@@ -101,7 +101,6 @@ app.post('/slack/events', (req, res) => {
   console.log(req);
   return res.status(200).send();
 })
-app.get('/slack/reaction?challenge=:event', eventsController.getEvent);
 
 // Admin Routes
 app.get('/admin/dashboard', passportConfig.isAuthenticated, adminController.getDash);
