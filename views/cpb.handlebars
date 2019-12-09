@@ -327,17 +327,6 @@
 </body>
 
 <script>
-    $('#editCPModal').on('show.bs.modal', function (event) {
-        let button = $(event.relatedTarget) // Button that triggered the modal
-        let code = button.data('code') // Extract info from data-* attributes
-        let array = code.split(',');
-        let id = array[4].trim();
-        document.getElementById('editCPForm').action = `/criticalPaths/${id}/update`;
-        document.getElementById('editTitle').value = array[0].trim();
-        document.getElementById('editDescription').value = array[1].trim();
-        document.getElementById('editAssignee').value = array[2].trim();
-        document.getElementById('editDue').value = array[3].trim();
-    })
     $('#deleteCPModal').on('show.bs.modal', function (event) {
         let button = $(event.relatedTarget); // Button that triggered the modal
         let code = button.data('code') // Extract info from data-* attributes
