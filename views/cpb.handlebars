@@ -232,7 +232,7 @@
     <div id="addCPModal" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="addCPForm" action="/criticalPaths/create" method="post">
+                <form id="addCPForm" name="addCPForm" action="/criticalPaths/create" method="post">
                     <div class="modal-header">
                         <h4 class="modal-title">Add Critical Path</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -251,14 +251,39 @@
                             <input name="assignee" type="text" class="form-control" required>
                         </div>
                         <div class="form-group">
-                            <label>Due</label>
-                            <input name="due" type="date" class="form-control" required>
+                            <label>Channels to Notify</label>
+                            <input type="checkbox" name="chb[]" value="beta" />Beta<br />
+                            <input type="checkbox" name="chb[]" value="beta2" />Beta 2<br />
+                            <input type="checkbox" name="chb[]" value="general" />General<br />
+
+                            {{!-- <input type="checkbox" name="chb[]" value="analysis" />Analysis<br />
+                            <input type="checkbox" name="chb[]" value="braking" />Braking<br />
+                            <input type="checkbox" name="chb[]" value="feasibility" />Feasibility<br />
+                            <input type="checkbox" name="chb[]" value="fsc" />FSC<br />
+                            <input type="checkbox" name="chb[]" value="lowVoltage" />Low-Voltage<br />
+                            <input type="checkbox" name="chb[]" value="mechanicalReliability" />Mechanical
+                            Reliability<br />
+                            <input type="checkbox" name="chb[]" value="stability" />Stability<br />
+                            <input type="checkbox" name="chb[]" value="vr" />Virtual Reality<br />
+                            <input type="checkbox" name="chb[]" value="propulsion" />Propolsion<br />
+                            <input type="checkbox" name="chb[]" value="structural" />Structural<br />
+                            <input type="checkbox" name="chb[]" value="communications" />Communications<br />
+                            <input type="checkbox" name="chb[]" value="electrical" />Electrical<br />
+                            <input type="checkbox" name="chb[]" value="highVoltage" />High-Voltage<br />
+                            <input type="checkbox" name="chb[]" value="industry" />Industry<br />
+                            <input type="checkbox" name="chb[]" value="opsTeams" />Ops Teams<br />
+                            <input type="checkbox" name="chb[]" value="software" />Software<br />
+                            <input type="checkbox" name="chb[]" value="tech" />Tech<br />
+                            <input type="checkbox" name="chb[]" value="website" />Website<br />
+                            <input type="checkbox" name="chb[]" value="controls" />Controls<br /> --}}
+                            <input type="text" name="channelsString" id="channelsString" style="display: none;">
+                            <div class="form-group">
+                            </div>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                        <input type="submit" class="btn btn-success" value="Add">
-                    </div>
+                        <div class="modal-footer">
+                            <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+                            <input type="button" class="btn btn-success" value="Add" id="submitForm">
+                        </div>
                 </form>
             </div>
         </div>
@@ -346,4 +371,26 @@
         document.getElementById('deleteCPForm').action = `/criticalPaths/${id}/delete`;
         document.getElementById('deleteName').value = array[1].trim();
     })
+
+   // Returns an array with values of the selected (checked) checkboxes in "frm"
+    function getSelectedChbox(frm) {
+        var selchbox = [];        // array that will store the value of selected checkboxes
+
+        // gets all the input tags in frm, and their number
+        var inpfields = frm.getElementsByTagName('input');
+        var nr_inpfields = inpfields.length;
+
+        // traverse the inpfields elements, and adds the value of selected (checked) checkbox in selchbox
+        for (var i = 0; i < nr_inpfields; i++) {
+            if (inpfields[i].type == 'checkbox' && inpfields[i].checked == true) selchbox.push(inpfields[i].value);
+        }
+        return selchbox;
+    }
+
+    // When click on #submitForm, send the array of values and submit the form
+    document.getElementById('submitForm').onclick = function () {
+        var selchb = getSelectedChbox(this.form);     // gets the array returned by getSelectedChbox()
+        document.getElementById('channelsString').value = selchb;
+        document.getElementById('addCPForm').submit();
+    }
 </script>

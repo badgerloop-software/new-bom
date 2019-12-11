@@ -8,6 +8,7 @@ exports.cp_create = function (req, res) {
             description: req.body.description,
             assignee: req.body.assignee,
             due: req.body.due,
+            channels: req.body.channelsString
         }
     );
 
