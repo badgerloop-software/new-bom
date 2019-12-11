@@ -180,6 +180,10 @@
         .modal form label {
             font-weight: normal;
         }
+        .flex-container {
+            display: flex;
+            flex-wrap: wrap;
+        }
     </style>
 </head>
 
@@ -206,6 +210,7 @@
                         <th>Description</th>
                         <th>Assignee</th>
                         <th>Due</th>
+                        <th>Channels to Notify</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -215,6 +220,7 @@
                         <td>{{this.description}}</td>
                         <td>{{this.assignee}}</td>
                         <td>{{this.due}}</td>
+                        <td>{{this.channels}}</td>
                         <td>
                             <a href="#editCPModal" class="edit"
                                 data-code="{{this.title}}, {{this.description}}, {{this.assignee}}, {{this.due}}, {{this._id}}"
@@ -252,30 +258,32 @@
                         </div>
                         <div class="form-group">
                             <label>Channels to Notify</label>
-                            <input type="checkbox" name="chb[]" value="beta" />Beta<br />
-                            <input type="checkbox" name="chb[]" value="beta2" />Beta 2<br />
-                            <input type="checkbox" name="chb[]" value="general" />General<br />
+                            <div class="flex-container">
+                                <input type="checkbox" name="chb[]" value="beta" />Beta<br />
+                                <input type="checkbox" name="chb[]" value="beta2" />Beta 2<br />
+                                <input type="checkbox" name="chb[]" value="general" />General<br />
 
-                            {{!-- <input type="checkbox" name="chb[]" value="analysis" />Analysis<br />
-                            <input type="checkbox" name="chb[]" value="braking" />Braking<br />
-                            <input type="checkbox" name="chb[]" value="feasibility" />Feasibility<br />
-                            <input type="checkbox" name="chb[]" value="fsc" />FSC<br />
-                            <input type="checkbox" name="chb[]" value="lowVoltage" />Low-Voltage<br />
-                            <input type="checkbox" name="chb[]" value="mechanicalReliability" />Mechanical
-                            Reliability<br />
-                            <input type="checkbox" name="chb[]" value="stability" />Stability<br />
-                            <input type="checkbox" name="chb[]" value="vr" />Virtual Reality<br />
-                            <input type="checkbox" name="chb[]" value="propulsion" />Propolsion<br />
-                            <input type="checkbox" name="chb[]" value="structural" />Structural<br />
-                            <input type="checkbox" name="chb[]" value="communications" />Communications<br />
-                            <input type="checkbox" name="chb[]" value="electrical" />Electrical<br />
-                            <input type="checkbox" name="chb[]" value="highVoltage" />High-Voltage<br />
-                            <input type="checkbox" name="chb[]" value="industry" />Industry<br />
-                            <input type="checkbox" name="chb[]" value="opsTeams" />Ops Teams<br />
-                            <input type="checkbox" name="chb[]" value="software" />Software<br />
-                            <input type="checkbox" name="chb[]" value="tech" />Tech<br />
-                            <input type="checkbox" name="chb[]" value="website" />Website<br />
-                            <input type="checkbox" name="chb[]" value="controls" />Controls<br /> --}}
+                                {{!-- <input type="checkbox" name="chb[]" value="analysis" />Analysis<br />
+                                <input type="checkbox" name="chb[]" value="braking" />Braking<br />
+                                <input type="checkbox" name="chb[]" value="feasibility" />Feasibility<br />
+                                <input type="checkbox" name="chb[]" value="fsc" />FSC<br />
+                                <input type="checkbox" name="chb[]" value="lowVoltage" />Low-Voltage<br />
+                                <input type="checkbox" name="chb[]" value="mechanicalReliability" />Mechanical
+                                Reliability<br />
+                                <input type="checkbox" name="chb[]" value="stability" />Stability<br />
+                                <input type="checkbox" name="chb[]" value="vr" />Virtual Reality<br />
+                                <input type="checkbox" name="chb[]" value="propulsion" />Propolsion<br />
+                                <input type="checkbox" name="chb[]" value="structural" />Structural<br />
+                                <input type="checkbox" name="chb[]" value="communications" />Communications<br />
+                                <input type="checkbox" name="chb[]" value="electrical" />Electrical<br />
+                                <input type="checkbox" name="chb[]" value="highVoltage" />High-Voltage<br />
+                                <input type="checkbox" name="chb[]" value="industry" />Industry<br />
+                                <input type="checkbox" name="chb[]" value="opsTeams" />Ops Teams<br />
+                                <input type="checkbox" name="chb[]" value="software" />Software<br />
+                                <input type="checkbox" name="chb[]" value="tech" />Tech<br />
+                                <input type="checkbox" name="chb[]" value="website" />Website<br />
+                                <input type="checkbox" name="chb[]" value="controls" />Controls<br /> --}}
+                            </div>
                             <input type="text" name="channelsString" id="channelsString" style="display: none;">
                             <div class="form-group">
                             </div>
