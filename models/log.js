@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const mongoConfig = require('../config/mongo')
-const prodDB = mongoose.createConnection(mongoConfig.prodURL);
+const prodDB = mongoose.createConnection(mongoConfig.crudURL);
 
 let LogsSchema = new mongoose.Schema({
     time: { type: String, required: false, max: 100 },
