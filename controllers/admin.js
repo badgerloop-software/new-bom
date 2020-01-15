@@ -42,6 +42,7 @@ function handleError(err) {
 exports.getDash = (req, res) => {
   Budgets.find({}, (err, budgets) => {
     if (err) handleError(err);
+    budgets[0].formatAllNumbers();
     Orders.find({}, (err, orders) => {
       if (err) handleError(err);
       Users.find({}, (err, users) => {

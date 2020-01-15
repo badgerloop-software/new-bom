@@ -31,4 +31,12 @@ BudgetSchema.methods.findTeamIndex = function(query) {
   return null;
 }
 
+BudgetSchema.methods.formatAllNumbers = function(fixed = 2) {
+  console.log('HERE');
+  let budget = this;
+  for (let i = 0; i < budget.currentSpent.length; i++) {
+    budget.currentSpent[i] = Number(budget.currentSpent[i]).toFixed(fixed);
+  }
+}
+
 module.exports = bomDB.model('Budgets', BudgetSchema);
