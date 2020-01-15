@@ -15,7 +15,7 @@ function setTable(budgets) {
   if (budget !== undefined) {
     for (let i = 0; i < budget.teamList.length; i++) {
       let spent = budget.currentSpent[i];
-      let left = budget.setBudgets[i] - budget.currentSpent[i]
+      let left = Number(budget.setBudgets[i] - budget.currentSpent[i]).toFixed(2);
       let teamArray = [budget.teamList[i], budget.setBudgets[i], spent, left]
       table.push(teamArray);
     }
