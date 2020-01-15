@@ -372,6 +372,7 @@ exports.getApproving = (req, res) => {
     }
     Order.findById(orderID, (err, order) => {
       order.isApproved = true;
+      order.approvedBy = String(req.user.name);
       order.save((err) => {
         if (err) throw err;
         createSlackResponse(order, user);
