@@ -26,7 +26,7 @@ var j = schedule.scheduleJob('0 10 * * *', function (fireDate) { //uses node-sch
     }
   });
 });
-
+//Lol Luke this function is so jank
 function sendMsg(channel, msg) {
   var channelID;
   switch (channel) {
