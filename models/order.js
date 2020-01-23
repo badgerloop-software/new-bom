@@ -31,6 +31,7 @@ const OrderSchema = new mongoose.Schema({
   countsTowardPodCost: {type: Boolean, default: false},
   needDate: String,
   isDigikey: {type: Boolean, default: false},
+  messageId: mongoose.ObjectId
 });
 
 OrderSchema.index({'$**': 'text'}, {

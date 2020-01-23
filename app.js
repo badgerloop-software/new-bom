@@ -34,6 +34,8 @@ const uploadNews = multer({ dest: './uploads/news' });
 const Logs = require('./models/log');
 const fs = require('fs');
 
+const slackService = require('./services/slack');
+
 let date_ob = new Date();
 let date = ("0" + date_ob.getDate()).slice(-2);
 let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
@@ -74,6 +76,9 @@ app.get('/', (req, res) => {
   });
 });
 
+app.get('/tstrct', (req, res) => {
+  slackService.checkOneThumbsUp(process.env.PURCHASING_CHANNEL, "1579324628.002100");
+})
 
 // Orders Routes
 app.get('/orders/purchase',passportConfig.isAuthenticated,  ordersController.getMakeOrder);

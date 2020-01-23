@@ -1,9 +1,11 @@
 const Order = require('../models/order');
 const Budget = require('../models/budget');
+const OrderMessage = require('../models/orderMessage');
 const webhookURL = process.env.WEBHOOK_URL;
 const URL = process.env.LOCAL_URL;
 const request = require('request');
 const fscLead = "UG46HDHS7";
+const SLACK_SERVICE = require('../services/slack');
 
 exports.getMakeOrder = (req, res) => {
   Budget.find({}, (err, budgets) => {
@@ -83,7 +85,7 @@ exports.postMakeOrder = (req, res, next) => {
       cost: totalCost,
       id: order._id
     }
-    createSlackMessage(orderObj, req.user);
+    sendOrderMessage(orderObj, req.user);
     req.flash('success', {
       msg: 'Order Submitted'
     })
@@ -412,75 +414,68 @@ function isURL(str) {
   return str.length < 2083 && url.test(str);
 }
 
-function createSlackMessage(order, user) {
+function sendOrderMessage(order, user) {
   let msg;
   if (order.reimbursement) {
-    msg =
-      `====${order.subteam}====
+      msg =
+        `====${order.subteam}====
+      *Requestor*: <@${user.slackID}>
+      *Items*: ${order.item}
+      *Cost*: $${order.cost}
+      *This is a reimbursement*
+      *Link*: http://${URL}/orders/edit/${order.id}
+    ==== ==== ====`
+    } else {
+      msg =
+        `====${order.subteam}====
     *Requestor*: <@${user.slackID}>
     *Items*: ${order.item}
     *Cost*: $${order.cost}
-    *This is a reimbursement*
     *Link*: http://${URL}/orders/edit/${order.id}
   ==== ==== ====`
-  } else {
-    msg =
-      `====${order.subteam}====
-  *Requestor*: <@${user.slackID}>
-  *Items*: ${order.item}
-  *Cost*: $${order.cost}
-  *Link*: http://${URL}/orders/edit/${order.id}
-==== ==== ====`
-  }
-  let options = {
-    uri: webhookURL,
-    method: 'POST',
-    json: {
-      "text": msg,
-      "attachments": [
-        {
-          "fallback": `View this order at http://${URL}/orders/edit/${order.id}`,
-          "actions": [
-            {
-              "type": "button",
-              "text": "Approve Order 💵",
-              "url": `http://${URL}/orders/approve/${order.id}`,
-              "style": 'primary',
-            },
-            {
-              "type": "button",
-              "text": "Deny Order 🚫",
-              "url": `http://${URL}/orders/cancel?q=${order.id}`,
-              "style": 'danger'
-            }
-          ]
-        }
-      ]
     }
-  };
-  request(options, (err, res, body) => {
-    if (!err && res.statusCode == 200) {
-      console.log(body.id);
-    }
-  })
+    let attachments = [
+      {
+        "fallback": `View this order at http://${URL}/orders/edit/${order.id}`,
+        "actions": [
+          {
+            "type": "button",
+            "text": "Approve Order 💵",
+            "url": `http://${URL}/orders/approve/${order.id}`,
+            "style": 'primary',
+          },
+          {
+            "type": "button",
+            "text": "Deny Order 🚫",
+            "url": `http://${URL}/orders/cancel?q=${order.id}`,
+            "style": 'danger'
+          }
+        ]
+      }
+    ]
+    SLACK_SERVICE.sendMessage(process.env.PURCHASING_CHANNEL, msg, attachments, (body) => {
+      OrderMessage.create({
+        slackTS: body.ts,
+        order: order.id
+      }, (err, msg) => {
+        if (err) throw err;
+        console.log(msg)
+        Order.findByIdAndUpdate(order.id,{messageId: msg._id}, {new: true}, (err, list) => {
+          if (err) throw err;
+        });
+      });
+    })
 }
 
 function createSlackResponse(order, user) {
-  let msg;
-  msg =
+  OrderMessage.findById(order.messageId, (err, thread) => {
+    if (err) throw err;
+    let msg =
     `<@${fscLead}>Request for ${order.item} has been approved by <@${user.slackID}>!`
-  let options = {
-    uri: webhookURL,
-    method: 'POST',
-    json: {
-      "text": msg,
-    }
-  };
-  request(options, (err, res, body) => {
-    if (!err && res.statusCode == 200) {
-      console.log(body.id);
-    }
-  })
+  SLACK_SERVICE.sendThread(process.env.PURCHASING_CHANNEL, msg, null, thread.slackTS, (body) => {
+    console.log(body);
+  });
+  }); 
 }
 
 function redirectToMain(req, res) {
