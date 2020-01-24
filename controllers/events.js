@@ -105,3 +105,13 @@ function sendMsg(channel, msg) {
     console.log(body);
   });
 }
+
+exports.getSlackTest = (req, res) => {
+  require('../models/orderMessage').find({}, (err, messages) => {
+    if (err) throw err;
+    messages.forEach((message) => {
+      message.checkApproved();
+    })
+  })
+  res.send(req.body.challenge).end(200);
+}

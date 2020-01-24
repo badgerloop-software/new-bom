@@ -91,13 +91,13 @@ function compareUsers(reaction, approvingUsers) {
  * @param {String} channel Channel ID where message is located
  * @param {String} ts Timestamp of message to find
  * @param {Array[String]} approvingUsers List of authorized users
- * @returns {Promise<Resolve>} The slack ID of the authorizing user
+ * @returns {Promise<Resolve>} The slack ID of the authorizing user otherwise undefined
  * @returns {Promise<Reject>} The error encountered
  */
 exports.checkOneThumbsUp = function checkOneThumbsUp(channel, ts, approvingUsers) {
   return new Promise(function (resolve, reject) {
     getOneReactions(channel, ts).then((reactions) => {
-      if (!reactions) return reject("No Reactions");
+      if (!reactions) return resolve(-1);
       let isUserValid = false;
       reactions.forEach((reaction) => {
         if (reaction.name === '+1') { // If its a thumbs up
@@ -106,8 +106,29 @@ exports.checkOneThumbsUp = function checkOneThumbsUp(channel, ts, approvingUsers
           }
         }
       });
-      if (!isUserValid) reject("Not authorized User");
+      if (!isUserValid) reject(-2);
       resolve(isUserValid);
     });
+  });
+}
+
+exports.editMessage = function editMessage(channel, ts, text, cb) {
+  let msg = text;
+  var options = {
+    msg: msg,
+    method: 'POST',
+    url: 'https://slack.com/api/chat.update',
+    headers:
+    {
+      Authorization: 'Bearer ' + URL,
+      'Content-Type': 'application/json'
+    },
+    body: { channel: channel, text: msg, ts: ts },
+    json: true
+  };
+  request(options, function (error, response, body) {
+    if (error) throw new Error(error);
+    if (cb) cb(body);
+    else return;
   });
 }

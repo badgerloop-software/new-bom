@@ -273,6 +273,10 @@ exports.getOrdering = (req, res) => {
       req.flash('errors', { msg: 'Order ID does not exist' });
       return res.redirect('back');
     }
+    OrderMessage.findById(order.messageId, (err, msg) => {
+      if (err) throw err;
+      msg.editStatus("Ordered", req.user.slackID);
+    })
     if (!order.isDigikey) {
       if (order.shipping === undefined) order.shipping = 0;
       if (order.tax === undefined) order.tax = 0;
@@ -377,13 +381,35 @@ exports.getApproving = (req, res) => {
       order.approvedBy = String(req.user.name);
       order.save((err) => {
         if (err) throw err;
-        createSlackResponse(order, user);
+        OrderMessage.findById(order.messageId, (err, msg) => {
+          if (err) throw err;
+          msg.editStatus("Approved", req.user.slackID);
+        })
         req.flash('success', { msg: 'Order Approved' });
         return res.redirect('/orders/view');
       });
     });
   });
 };
+
+exports.getDelivered = (req, res) => {
+  if (!(req.user.isTeamLead || req.user.isAdmin || req.user.isFSC)) {
+    return redirectToMain(req, res);
+  }
+  Order.findById(req.params.id, (err, order) => {
+    if (err) throw err;
+    if (!order) {
+      req.flash('errors', {msg: 'This order does not exist'});
+      res.redirect('/');
+    }
+    OrderMessage.findById(order.messageId, (err, msg) => {
+      if (err) throw err;
+      msg.editStatus("Delivered");
+      req.flash('success', {msg: 'Order Status Updated'});
+      res.redirect('/');
+    });
+  });
+}
 
 
 function updateBudget(budget, order, oldCost, callback) {
@@ -434,32 +460,31 @@ function sendOrderMessage(order, user) {
     *Link*: http://${URL}/orders/edit/${order.id}
   ==== ==== ====`
     }
-    let attachments = [
-      {
-        "fallback": `View this order at http://${URL}/orders/edit/${order.id}`,
-        "actions": [
-          {
-            "type": "button",
-            "text": "Approve Order 💵",
-            "url": `http://${URL}/orders/approve/${order.id}`,
-            "style": 'primary',
-          },
-          {
-            "type": "button",
-            "text": "Deny Order 🚫",
-            "url": `http://${URL}/orders/cancel?q=${order.id}`,
-            "style": 'danger'
-          }
-        ]
-      }
-    ]
-    SLACK_SERVICE.sendMessage(process.env.PURCHASING_CHANNEL, msg, attachments, (body) => {
+    // let attachments = [
+    //   {
+    //     "fallback": `View this order at http://${URL}/orders/edit/${order.id}`,
+    //     "actions": [
+    //       {
+    //         "type": "button",
+    //         "text": "Approve Order 💵",
+    //         "url": `http://${URL}/orders/approve/${order.id}`,
+    //         "style": 'primary',
+    //       },
+    //       {
+    //         "type": "button",
+    //         "text": "Deny Order 🚫",
+    //         "url": `http://${URL}/orders/cancel?q=${order.id}`,
+    //         "style": 'danger'
+    //       }
+    //     ]
+    //   }
+    // ]
+    SLACK_SERVICE.sendMessage(process.env.PURCHASING_CHANNEL, msg, null, (body) => {
       OrderMessage.create({
         slackTS: body.ts,
         order: order.id
       }, (err, msg) => {
         if (err) throw err;
-        console.log(msg)
         Order.findByIdAndUpdate(order.id,{messageId: msg._id}, {new: true}, (err, list) => {
           if (err) throw err;
         });
@@ -473,11 +498,10 @@ function createSlackResponse(order, user) {
     let msg =
     `<@${fscLead}>Request for ${order.item} has been approved by <@${user.slackID}>!`
   SLACK_SERVICE.sendThread(process.env.PURCHASING_CHANNEL, msg, null, thread.slackTS, (body) => {
-    console.log(body);
   });
   }); 
 }
-
+exports.sendApprovedResponse = createSlackResponse;
 function redirectToMain(req, res) {
   req.flash('errors', { msg: 'You are not authorized to view that!' });
   res.redirect('/');

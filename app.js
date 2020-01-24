@@ -76,14 +76,8 @@ app.get('/', (req, res) => {
   });
 });
 
-app.get('/tstrct', (req, res) => {
-  require('./models/orderMessage').find({}, (err, messages) => {
-    if (err) throw err;
-    messages.forEach((message) => {
-      message.checkApproved();
-    })
-  })
-});
+
+
 // Orders Routes
 app.get('/orders/purchase',passportConfig.isAuthenticated,  ordersController.getMakeOrder);
 app.post('/orders/purchase', ordersController.postMakeOrder);
@@ -94,6 +88,7 @@ app.post('/orders/edit', ordersController.postEditOrder);
 app.get('/orders/cancel', ordersController.getCancelOrder);
 app.get('/orders/place/:id', ordersController.getOrdering);
 app.get('/orders/approve/:id', ordersController.getApproving);
+app.get('/orders/delivered/:id', passportConfig.isAuthenticated, ordersController.getDelivered);
 
 // Crud Routes
 app.get('/crud', crudController.getCrud);
@@ -106,10 +101,7 @@ app.get('/slack/auth', passport.authenticate('slack'));
 app.get('/slack/auth/redirect', passport.authenticate('slack'), (req, res) => res.redirect('/'));
 app.get('/logout', authController.getLogout);
 
-app.post('/slack/events', (req, res) => {
-  console.log(req);
-  return res.status(200).send();
-})
+app.post('/slackEventSub', eventsController.getSlackTest);
 
 // Admin Routes
 app.get('/admin/dashboard', passportConfig.isAuthenticated, adminController.getDash);
