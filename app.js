@@ -77,9 +77,11 @@ app.get('/', (req, res) => {
 });
 
 app.get('/tstrct', (req, res) => {
-  slackService.checkOneThumbsUp(process.env.PURCHASING_CHANNEL, "1579324628.002100");
-})
-
+  // slackService.getOneReactions(process.env.PURCHASING_CHANNEL, "1579324628.002100");
+  slackService.checkOneThumbsUp(process.env.PURCHASING_CHANNEL, "1579324628.002100", ["UHX2MBQM8", "lol"]).then((value) => {
+    // What to do with that information
+  })
+});
 // Orders Routes
 app.get('/orders/purchase',passportConfig.isAuthenticated,  ordersController.getMakeOrder);
 app.post('/orders/purchase', ordersController.postMakeOrder);
