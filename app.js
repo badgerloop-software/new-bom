@@ -77,9 +77,11 @@ app.get('/', (req, res) => {
 });
 
 app.get('/tstrct', (req, res) => {
-  // slackService.getOneReactions(process.env.PURCHASING_CHANNEL, "1579324628.002100");
-  slackService.checkOneThumbsUp(process.env.PURCHASING_CHANNEL, "1579324628.002100", ["UHX2MBQM8", "lol"]).then((value) => {
-    // What to do with that information
+  require('./models/orderMessage').find({}, (err, messages) => {
+    if (err) throw err;
+    messages.forEach((message) => {
+      message.checkApproved();
+    })
   })
 });
 // Orders Routes
