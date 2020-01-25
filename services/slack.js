@@ -57,7 +57,8 @@ exports.sendThread = function (channel, msg, attachments, ts, cb) {
 async function getOneReactions(channel, ts) {
   return rp(`https://slack.com/api/reactions.get?token=${URL}&channel=${channel}&timestamp=${ts}&pretty=1`).then((htmlString) => {
     let json = JSON.parse(htmlString);
-    if (!json.ok) throw "Bad Request";
+    console.log(json);
+	  if (!json.ok) throw "Bad Request";
     if (json.message.reactions === undefined) return null;
     else {
       // console.log(json.message.reactions);
@@ -77,13 +78,17 @@ exports.getOneReactions = getOneReactions;
  * @returns {Boolean} false if no user found
  */
 function compareUsers(reaction, approvingUsers) {
+  let result = false;
   let users = reaction.users;
   for (let i = 0; i < approvingUsers.length; i++) {
     for (let j = 0; j < users.length; j++) {
-      if (users[j] === approvingUsers[i]) return users[i];
+	   // console.log(`Comparing ${users[j]} to ${approvingUsers[i]}`);
+      if (users[j] == approvingUsers[i]){
+	      result = users[j];
     }
   }
-  return false;
+  }
+  return result;
 
 }
 /**
@@ -95,14 +100,14 @@ function compareUsers(reaction, approvingUsers) {
  * @returns {Promise<Reject>} The error encountered
  */
 exports.checkOneThumbsUp = function checkOneThumbsUp(channel, ts, approvingUsers) {
-  return new Promise(function (resolve, reject) {
+    return new Promise(function (resolve, reject) {
     getOneReactions(channel, ts).then((reactions) => {
       if (!reactions) return resolve(-1);
       let isUserValid = false;
       reactions.forEach((reaction) => {
         if (reaction.name === '+1') { // If its a thumbs up
-          if (compareUsers(reaction, approvingUsers)) {
-            return isUserValid = compareUsers(reaction, approvingUsers);
+          if (compareUsers(reaction, approvingUsers)) {	
+           return isUserValid = compareUsers(reaction, approvingUsers);
           }
         }
       });

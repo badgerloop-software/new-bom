@@ -18,10 +18,11 @@ const OrderMessageSchema = new mongoose.Schema({
 });
 
 OrderMessageSchema.methods.checkApproved = function () {
-    slackService.checkOneThumbsUp(PURCHASING_CHANNEL, this.slackTS, EXECUTITIVE_IDS).then((user) => {
+    console.log(EXECUTITIVE_IDS);
+	slackService.checkOneThumbsUp(PURCHASING_CHANNEL, this.slackTS, EXECUTITIVE_IDS).then((user) => {
         if (user == -1) return //console.log(`${this.slackTS} doesn't have any reactions`);
         if (user == -2) return //console.log(`${this.slackTS} has not been reacted by an authorized user`);
-        //console.log(`${this.slackTS} is approved by ${user}`);
+        console.log(`${this.slackTS} is approved by ${user}`);
         this.approveCorrespondingOrder(user);
     }).catch((err) => {
         console.log(`${this.slackTS} has encountered error ${err}`);
