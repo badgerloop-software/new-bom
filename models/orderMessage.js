@@ -19,7 +19,7 @@ const OrderMessageSchema = new mongoose.Schema({
 
 OrderMessageSchema.methods.checkApproved = function () {
     console.log(EXECUTITIVE_IDS);
-	slackService.checkOneThumbsUp(PURCHASING_CHANNEL, this.slackTS, EXECUTITIVE_IDS).then((user) => {
+    slackService.checkOneThumbsUp(PURCHASING_CHANNEL, this.slackTS, EXECUTITIVE_IDS).then((user) => {
         if (user == -1) return //console.log(`${this.slackTS} doesn't have any reactions`);
         if (user == -2) return //console.log(`${this.slackTS} has not been reacted by an authorized user`);
         console.log(`${this.slackTS} is approved by ${user}`);
@@ -50,33 +50,34 @@ OrderMessageSchema.methods.editStatus = function (status, authorizingUser) {
     Orders.findById(this.order, (err, order) => {
         if (err) throw err;
         if (order.reimbusement) return;
-        Users.findOne({name: order.requestor}, (err, user) => {
+        Users.findOne({ name: order.requestor }, (err, user) => {
             if (err) throw err;
-            let currentMsg =  
-            `====${order.subteam}====
+            let currentMsg =
+                `====${order.subteam}====
     *Requestor*: <@${user.slackID}>
     *Items*: ${order.item}
     *Cost*: $${order.totalCost}
     *Link*: http://${URL}/orders/edit/${order.id}
 ==== ==== ====`;
-        let newMsg = currentMsg + `\n *Status: ${status}*`
-        slackService.editMessage(PURCHASING_CHANNEL, this.slackTS, newMsg);
-        let threadedMsg = `<@${user.slackID}>, your order has been ${status}`;
-        if (authorizingUser) threadedMsg +=  ` by <@${authorizingUser}>`;
-        let attachments = null;
-        if (status === "Ordered") attachments = [
-            {
-                "fallback": "Please log into finance.badgerloop.com to mark delivered",
-                "actions": [
-                    {
-                        "text": "Mark as Delivered",
-                        "type": "button",
-                        "url": `http://${URL}/orders/delivered/${order.id}`
-                    }
-                ]
-            }
-        ]
-        slackService.sendThread(PURCHASING_CHANNEL, threadedMsg, attachments, this.slackTS);
+            let newMsg = currentMsg + `\n *Status: ${status}*`
+            slackService.editMessage(PURCHASING_CHANNEL, this.slackTS, newMsg);
+            let threadedMsg = `<@${user.slackID}>, your order has been ${status}`;
+            if (authorizingUser) threadedMsg += ` by <@${authorizingUser}>`;
+            if (status === "Approved") threadedMsg += `CC: <@${process.env.FSC_LEAD}>`
+            let attachments = null;
+            if (status === "Ordered") attachments = [
+                {
+                    "fallback": "Please log into finance.badgerloop.com to mark delivered",
+                    "actions": [
+                        {
+                            "text": "Mark as Delivered",
+                            "type": "button",
+                            "url": `http://${URL}/orders/delivered/${order.id}`
+                        }
+                    ]
+                }
+            ]
+            slackService.sendThread(PURCHASING_CHANNEL, threadedMsg, attachments, this.slackTS);
         });
     });
 }
