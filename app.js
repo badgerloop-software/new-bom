@@ -153,6 +153,9 @@ app.post('/news/:id/delete', newsController.news_delete);
 // CPB Routes
 app.get('/cpb', cpbController.getCriticalPaths);
 
+// Command Routes
+app.post('/commands/report',commandsController.getBugReport);
+
 app.post('/criticalPaths/create', criticalPathsController.cp_create);
 app.get('/criticalPaths/:id', criticalPathsController.cp_details);
 app.get('/criticalpaths/', criticalPathsController.cp_list);
