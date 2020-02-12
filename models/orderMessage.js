@@ -60,25 +60,24 @@ OrderMessageSchema.methods.editStatus = function (status, authorizingUser) {
     *Link*: http://${URL}/orders/edit/${order.id}
 ==== ==== ====`;
             let newMsg = currentMsg + `\n *Status: ${status}*`
-                slackService.editMessage(PURCHASING_CHANNEL, this.slackTS, newMsg).then(() => {
-                    let threadedMsg = `<@${user.slackID}>, your order has been ${status}`;
-                    if (authorizingUser) threadedMsg += ` by <@${authorizingUser}>`;
-                    if (status === "Approved") threadedMsg += `CC: <@${process.env.FSC_LEAD}>`
-                    let attachments = null;
-                    if (status === "Ordered") attachments = [
+            slackService.editMessage(PURCHASING_CHANNEL, this.slackTS, newMsg);
+            let threadedMsg = `<@${user.slackID}>, your order has been ${status}`;
+            if (authorizingUser) threadedMsg += ` by <@${authorizingUser}>`;
+            if (status === "Approved") threadedMsg += `CC: <@${process.env.FSC_LEAD}>`
+            let attachments = null;
+            if (status === "Ordered") attachments = [
+                {
+                    "fallback": "Please log into finance.badgerloop.com to mark delivered",
+                    "actions": [
                         {
-                            "fallback": "Please log into finance.badgerloop.com to mark delivered",
-                            "actions": [
-                                {
-                                    "text": "Mark as Delivered",
-                                    "type": "button",
-                                    "url": `http://${URL}/orders/delivered/${order.id}`
-                                }
-                            ]
+                            "text": "Mark as Delivered",
+                            "type": "button",
+                            "url": `http://${URL}/orders/delivered/${order.id}`
                         }
                     ]
-                    slackService.sendThread(PURCHASING_CHANNEL, threadedMsg, attachments, this.slackTS);
-            });
+                }
+            ]
+            slackService.sendThread(PURCHASING_CHANNEL, threadedMsg, attachments, this.slackTS);
         });
     });
 }

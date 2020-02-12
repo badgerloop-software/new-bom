@@ -25,7 +25,6 @@ const utilsController = require('./controllers/utils');
 const vendorsController = require('./controllers/vendors');
 const criticalPathsController = require('./controllers/criticalPaths');
 const cpbController = require('./controllers/cpb');
-const commandsController = require('./controllers/commands');
 
 const passportConfig = require('./config/passport');
 
@@ -150,9 +149,6 @@ app.get('/news/:id', newsController.news_details);
 app.get('/news/', newsController.news_list);
 app.post('/news/:id/update', newsController.news_update);
 app.post('/news/:id/delete', newsController.news_delete);
-
-// Command Routes
-app.post('/commands/report',commandsController.getBugReport);
 
 // CPB Routes
 app.get('/cpb', cpbController.getCriticalPaths);
