@@ -57,7 +57,6 @@ exports.sendThread = function (channel, msg, attachments, ts, cb) {
 async function getOneReactions(channel, ts) {
   return rp(`https://slack.com/api/reactions.get?token=${URL}&channel=${channel}&timestamp=${ts}&pretty=1`).then((htmlString) => {
     let json = JSON.parse(htmlString);
-    console.log(json);
 	  if (!json.ok) throw "Bad Request";
     if (json.message.reactions === undefined) return null;
     else {
@@ -116,8 +115,7 @@ exports.checkOneThumbsUp = function checkOneThumbsUp(channel, ts, approvingUsers
     });
   });
 }
-
-exports.editMessage = function editMessage(channel, ts, text, cb) {
+async function editMessage(channel, ts, text, cb) {
   let msg = text;
   var options = {
     msg: msg,
@@ -131,9 +129,21 @@ exports.editMessage = function editMessage(channel, ts, text, cb) {
     body: { channel: channel, text: msg, ts: ts },
     json: true
   };
-  request(options, function (error, response, body) {
-    if (error) throw new Error(error);
-    if (cb) cb(body);
-    else return;
+  // request(options, function (error, response, body) {
+  //   if (error) throw new Error(error);
+  //   if (cb) cb(body);
+  //   else return;
+  // });
+
+  return rp(options).then((body) => {
+	  if (!body.ok) throw "Bad Request";
+    if (body.message.reactions === undefined) return null;
+    else {
+      cb();
+    }
+  }).catch((err) => {
+    console.log("API Call Error: " + err);
+    reject("API Call Failed");
   });
 }
+exports.editMessage = editMessage;
