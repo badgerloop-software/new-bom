@@ -226,7 +226,7 @@
                         <td>{{this.Picture}}</td>
                         <td>
                             <a href="#editteamleadModal" class="edit"
-                                data-code="{{this.Team}}, {{this.Position}}, {{this.Name}}, {{this.Major}}, {{this.Year}}, {{this.Picture}}, {{this._id}}"
+                                data-code="{{this.Team}},, {{this.Position}},, {{this.Name}},, {{this.Major}},, {{this.Year}},, {{this.Picture}},, {{this._id}}"
                                 data-toggle="modal"><i class="material-icons" data-toggle="tooltip"
                                     title="Edit">&#xE254;</i></a>
                             <a href="#deleteteamleadModal" class="delete" data-code="{{this._id}}, {{this.Name}}"
@@ -728,7 +728,7 @@
     $('#editteamleadModal').on('show.bs.modal', function (event) {
         let button = $(event.relatedTarget) // Button that triggered the modal
         let code = button.data('code') // Extract info from data-* attributes
-        let array = code.split(',');
+        let array = code.split(',,');
         let id = array[6].trim();
         document.getElementById('editTeamleadForm').action = `/teamleads/${id}/update`;
         document.getElementById('editTeam').value = array[0].trim();
