@@ -26,7 +26,7 @@ var j = schedule.scheduleJob('0 10 * * *', function (fireDate) { //uses node-sch
     }
   });
 });
-
+//Lol Luke this function is so jank
 function sendMsg(channel, msg) {
   var channelID;
   switch (channel) {
@@ -104,4 +104,14 @@ function sendMsg(channel, msg) {
     if (error) throw new Error(error);
     console.log(body);
   });
+}
+
+exports.getSlackTest = (req, res) => {
+  require('../models/orderMessage').find({}, (err, messages) => {
+    if (err) throw err;
+    messages.forEach((message) => {
+      message.checkApproved();
+    })
+  })
+  res.send(req.body.challenge).end(200);
 }

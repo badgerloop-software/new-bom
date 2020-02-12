@@ -15,7 +15,7 @@ function setTable(budgets) {
   if (budget !== undefined) {
     for (let i = 0; i < budget.teamList.length; i++) {
       let spent = budget.currentSpent[i];
-      let left = budget.setBudgets[i] - budget.currentSpent[i]
+      let left = Number(budget.setBudgets[i] - budget.currentSpent[i]).toFixed(2);
       let teamArray = [budget.teamList[i], budget.setBudgets[i], spent, left]
       table.push(teamArray);
     }
@@ -42,6 +42,7 @@ function handleError(err) {
 exports.getDash = (req, res) => {
   Budgets.find({}, (err, budgets) => {
     if (err) handleError(err);
+    budgets[0].formatAllNumbers();
     Orders.find({}, (err, orders) => {
       if (err) handleError(err);
       Users.find({}, (err, users) => {

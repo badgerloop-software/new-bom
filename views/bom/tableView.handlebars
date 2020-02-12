@@ -18,6 +18,7 @@
       <th>Tax</th>
       <th>Total Cost</th>
       <th>Date Purchased</th>
+      <th>Approved By</th>
       <th>Purchased By</th>
       <th>Link</th>
       <th>Comments</th>
@@ -40,6 +41,7 @@
         <td>${{this.tax}}</td>
         <td>${{this.totalCost}}</td>
         <td>{{this.dateOrdered}}</td>
+        <td>{{#if this.approvedBy}}{{this.approvedBy}}{{else}}Not Recorded{{/if}}</td>
         <td>{{this.purchaser}}</td>
         <td><a href="{{this.link}}">Link</a></td>
         <td>{{this.comments}}</td>

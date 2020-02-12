@@ -18,6 +18,7 @@ const OrderSchema = new mongoose.Schema({
   shipping: Number,
   tax: Number,
   isApproved: {type: Boolean, default: false},
+  approvedBy: String,
   trackingNum: String,
   dateRequested: {type: Date, default: Date.now},
   isOrdered: {type: Boolean, default: false},
@@ -30,6 +31,7 @@ const OrderSchema = new mongoose.Schema({
   countsTowardPodCost: {type: Boolean, default: false},
   needDate: String,
   isDigikey: {type: Boolean, default: false},
+  messageId: mongoose.ObjectId
 });
 
 OrderSchema.index({'$**': 'text'}, {
