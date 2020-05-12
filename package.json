@@ -4,7 +4,11 @@
   "description": "The Repository for the new FSC Bill of Materials!",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "dev": "ts-node app.ts",
+    "start": "nodemon ./dist/app.js",
+    "prod": "npm install && npm start",
+    "format": "prettier-standart '**/*.ts"
   },
   "repository": {
     "type": "git",
@@ -17,6 +21,7 @@
   },
   "homepage": "https://github.com/badgerloop-software/new-bom#readme",
   "dependencies": {
+    "@types/node": "^13.13.5",
     "body-parser": "^1.19.0",
     "dotenv": "^8.0.0",
     "express": "^4.1.2",
