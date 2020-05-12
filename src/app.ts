@@ -1,7 +1,9 @@
-import "dotenv";
+import dotenv from "dotenv";
 const PORT = process.env.PORT || 7000;
 import app from './config/express.config';
 import * as passport from 'passport';
+
+dotenv.config();
 
 const ordersController = require('./controllers/orders');
 const authController = require('./controllers/auth');
@@ -32,15 +34,7 @@ app.get('/', (req, res) => {
   });
 });
 
-app.get('/orders/purchase',  ordersController.getMakeOrder);
-app.post('/orders/purchase', ordersController.postMakeOrder);
-app.get('/orders/view', passportConfig.isAuthenticated, ordersController.getViewOrders);
-app.post('/orders/view', passportConfig.isAuthenticated, ordersController.postViewOrders);
-app.get('/orders/edit/:id', ordersController.getEditOrders);
-app.post('/orders/edit', ordersController.postEditOrder);
-app.get('/orders/cancel', ordersController.getCancelOrder);
-app.get('/orders/place/:id', ordersController.getOrdering);
-app.get('/orders/approve/:id', ordersController.getApproving);
+
 
 app.get('/slack/auth', passport.authenticate('slack'));
 app.get('/slack/auth/redirect', passport.authenticate('slack'), (req, res) => res.redirect('/'));

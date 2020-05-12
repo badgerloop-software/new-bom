@@ -1,11 +1,15 @@
+import * as mongoConfig from './mongo.config.json';
 import * as bodyParser from 'body-parser';
 import express from 'express';
 import flash from 'express-flash';
 import exphbs from 'express-handlebars';
 import session from 'express-session';
-import * as mongoConfig from './mongo.config.json';
 import mongoose = require('mongoose');
 import passport from 'passport';
+
+import orderRouter from '../routes/orders.routes';
+
+const router = express.Router();
 
 class ExpressConfiguration {
     public app: express.Application;
@@ -23,7 +27,6 @@ class ExpressConfiguration {
     private setupConfiguration() {
         this.app.set('view engine', 'handlebars');
         this.app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
-
         this.app.use(express.static('public'));
         this.app.use(bodyParser.urlencoded({ extended: true }));
         this.app.use(bodyParser.json());
@@ -35,6 +38,8 @@ class ExpressConfiguration {
         this.app.use(passport.initialize());
         this.app.use(passport.session());
         this.app.use(flash());
+        
+        this.app.use('/orders', orderRouter);
     }
 }
 

@@ -23,14 +23,14 @@ function redirectToMain(req, res) {
   res.redirect('/');
 }
 
-exports.getMakeOrder = (req, res) => {
+export const getMakeOrder = (req, res) => {
   res.render('makeOrder', {
     user: req.user,
     activePurchase: true
   })
 }
 
-exports.postMakeOrder = (req, res, next) => {
+export const postMakeOrder = (req, res, next) => {
   let totalCost = req.body.cost * req.body.quantity;
   let notARequest = req.body.notARequest;
   let order = new Order({
@@ -69,7 +69,7 @@ exports.postMakeOrder = (req, res, next) => {
   createSlackMessage(orderObj);
 }
 
-exports.getViewOrders = (req, res) => {
+export const getViewOrders = (req, res) => {
   if (req.query.search) {
     console.log(`Recieved serch term ${req.query.search}`);
     Order.find(
@@ -97,13 +97,13 @@ exports.getViewOrders = (req, res) => {
   }
 }
 
-exports.postViewOrders = (req, res) => {
+export const postViewOrders = (req, res) => {
   let searchQuery = req.body.search;
   console.log(`searching for ${req.body.search}`);
   res.redirect(`/orders/view?search=${searchQuery}`);
 }
 
-exports.getEditOrders = (req, res) => {
+export const getEditOrders = (req, res) => {
   if (!req.user) {
     return redirectToMain(req, res);
   }
@@ -137,7 +137,7 @@ exports.getEditOrders = (req, res) => {
   });
 }
 
-exports.postEditOrder = (req, res) => {
+export const postEditOrder = (req, res) => {
   let orderID = req.body.id;
   let totalCost = req.body.cost * req.body.quantity;
   Order.findById(orderID, (err, order) => {
@@ -160,7 +160,7 @@ exports.postEditOrder = (req, res) => {
   res.redirect('back');
 }
 
-exports.getCancelOrder = (req, res) => {
+export const getCancelOrder = (req, res) => {
   console.log(`params = ${req.query.q}`);
   Order.deleteOne({'_id': req.query.q}, (err, order) => {
     if (err) throw err;
@@ -169,7 +169,7 @@ exports.getCancelOrder = (req, res) => {
   })
 }
 
-exports.getOrdering = (req, res) => {
+export const getOrdering = (req, res) => {
   let user = req.user;
   let orderID = req.params.id;
   if (!user || !user.isFSC) {
@@ -193,7 +193,7 @@ exports.getOrdering = (req, res) => {
   });
 }
 
-exports.getApproving = (req, res) => {
+export const getApproving = (req, res) => {
   let user = req.user;
   let orderID = req.params.id;
   if(!user || !user.isAdmin) {

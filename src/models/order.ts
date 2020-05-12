@@ -29,5 +29,6 @@ weights: {
   productNum: 5,
   purchaser: 4
 }
-})
-module.exports = mongoose.model('Orders', OrderSchema);
+});
+
+export default mongoose.model('Orders', OrderSchema);

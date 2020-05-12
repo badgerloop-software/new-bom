@@ -1,12 +1,11 @@
-const SlackStragety = require('passport-slack').Strategy;
-const passport = require('passport');
+import passport from 'passport';
+import SlackStragety from 'passport-slack';
 
 const User = require('../models/user');
-const clientID = process.env.CLIENT_ID;
-const clientSecret = process.env.CLIENT_SECRET;
-const redirectURI = process.env.REDIRECT_URI;
 
-  passport.serializeUser((user, done) => {
+const {clientID, clientSecret, redirectURI} = process.env;
+
+  passport.serializeUser((user: any, done) => {
     done(null, user.id);
   });
 
@@ -19,21 +18,21 @@ const redirectURI = process.env.REDIRECT_URI;
  passport.use(new SlackStragety({
    clientID: clientID,
    clientSecret: clientSecret
- }, (accessToken, refreshToke, profile, done) => {
+ }, (req: any, _accessToken, _refreshToken, profile, done) => {
    User.findOne({name: profile.displayName}).then((currentUser) => {
      if(currentUser) {
        console.log('Current User is' + currentUser);
        done(null, currentUser);
      } else {
-       newUser = new User({
+       let newUser = new User({
          name: profile.displayName,
          slackID: profile.id,
          admin: false
        });
-       newUser.save().then((newUser) => {
+       newUser.save().then((newUser: any) => {
          console.log('New User Created' + newUser);
-         req.logIn(newUser, (err) => {
-           return next(err);
+         req.logIn(newUser, (err: Error) => {
+           return done(err);
          })
          done(null, newUser);
        });
@@ -41,10 +40,10 @@ const redirectURI = process.env.REDIRECT_URI;
    })
  }));
 
- exports.isAuthenticated = (req, res, next) => {
+ export const isAuthenticated = (req, res, next) => {
    if(req.isAuthenticated()) {
      return next();
    }
    req.flash('error', 'Not Logged In!');
    res.redirect('/');
- }
+ };
