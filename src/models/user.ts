@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 
-let userSchema = new mongoose.Schema({
+let UserSchema = new mongoose.Schema({
   name : String,
   slackID : String,
   isAdmin: {type: Boolean, default: false},
   isFSC: {type: Boolean, default: false}
 });
 
-module.exports = mongoose.model('User', userSchema);
+export default mongoose.model('Users', UserSchema)

@@ -1,9 +1,11 @@
 import passport from 'passport';
-import SlackStragety from 'passport-slack';
+import passportSlack from 'passport-slack';
+
+const SlackStragety = passportSlack.Strategy;
 
 const User = require('../models/user');
 
-const {clientID, clientSecret, redirectURI} = process.env;
+const {CLIENT_ID, CLIENT_SECRET, REDIRECT_URI} = process.env;
 
   passport.serializeUser((user: any, done) => {
     done(null, user.id);
@@ -16,8 +18,8 @@ const {clientID, clientSecret, redirectURI} = process.env;
   });
 
  passport.use(new SlackStragety({
-   clientID: clientID,
-   clientSecret: clientSecret
+   clientID: CLIENT_ID,
+   clientSecret: CLIENT_SECRET
  }, (req: any, _accessToken, _refreshToken, profile, done) => {
    User.findOne({name: profile.displayName}).then((currentUser) => {
      if(currentUser) {

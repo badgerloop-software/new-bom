@@ -4,8 +4,9 @@
   "description": "The Repository for the new FSC Bill of Materials!",
   "main": "dist/app.js",
   "scripts": {
+    "clean": "rm -rf ./dist/",
     "build": "tsc --pretty",
-    "dev": "npm run-script build && npm start",
+    "dev": "npm run-script clean && npm run-script build && npm start",
     "start": "nodemon ./dist/app.js",
     "prod": "npm install && npm start",
     "format": "prettier-standart '**/*.ts"

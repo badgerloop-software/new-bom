@@ -1,11 +1,8 @@
-import dotenv from "dotenv";
+require('dotenv').config();
 const PORT = process.env.PORT || 7000;
 import app from './config/express.config';
 import * as passport from 'passport';
 
-dotenv.config();
-
-const ordersController = require('./controllers/orders');
 const authController = require('./controllers/auth');
 const eventsController = require('./controllers/events');
 const adminController = require('./controllers/admin');
