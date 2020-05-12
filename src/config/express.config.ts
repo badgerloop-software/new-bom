@@ -1,11 +1,11 @@
 import * as bodyParser from 'body-parser';
-import * as express from 'express';
-import * as flash from 'express-flash';
-import * as exphbs from 'express-handlebars';
-import * as session from 'express-session';
-import * as mongoConfig from './mongo.config.json.js';
-import * as mongoose from 'mongoose';
-import * as passport from 'passport';
+import express from 'express';
+import flash from 'express-flash';
+import exphbs from 'express-handlebars';
+import session from 'express-session';
+import * as mongoConfig from './mongo.config.json';
+import mongoose = require('mongoose');
+import passport from 'passport';
 
 class ExpressConfiguration {
     public app: express.Application;

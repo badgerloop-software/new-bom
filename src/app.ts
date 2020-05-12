@@ -1,4 +1,4 @@
-require('dotenv').config();
+import "dotenv";
 const PORT = process.env.PORT || 7000;
 import app from './config/express.config';
 import * as passport from 'passport';
