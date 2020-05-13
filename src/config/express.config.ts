@@ -9,6 +9,17 @@ import passport from 'passport';
 
 import orderRouter from '../routes/orders.routes';
 import authRouter from '../routes/auth.routes';
+import adminRouter from '../routes/admin.routes';
+import bomRouter from '../routes/bom.routes';
+import budgetRouter from '../routes/budget.routes';
+import commandRouter from '../routes/commands.routes';
+import criticalPathBotRouter from '../routes/criticalPathBot.routes';
+import criticalPathsRouter from '../routes/criticalPaths.routes';
+import CRUDRouter from '../routes/crud.routes';
+import newsRouter from '../routes/news.routes';
+import sponsorsRouter from '../routes/sponosors.routes';
+import teamLeadsRouter from '../routes/teamleads.routes';
+import vendorsRouter from '../routes/vendors.routes';
 
 const router = express.Router();
 
@@ -41,6 +52,17 @@ class ExpressConfiguration {
         
         this.app.use('/orders', orderRouter);
         this.app.use('/auth', authRouter);
+        this.app.use('/admin', adminRouter);
+        this.app.use('/bom', bomRouter);
+        this.app.use('/budget', budgetRouter);
+        this.app.use('/command', commandRouter);
+        this.app.use('/cpb', criticalPathBotRouter);
+        this.app.use('/criticalPaths', criticalPathsRouter);
+        this.app.use('/crud', CRUDRouter);
+        this.app.use('/news', newsRouter);
+        this.app.use('/sponsors', sponsorsRouter);
+        this.app.use('/teamleads', teamLeadsRouter);
+        this.app.use('/vendors', vendorsRouter);
     }
 }
 
