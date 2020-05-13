@@ -1,7 +1,9 @@
 import express from 'express';
 import * as newsController from '../controllers/news.controller';
+import fs from 'fs';
 const multer = require('multer');
 const uploadNews = multer({ dest: './uploads/news' });
+const Logs = require('./models/log');
 
 let date_ob = new Date();
 let date = ("0" + date_ob.getDate()).slice(-2);
@@ -18,7 +20,7 @@ NewsRouter.get('/news/:id', newsController.news_details);
 NewsRouter.get('/news/', newsController.news_list);
 NewsRouter.post('/news/:id/update', newsController.news_update);
 NewsRouter.post('/news/:id/delete', newsController.news_delete);
-NewsRouter.post('/news/upload', uploadNews.single('newsImg'), (req, res) => {
+NewsRouter.post('/news/upload', uploadNews.single('newsImg'), (req: any, res) => {
     if (req.file) {
       console.log('Uploading file...');
       fs.rename('uploads/news/' + req.file.filename, process.env.IMAGES_FOLDER + '/' + req.file.originalname, function (err) {
@@ -34,7 +36,7 @@ NewsRouter.post('/news/upload', uploadNews.single('newsImg'), (req, res) => {
           field: "Image name: " + filename,
         }
       );
-      logs.save(function (err) {
+      logs.save(function (err, next) {
         if (err) {
           return next(err);
         }
@@ -43,7 +45,7 @@ NewsRouter.post('/news/upload', uploadNews.single('newsImg'), (req, res) => {
       return res.redirect('/crud');
     } else {
       console.log('No File Uploaded');
-      var filename = 'FILE NOT UPLOADED';
+      filename = 'FILE NOT UPLOADED';
       req.flash('success', { msg: `News image upload failed!` });
       return res.redirect('/crud');
     }
