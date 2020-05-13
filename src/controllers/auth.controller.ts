@@ -1,16 +1,17 @@
 const request = require('request');
 const User = require('../models/user');
-// &redirect_uri=${redirectURI}
 
-exports.getAuth = (req, res) => {
+const {CLIENT_ID, CLIENT_SECRET} = process.env;
+
+export const getAuth = (req, res) => {
   res.render('mainPage', {
     login: true,
   });
 }
 
-exports.getAuthRedirect = (req, res) => {
+export const getAuthRedirect = (req, res) => {
   let options = {
-    uri: `https://slack.com/api/oauth.access?code=${req.query.code}&client_id=${clientID}&client_secret=${clientSecret}`,
+    uri: `https://slack.com/api/oauth.access?code=${req.query.code}&client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}`,
     method: 'GET'
   };
   request(options, (err, response, body) => {
@@ -23,7 +24,7 @@ exports.getAuthRedirect = (req, res) => {
   })
 }
 
-exports.getLogout = (req, res) => {
+export const getLogout = (req, res) => {
   req.logout();
   req.flash('success', {
     msg: 'Successfully Logged Out'

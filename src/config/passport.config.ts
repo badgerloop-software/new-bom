@@ -50,13 +50,13 @@ passport.use(new SlackStragety({
   });
 }));
 // End Main Flow
-  exports.isAuthenticated = (req, res, next) => {
+export const isAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {
       return next();
     }
     req.flash('error', 'Not Logged In!');
     res.redirect('/');
-  }
+  };
 
   function updateCurrentUser(isTeamLead, user, profile, cb) {
     user.name = profile.displayName

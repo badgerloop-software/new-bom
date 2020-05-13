@@ -7,7 +7,7 @@ const request = require('request');
 const fscLead = "UG46HDHS7";
 const SLACK_SERVICE = require('../services/slack');
 
-exports.getMakeOrder = (req, res) => {
+export const getMakeOrder = (req, res) => {
   Budget.find({}, (err, budgets) => {
     if (err) throw err;
     if (!budgets[0]) {
@@ -25,7 +25,7 @@ exports.getMakeOrder = (req, res) => {
   });
 }
 
-exports.postMakeOrder = (req, res, next) => {
+export const postMakeOrder = (req, res, next) => {
   let notARequest = req.body.notARequest;
   console.log(req.body.cost);
   if (req.body.link && !isURL(req.body.link)) {
@@ -73,7 +73,7 @@ exports.postMakeOrder = (req, res, next) => {
         req.flash('errors', { msg: 'The Budget has not been initalized yet' });
         return res.redirect('back');
       }
-      updateBudget(budgets[0], order);
+      updateBudget(budgets[0], order, null, null);
     });
   }
   order.save((err) => {
@@ -95,7 +95,7 @@ exports.postMakeOrder = (req, res, next) => {
 
 
 
-exports.getViewOrders = (req, res) => {
+export const getViewOrders = (req, res) => {
   if (req.query.search) {
     console.log(`Recieved serch term ${req.query.search}`);
     Order.find(
@@ -126,13 +126,13 @@ exports.getViewOrders = (req, res) => {
   }
 }
 
-exports.postViewOrders = (req, res) => {
+export const postViewOrders = (req, res) => {
   let searchQuery = req.body.search;
   console.log(`searching for ${req.body.search}`);
   res.redirect(`/orders/view?search=${searchQuery}`);
 }
 
-exports.getEditOrders = (req, res) => {
+export const getEditOrders = (req, res) => {
   if (!req.user) {
     return redirectToMain(req, res);
   }
@@ -169,7 +169,7 @@ exports.getEditOrders = (req, res) => {
   });
 }
 
-exports.postEditOrder = (req, res) => {
+export const postEditOrder = (req, res) => {
   let orderID = req.body.id;
   let podCost = false;
   console.log(req.body.podCost)
@@ -227,7 +227,7 @@ exports.postEditOrder = (req, res) => {
   });
 }
 
-exports.getCancelOrder = (req, res) => {
+export const getCancelOrder = (req, res) => {
   console.log("Cancel Recieved");
   if (!req.user || (!req.user.isAdmin && req.user.isFSC)) {
     return redirectToMain(req, res);
@@ -260,7 +260,7 @@ exports.getCancelOrder = (req, res) => {
   });
 }
 
-exports.getOrdering = (req, res) => {
+export const getOrdering = (req, res) => {
   let user = req.user;
   let orderID = req.params.id;
   if (!user || !user.isFSC) {
@@ -364,7 +364,7 @@ exports.getOrdering = (req, res) => {
   });
 }
 
-exports.getApproving = (req, res) => {
+export const getApproving = (req, res) => {
   let user = req.user;
   let orderID = req.params.id || req.query.q;
   if (!user || !user.isAdmin) {
@@ -392,7 +392,7 @@ exports.getApproving = (req, res) => {
   });
 };
 
-exports.getDelivered = (req, res) => {
+export const getDelivered = (req, res) => {
   if (!(req.user.isTeamLead || req.user.isAdmin || req.user.isFSC)) {
     return redirectToMain(req, res);
   }
@@ -413,9 +413,9 @@ exports.getDelivered = (req, res) => {
 
 
 function updateBudget(budget, order, oldCost, callback) {
-  budgetID = budget._id;
+  let budgetID: number = budget._id;
 	console.log(`${budgetID} is the budgetID`);
-  teamIndex = budget.findTeamIndex(order.subteam);
+  let teamIndex: number = budget.findTeamIndex(order.subteam);
 	console.log(`${teamIndex} is the teamIndex`);
   let newCurrentSpent = budget.currentSpent;
   if (oldCost) newCurrentSpent[teamIndex] -= oldCost;
@@ -426,8 +426,8 @@ function updateBudget(budget, order, oldCost, callback) {
 }
 
 function deleteOrderFromBudget(budget, order, callback) {
-  budgetID = budget._id;
-  teamIndex = budget.findTeamIndex(order.subteam);
+  let budgetID: Number = budget._id;
+  let teamIndex: number = budget.findTeamIndex(order.subteam);
   let newCurrentSpent = budget.currentSpent;
   newCurrentSpent[teamIndex] -= order.totalCost;
   let update = { currentSpent: newCurrentSpent };
@@ -460,25 +460,6 @@ function sendOrderMessage(order, user) {
     *Link*: http://${URL}/orders/edit/${order.id}
   ==== ==== ====`
     }
-    // let attachments = [
-    //   {
-    //     "fallback": `View this order at http://${URL}/orders/edit/${order.id}`,
-    //     "actions": [
-    //       {
-    //         "type": "button",
-    //         "text": "Approve Order 💵",
-    //         "url": `http://${URL}/orders/approve/${order.id}`,
-    //         "style": 'primary',
-    //       },
-    //       {
-    //         "type": "button",
-    //         "text": "Deny Order 🚫",
-    //         "url": `http://${URL}/orders/cancel?q=${order.id}`,
-    //         "style": 'danger'
-    //       }
-    //     ]
-    //   }
-    // ]
     SLACK_SERVICE.sendMessage(process.env.PURCHASING_CHANNEL, msg, null, (body) => {
       OrderMessage.create({
         slackTS: body.ts,
@@ -501,7 +482,7 @@ function createSlackResponse(order, user) {
   });
   }); 
 }
-exports.sendApprovedResponse = createSlackResponse;
+export const sendApprovedResponse = createSlackResponse;
 function redirectToMain(req, res) {
   req.flash('errors', { msg: 'You are not authorized to view that!' });
   res.redirect('/');
