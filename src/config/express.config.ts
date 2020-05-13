@@ -8,6 +8,7 @@ import mongoose = require('mongoose');
 import passport from 'passport';
 
 import orderRouter from '../routes/orders.routes';
+import authRouter from '../routes/auth.routes';
 
 const router = express.Router();
 
@@ -40,6 +41,7 @@ class ExpressConfiguration {
         this.app.use(flash());
         
         this.app.use('/orders', orderRouter);
+        this.app.use('/auth', authRouter);
     }
 }
 

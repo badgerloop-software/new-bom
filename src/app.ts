@@ -1,9 +1,7 @@
 require('dotenv').config();
 const PORT = process.env.PORT || 7000;
 import app from './config/express.config';
-import * as passport from 'passport';
 
-const authController = require('./controllers/auth');
 const eventsController = require('./controllers/events');
 const adminController = require('./controllers/admin');
 
@@ -33,9 +31,6 @@ app.get('/', (req, res) => {
 
 
 
-app.get('/slack/auth', passport.authenticate('slack'));
-app.get('/slack/auth/redirect', passport.authenticate('slack'), (req, res) => res.redirect('/'));
-app.get('/logout', authController.getLogout);
 
 app.get('/admin/dashboard', passportConfig.isAuthenticated, adminController.getDash);
 app.get('/admin/set', passportConfig.isAuthenticated, adminController.setUser);
