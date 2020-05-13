@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
-const mongoConfig = require('../config/mongo')
-const bomDB = mongoose.createConnection(mongoConfig.bomURL);
+import mongoose from 'mongoose';
+import * as mongoConfig from '../config/mongo.config';
+const bomDB = mongoose.createConnection(mongoConfig.BOM_URL);
 
 const BudgetSchema = new mongoose.Schema({
   totalAllocated: {type: Number, default: 0},
@@ -46,9 +46,9 @@ BudgetSchema.methods.findCurrentLeft = function(query = -1) {
             return;
         }
     }else {
-        this.currentLeft[query] = Number(this.setBudgets[i] - this.currentSpent[i]).toFixed(2);
+        this.currentLeft[query] = Number(this.setBudgets[query] - this.currentSpent[query]).toFixed(2);
         return this.currentLeft[query];
     }
 }
 
-module.exports = bomDB.model('Budgets', BudgetSchema);
+export default bomDB.model('Budgets', BudgetSchema);

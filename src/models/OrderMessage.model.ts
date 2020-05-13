@@ -1,13 +1,12 @@
-const mongoose = require('mongoose');
-const mongoConfig = require('../config/mongo');
-const slackService = require('../services/slack');
-const orderController = require('../controllers/orders');
-const Orders = require('../models/order');
-const Users = require('../models/user');
-const bomDB = mongoose.createConnection(mongoConfig.bomURL);
-const PURCHASING_CHANNEL = process.env.PURCHASING_CHANNEL;
-const EXECUTITIVE_IDS = String(process.env.EXECUTITIVES_IDS).split(',');
-const URL = process.env.LOCAL_URL;
+import mongoose from 'mongoose';
+import * as mongoConfig from '../config/mongo.config'
+const bomDB = mongoose.createConnection(mongoConfig.BOM_URL);
+import * as slackService from '../services/slack';
+import Orders from '../models/Order.model';
+import Users from '../models/User.model';
+const PURCHASING_CHANNEL: string = process.env.PURCHASING_CHANNEL;
+const EXECUTITIVE_IDS: string[] = String(process.env.EXECUTITIVES_IDS).split(',');
+const URL: string = process.env.LOCAL_URL;
 
 
 const OrderMessageSchema = new mongoose.Schema({
@@ -29,7 +28,7 @@ OrderMessageSchema.methods.checkApproved = function () {
     })
 }
 
-OrderMessageSchema.methods.approveCorrespondingOrder = function (userID) {
+OrderMessageSchema.methods.approveCorrespondingOrder = function (userID: number) {
     Orders.findById(this.order, (err, order) => {
         if (err) throw err;
         if (order.isApproved) return;
@@ -46,7 +45,7 @@ OrderMessageSchema.methods.approveCorrespondingOrder = function (userID) {
     });
 }
 
-OrderMessageSchema.methods.editStatus = function (status, authorizingUser) {
+OrderMessageSchema.methods.editStatus = function (status: string, authorizingUser: any) {
     Orders.findById(this.order, (err, order) => {
         if (err) throw err;
         if (order.reimbusement) return;
@@ -81,5 +80,4 @@ OrderMessageSchema.methods.editStatus = function (status, authorizingUser) {
         });
     });
 }
-let orderModel = bomDB.model('OrderMessages', OrderMessageSchema);
-module.exports = orderModel;
+export default bomDB.model('OrderMessages', OrderMessageSchema);

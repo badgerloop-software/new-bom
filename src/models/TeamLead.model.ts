@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
-const mongoConfig = require('../config/mongo')
-const prodDB = mongoose.createConnection(mongoConfig.crudURL);
+import mongoose from 'mongoose';
+import * as mongoConfig from '../config/mongo.config'
+const prodDB = mongoose.createConnection(mongoConfig.CRUD_URL);
 
 let TeamleadsSchema = new mongoose.Schema({
     Team: { type: String, required: false, max: 100 },
@@ -12,4 +12,4 @@ let TeamleadsSchema = new mongoose.Schema({
 });
 
 // Export the model
-module.exports = prodDB.model('Teamleads', TeamleadsSchema);
+export default prodDB.model('Teamleads', TeamleadsSchema);

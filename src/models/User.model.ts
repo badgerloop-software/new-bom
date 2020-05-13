@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
-const mongoConfig = require('../config/mongo')
-const bomDB = mongoose.createConnection(mongoConfig.bomURL);
+import mongoose from 'mongoose';
+import * as mongoConfig from '../config/mongo.config'
+const bomDB = mongoose.createConnection(mongoConfig.BOM_URL);
 
 let userSchema = new mongoose.Schema({
   name : String,
@@ -12,4 +12,4 @@ let userSchema = new mongoose.Schema({
   isTeamLead: {type: Boolean, default: false}
 });
 
-module.exports = bomDB.model('User', userSchema);
+export default bomDB.model('User', userSchema);

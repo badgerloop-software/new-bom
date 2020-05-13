@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
-const mongoConfig = require('../config/mongo')
-const prodDB = mongoose.createConnection(mongoConfig.crudURL);
+import mongoose from 'mongoose'
+import * as mongoConfig from '../config/mongo.config'
+const prodDB = mongoose.createConnection(mongoConfig.CRUD_URL);
 
 let LogsSchema = new mongoose.Schema({
     time: { type: String, required: false, max: 100 },
@@ -10,4 +10,4 @@ let LogsSchema = new mongoose.Schema({
 });
 
 // Export the model
-module.exports = prodDB.model('Logs', LogsSchema);
+export default prodDB.model('Logs', LogsSchema);

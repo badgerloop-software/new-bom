@@ -1,3 +1,4 @@
+import express from 'express';
 const Users = require('../models/user');
 const Orders = require('../models/order');
 const Budgets = require('../models/budget');
@@ -39,8 +40,8 @@ function handleError(req, res, err) {
   return res.redirect('/');
 }
 
-export const getDash = (req, res) => {
-  Budgets.find({}, (err, budgets) => {
+export const getDash = (req: express.Request, res: express.Response) => {
+  Budgets.find({}, (err: Error, budgets: [any]) => {
     if (err) handleError(req, res, err);
     budgets[0].formatAllNumbers();
     Orders.find({}, (err, orders) => {
@@ -67,7 +68,7 @@ export const getDash = (req, res) => {
   });
 };
 
-export const setUser = (req, res) => {
+export const setUser = (req: express.Request, res: express.Response) => {
   let userQuery = { slackID: `${req.query.u}` };
   let role = req.query.r;
   let value = req.query.v;
@@ -86,12 +87,12 @@ export const setUser = (req, res) => {
     }
   }
 
-  Users.findOneAndUpdate(userQuery, change, { new: true }, (err, user) => {
+  Users.findOneAndUpdate(userQuery, change, { new: true }, (err, _user) => {
     if (err) {
-      req.flash('errors', { msg: 'Something went wrong' });
+      req.flash('errors', "Something went wrong!");
       return res.redirect('back');
     }
-    req.flash('success', { msg: 'User privilages modified' });
+    req.flash('success',"User privilages modified!");
     return res.redirect('back');
   });
 }

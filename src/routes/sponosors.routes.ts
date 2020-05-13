@@ -3,7 +3,7 @@ import express from 'express';
 import * as sponsorsController from '../controllers/sponsors.controller';
 import multer from 'multer';
 const uploadSponsor = multer({ dest: './uploads/sponsors' });
-import Logs from '../models/log';
+import Logs from '../models/Log.model';
 import fs from 'fs';
 
 let date_ob = new Date();

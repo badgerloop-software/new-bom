@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
-const mongoConfig = require('../config/mongo')
-const bomDB = mongoose.createConnection(mongoConfig.bomURL);
+import mongoose from 'mongoose';
+import * as mongoConfig from '../config/mongo.config'
+const bomDB = mongoose.createConnection(mongoConfig.BOM_URL);
 
 mongoose.set('useCreateIndex', true);
 mongoose.set('useFindAndModify', false);
@@ -16,7 +16,6 @@ const OrderSchema = new mongoose.Schema({
   indvPrice: String,
   tax: Number,
   shipping: Number,
-  tax: Number,
   isApproved: {type: Boolean, default: false},
   approvedBy: String,
   trackingNum: String,
@@ -45,6 +44,6 @@ OrderSchema.index({'$**': 'text'}, {
 // }
 });
 
-let orderModel = bomDB.model('Orders', OrderSchema);
-module.exports = orderModel;
+export default bomDB.model('Orders', OrderSchema);
+
 
