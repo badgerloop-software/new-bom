@@ -1,4 +1,5 @@
-const Budgets = require('../models/budget');
+import Budgets from '../models/Budget.model';
+
 
 export const getEdit = (req, res) => {
   if(!req.user || (!req.user.isFSC && !req.user.isAdmin)) {

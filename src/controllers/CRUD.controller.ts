@@ -1,7 +1,6 @@
-const Sponsors = require('../models/sponsor');
-const Teamleads = require('../models/teamlead');
-const News = require('../models/news');
-
+import Sponsors from '../models/Sponsor.model';
+import Teamleads from '../models/TeamLead.model';
+import News from '../models/NewsArticle.model';
 export const getCrud = (req, res) => {
     if (!req.user || !req.user.isTeamLead) {
         req.flash('errors', { msg: 'You are not authorized to view that!' });

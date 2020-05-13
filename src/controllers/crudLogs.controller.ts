@@ -1,4 +1,4 @@
-const Logs = require('../models/log');
+import Logs from '../models/Log.model';
 
 export const getCrudLogs = (req, res) => {
     if (!req.user || !req.user.isAdmin) {

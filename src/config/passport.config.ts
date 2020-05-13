@@ -1,15 +1,13 @@
-const SlackStragety = require('passport-slack').Strategy;
-const passport = require('passport');
-const request = require('request');
+import passport from 'passport';
+import passportSlack from 'passport-slack';
+const SlackStrategy = passportSlack.Strategy;
 
-const User = require('../models/user');
-const clientID = process.env.CLIENT_ID;
-const clientSecret = process.env.CLIENT_SECRET;
-const redirectURI = process.env.REDIRECT_URI;
-const SERVICES_TOKEN = process.env.SERVICES_TOKEN;
-const SECRET_CHANNEL = process.env.SECRET_CHANNEL
+import request from 'request';
 
-passport.serializeUser((user, done) => {
+import User from '../models/User.model';
+const { CLIENT_ID, CLIENT_SECRET, SERVICES_TOKEN, SECRET_CHANNEL } = process.env;
+
+passport.serializeUser((user: any, done) => {
   done(null, user.id);
 });
 
@@ -21,12 +19,12 @@ passport.deserializeUser((id, done) => {
 
 
 // The main flow of Slack Authentication
-passport.use(new SlackStragety({
-  clientID: clientID,
-  clientSecret: clientSecret,
+passport.use(new SlackStrategy({
+  clientID: CLIENT_ID,
+  clientSecret: CLIENT_SECRET,
   skipUserProfile: false,
   scope: ['identity.basic', 'identity.avatar']
-}, (accessToken, refreshToken, profile, done) => {
+}, (_accessToken, _refreshToken, profile, done) => {
   console.log("Made it to the callback");
   User.findOne({ "slackID": profile.id }).then((currentUser) => {
     let isTeamLead = false; // Innocent until proven guilty
@@ -38,7 +36,7 @@ passport.use(new SlackStragety({
         channel: `${SECRET_CHANNEL}`
       }
     };
-    request(options, (err, res, body) => {
+    request(options, (err, _res, body) => {
       if (err) throw new Error(err);
       isTeamLead = findTeamLead(body, profile);
       if (currentUser) {

@@ -1,5 +1,5 @@
-const request = require('request');
-const rp = require('request-promise');
+import request from 'request';
+import {get, put, post} from 'request-promise';
 const URL = process.env.SERVICES_TOKEN;
 /**
  * @param {String} channel The Slack Channel ID
@@ -7,7 +7,7 @@ const URL = process.env.SERVICES_TOKEN;
  * @param {Array} attachments optional array of attachments
  * @callback (body) Returns the body of the response
  */
-exports.sendMessage = function sendMessage(channel, msg, attachments, cb) {
+export const sendMessage = function sendMessage(channel, msg, attachments, cb) {
   var options = {
     msg: msg,
     method: 'POST',
@@ -29,7 +29,7 @@ exports.sendMessage = function sendMessage(channel, msg, attachments, cb) {
 /**
  * Threads a message on an existing message
  */
-exports.sendThread = function (channel, msg, attachments, ts, cb) {
+export const sendThread = function (channel, msg, attachments, ts, cb) {
   var options = {
     msg: msg,
     method: 'POST',
@@ -54,8 +54,8 @@ exports.sendThread = function (channel, msg, attachments, ts, cb) {
  * @param {String} ts Timestamp of message to find
  * @returns {Object} Object of reactions
  */
-async function getOneReactions(channel, ts) {
-  return rp(`https://slack.com/api/reactions.get?token=${URL}&channel=${channel}&timestamp=${ts}&pretty=1`).then((htmlString) => {
+async function getOneReactionsAsync(channel, ts) {
+  return get(`https://slack.com/api/reactions.get?token=${URL}&channel=${channel}&timestamp=${ts}&pretty=1`).then((htmlString) => {
     let json = JSON.parse(htmlString);
     console.log(json);
 	  if (!json.ok) throw "Bad Request";
@@ -68,7 +68,7 @@ async function getOneReactions(channel, ts) {
     throw "API Call Failed";
   });
 }
-exports.getOneReactions = getOneReactions;
+export const getOneReactions = getOneReactionsAsync;
 
 /**
  * Compares the users list of reaction with autorized users
@@ -99,7 +99,7 @@ function compareUsers(reaction, approvingUsers) {
  * @returns {Promise<Resolve>} The slack ID of the authorizing user otherwise undefined
  * @returns {Promise<Reject>} The error encountered
  */
-exports.checkOneThumbsUp = function checkOneThumbsUp(channel, ts, approvingUsers) {
+export const checkOneThumbsUp = function checkOneThumbsUp(channel, ts, approvingUsers) {
     return new Promise(function (resolve, reject) {
     getOneReactions(channel, ts).then((reactions) => {
       if (!reactions) return resolve(-1);
@@ -117,7 +117,7 @@ exports.checkOneThumbsUp = function checkOneThumbsUp(channel, ts, approvingUsers
   });
 }
 
-exports.editMessage = function editMessage(channel, ts, text, cb) {
+export const editMessage = function editMessage(channel, ts, text, cb) {
   let msg = text;
   var options = {
     msg: msg,

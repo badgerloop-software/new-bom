@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
-const mongoConfig = require('../config/mongo')
-const prodDB = mongoose.createConnection(mongoConfig.crudURL);
+import mongoose from 'mongoose';
+import * as mongoConfig from '../config/mongo.config'
+const prodDB = mongoose.createConnection(mongoConfig.CRUD_URL);
 
 let CriticalPathSchema = new mongoose.Schema({
     title: { type: String, required: false, max: 100 },
@@ -11,4 +11,4 @@ let CriticalPathSchema = new mongoose.Schema({
 });
 
 // Export the model
-module.exports = prodDB.model('criticalpaths', CriticalPathSchema);
+export default prodDB.model('criticalpaths', CriticalPathSchema);

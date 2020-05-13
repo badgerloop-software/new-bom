@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import * as mongoConfig from '../config/mongo.config'
 const bomDB = mongoose.createConnection(mongoConfig.BOM_URL);
-import * as slackService from '../services/slack';
+import * as slackService from '../services/slack.service';
 import Orders from '../models/Order.model';
 import Users from '../models/User.model';
 const PURCHASING_CHANNEL: string = process.env.PURCHASING_CHANNEL;
@@ -59,7 +59,7 @@ OrderMessageSchema.methods.editStatus = function (status: string, authorizingUse
     *Link*: http://${URL}/orders/edit/${order.id}
 ==== ==== ====`;
             let newMsg = currentMsg + `\n *Status: ${status}*`
-            slackService.editMessage(PURCHASING_CHANNEL, this.slackTS, newMsg);
+            slackService.editMessage(PURCHASING_CHANNEL, this.slackTS, newMsg, null);
             let threadedMsg = `<@${user.slackID}>, your order has been ${status}`;
             if (authorizingUser) threadedMsg += ` by <@${authorizingUser}>`;
             if (status === "Approved") threadedMsg += `CC: <@${process.env.FSC_LEAD}>`
@@ -76,7 +76,7 @@ OrderMessageSchema.methods.editStatus = function (status: string, authorizingUse
                     ]
                 }
             ]
-            slackService.sendThread(PURCHASING_CHANNEL, threadedMsg, attachments, this.slackTS);
+            slackService.sendThread(PURCHASING_CHANNEL, threadedMsg, attachments, this.slackTS, null);
         });
     });
 }

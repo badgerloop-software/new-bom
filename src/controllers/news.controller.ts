@@ -1,6 +1,5 @@
-const news = require('../models/news');
-const News = require('../models/news');
-const Logs = require('../models/log');
+import News from '../models/NewsArticle.model';
+import Logs from '../models/Log.model';
 
 let date_ob = new Date();
 let date = ("0" + date_ob.getDate()).slice(-2);
@@ -44,14 +43,14 @@ export const news_create = function (req, res) {
 };
 
 export const news_details = function (req, res) {
-    news.findById(req.params.id, function (err, news) {
+    News.findById(req.params.id, function (err, news) {
         if (err) throw err;
         res.send(news);
     });
 };
 
 export const news_list = function (req, res) {
-    news.find(function (err, news) {
+    News.find(function (err, news) {
         if (err) {
             console.log(err);
         } else {
@@ -69,7 +68,7 @@ export const news_update = function (req, res) {
             field: "Title: " + req.body.title,
         }
     );
-    news.findByIdAndUpdate(req.params.id, { $set: req.body }, function (err, news, next) {
+    News.findByIdAndUpdate(req.params.id, { $set: req.body }, function (err, news, next) {
         if (err) return next(err);
         req.flash('success', { msg: `News piece updated successfully!` });
         return res.redirect('/crud');
@@ -90,7 +89,7 @@ export const news_delete = function (req, res) {
             field: "Title: " + req.body.title,
         }
     );
-    news.findByIdAndRemove(req.params.id, function (err, next) {
+    News.findByIdAndRemove(req.params.id, function (err, next) {
         if (err) return next(err);
         req.flash('success', { msg: `News piece deleted successfully!` });
         return res.redirect('/crud');

@@ -3,7 +3,7 @@ import express from 'express';
 import fs from 'fs';
 import * as teamleadscontroller from '../controllers/teamleads.controllers';
 import multer from 'multer';
-const Logs = require('./models/log');
+import Logs from '../models/Log.model';
 const uploadTeamlead = multer({ dest: './uploads/teamleads' });
 let TeamLeadRouter = express.Router();
 

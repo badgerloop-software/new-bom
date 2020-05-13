@@ -1,6 +1,5 @@
-const teamleads = require('../models/teamlead');
-const Teamleads = require('../models/teamlead');
-const Logs = require('../models/log');
+import Teamleads from '../models/TeamLead.model';
+import Logs from '../models/Log.model';
 
 let date_ob = new Date();
 let date = ("0" + date_ob.getDate()).slice(-2);
@@ -11,7 +10,7 @@ let minutes = date_ob.getMinutes();
 let seconds = date_ob.getSeconds();
 
 export const teamleads_create = function (req, res) {
-    let teamleads = new Teamleads(
+    let newTeamlead = new Teamleads(
         {
             Team: req.body.Team,
             Position: req.body.Position,
@@ -22,7 +21,7 @@ export const teamleads_create = function (req, res) {
         }
     );
 
-    let logs = new Logs(
+    let newLog = new Logs(
         {
             time: year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds,
             name: req.user.name,
@@ -31,14 +30,14 @@ export const teamleads_create = function (req, res) {
         }
     );
 
-    teamleads.save(function (err, next) {
+    Teamleads.save(function (err, next) {
         if (err) {
             return next(err);
         }
         req.flash('success', { msg: `Teamlead created successfully!` });
         return res.redirect('/crud');
     });
-    logs.save(function (err, next) {
+    newLog.save(function (err, next) {
         if (err) {
             return next(err);
         }
@@ -46,14 +45,14 @@ export const teamleads_create = function (req, res) {
 };
 
 export const teamleads_details = function (req, res) {
-    teamleads.findById(req.params.id, function (err, teamleads, next) {
+    Teamleads.findById(req.params.id, function (err, teamleads, next) {
         if (err) return next(err);
         res.send(teamleads);
     });
 };
 
 export const teamleads_list = function (_req, res) {
-    teamleads.find(function (err, teamleads) {
+    Teamleads.find(function (err, teamleads) {
         if (err) {
             console.log(err);
         } else {
@@ -63,7 +62,7 @@ export const teamleads_list = function (_req, res) {
 };
 
 export const teamleads_update = function (req, res) {
-    let logs = new Logs(
+    let newLog = new Logs(
         {
             time: year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds,
             name: req.user.name,
@@ -71,12 +70,12 @@ export const teamleads_update = function (req, res) {
             field: "Teamlead Name: " + req.body.Name,
         }
     );
-    teamleads.findByIdAndUpdate(req.params.id, { $set: req.body }, function (err, _teamleads, next) {
+    Teamleads.findByIdAndUpdate(req.params.id, { $set: req.body }, function (err, _teamleads, next) {
         if (err) return next(err);
         req.flash('success', { msg: `Teamlead updated successfully!` });
         return res.redirect('/crud');
     });
-    logs.save(function (err, next) {
+    newLog.save(function (err, next) {
         if (err) {
             return next(err);
         }
@@ -84,7 +83,7 @@ export const teamleads_update = function (req, res) {
 };
 
 export const teamleads_delete = function (req, res) {
-    teamleads.findByIdAndRemove(req.params.id, function (err, next) {
+    Teamleads.findByIdAndRemove(req.params.id, function (err, next) {
         if (err) return next(err);
         let logs = new Logs(
             {

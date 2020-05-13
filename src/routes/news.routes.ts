@@ -1,9 +1,9 @@
 import express from 'express';
 import * as newsController from '../controllers/news.controller';
 import fs from 'fs';
-const multer = require('multer');
+import multer from 'multer'
 const uploadNews = multer({ dest: './uploads/news' });
-const Logs = require('./models/log');
+import Logs from '../models/Log.model';
 
 let date_ob = new Date();
 let date = ("0" + date_ob.getDate()).slice(-2);

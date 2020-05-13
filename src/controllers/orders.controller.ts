@@ -1,11 +1,10 @@
-const Order = require('../models/order');
-const Budget = require('../models/budget');
-const OrderMessage = require('../models/orderMessage');
-const webhookURL = process.env.WEBHOOK_URL;
+import Order from '../models/Order.model'
+import Budget from '../models/Budget.model';
+import OrderMessage from '../models/OrderMessage.model';
+import * as SLACK_SERVICE from '../services/slack.service';
+
 const URL = process.env.LOCAL_URL;
-const request = require('request');
 const fscLead = "UG46HDHS7";
-const SLACK_SERVICE = require('../services/slack');
 
 export const getMakeOrder = (req, res) => {
   Budget.find({}, (err, budgets) => {

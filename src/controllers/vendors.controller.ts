@@ -1,14 +1,13 @@
-const CRYPTO = require('crypto');
-const VENDOR = require('../models/vendor');
-const CIPHER_TECHNIQUE = process.env.CIPHER;
-const SECRET_WORD = process.env.SECRET_WORD;
+import CRYPTO from 'crypto';
+import Vendor from '../models/Vendor.model'
+const { CIPHER_TECHNIQUE, SECRET_WORD } = process.env;
 
 export const getListVendors = (req, res) => {
   if (!req.user || !(req.user.isAdmin || req.user.isFSC)) {
     req.flash('errors', {msg: 'You are unauthorized to access that'});
     return res.redirect('back');
   }
-  VENDOR.find({}, (err, list) => {
+  Vendor.find({}, (err, list) => {
     if (err) throw new Error(err);
     res.render('listVendors', {
       user: req.user,
@@ -23,12 +22,12 @@ export const postAddVendor = (req, res) => {
   const CIPHER = CRYPTO.createCipheriv(String(CIPHER_TECHNIQUE), `${SECRET_WORD}`,"");
   let encrypted = CIPHER.update(originalPassword,'utf8', 'base64');
   encrypted += CIPHER.final('base64');
-  let vendor = new VENDOR({
+  let newVendor = new Vendor({
     name: req.body.name,
     username: req.body.username,
     password: encrypted
   });
-  vendor.save((err, doc) => {
+  newVendor.save((err, doc) => {
     if (err) throw err;
     req.flash('success', {msg: 'Vendor Credentials Stored'});
     res.redirect('/vendors/list');
@@ -36,14 +35,14 @@ export const postAddVendor = (req, res) => {
 }
 
 export const getPassword = (req, res) => {
- VENDOR.findById(req.query.q, (err, doc) => {
+ Vendor.findById(req.query.q, (err, doc) => {
    if (err) throw err;
    let hashedPass = doc.password;
    let decipher = CRYPTO.createDecipheriv(String(CIPHER_TECHNIQUE), `${SECRET_WORD}`, "");
    let decryptedPass = decipher.update(hashedPass, 'base64', 'utf8');
    console.log(decryptedPass);
    decryptedPass += decipher.final('utf8');
-   VENDOR.find({}, (err, list) => {
+   Vendor.find({}, (err, list) => {
      if (err) throw err;
      return res.render('listVendors', {
        user: req.user,
@@ -58,7 +57,7 @@ export const getPassword = (req, res) => {
 
 export const getDeleteVendor = (req, res) => {
   const ID = req.query.q;
-  VENDOR.findOneAndDelete({'_id': ID}, (err, doc) => {
+  Vendor.findOneAndDelete({'_id': ID}, (err, doc) => {
     if (err) {
       req.flash('errors', {msg: 'Error encountered'});
       return res.redirect('back');
@@ -87,7 +86,7 @@ export const postEditVendor = (req, res) => {
       "username": NEW_USERNAME
     }
   }
-  VENDOR.findByIdAndUpdate(ID, update, (err, doc) => {
+  Vendor.findByIdAndUpdate(ID, update, (err, doc) => {
     if (err) throw err;
     console.log(`New Doc =`);
     console.log(doc);

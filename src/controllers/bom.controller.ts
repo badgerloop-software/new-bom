@@ -1,6 +1,5 @@
-const Users = require('../models/user');
-const Orders = require('../models/order');
-const Budgets = require('../models/budget');
+import Budgets from '../models/Budget.model';
+import Orders from '../models/Order.model';
 
 export const getTableView = (req, res) => {
   let user = req.user;

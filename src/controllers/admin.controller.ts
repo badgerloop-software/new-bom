@@ -1,7 +1,7 @@
 import express from 'express';
-const Users = require('../models/user');
-const Orders = require('../models/order');
-const Budgets = require('../models/budget');
+import Users from '../models/User.model';
+import Budgets from '../models/Budget.model';
+import Orders from '../models/Order.model';
 
 function getNumOrders(totalOrders) {
   return totalOrders.length;
