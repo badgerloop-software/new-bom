@@ -2,7 +2,7 @@ const Users = require('../models/user');
 const Orders = require('../models/order');
 const Budgets = require('../models/budget');
 
-exports.getTableView = (req, res) => {
+export const getTableView = (req, res) => {
   let user = req.user;
   Budgets.find({}, (err, budgets) => {
     if (err) throw err;
@@ -40,7 +40,7 @@ exports.getTableView = (req, res) => {
   });
 }
 
-exports.postTableView = (req, res) => {
+export const postTableView = (req, res) => {
   let query = req.body.search;
   return res.redirect(`/bom?q=${query}`);
 }

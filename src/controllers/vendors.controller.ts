@@ -3,12 +3,12 @@ const VENDOR = require('../models/vendor');
 const CIPHER_TECHNIQUE = process.env.CIPHER;
 const SECRET_WORD = process.env.SECRET_WORD;
 
-exports.getListVendors = (req, res) => {
+export const getListVendors = (req, res) => {
   if (!req.user || !(req.user.isAdmin || req.user.isFSC)) {
     req.flash('errors', {msg: 'You are unauthorized to access that'});
     return res.redirect('back');
   }
-  vendorsList = VENDOR.find({}, (err, list) => {
+  VENDOR.find({}, (err, list) => {
     if (err) throw new Error(err);
     res.render('listVendors', {
       user: req.user,
@@ -18,7 +18,7 @@ exports.getListVendors = (req, res) => {
   });
 }
 
-exports.postAddVendor = (req, res) => {
+export const postAddVendor = (req, res) => {
   let originalPassword = req.body.password;
   const CIPHER = CRYPTO.createCipheriv(String(CIPHER_TECHNIQUE), `${SECRET_WORD}`,"");
   let encrypted = CIPHER.update(originalPassword,'utf8', 'base64');
@@ -35,7 +35,7 @@ exports.postAddVendor = (req, res) => {
   });
 }
 
-exports.getPassword = (req, res) => {
+export const getPassword = (req, res) => {
  VENDOR.findById(req.query.q, (err, doc) => {
    if (err) throw err;
    let hashedPass = doc.password;
@@ -56,7 +56,7 @@ exports.getPassword = (req, res) => {
 
 }
 
-exports.getDeleteVendor = (req, res) => {
+export const getDeleteVendor = (req, res) => {
   const ID = req.query.q;
   VENDOR.findOneAndDelete({'_id': ID}, (err, doc) => {
     if (err) {
@@ -68,7 +68,7 @@ exports.getDeleteVendor = (req, res) => {
     });
 }
 
-exports.postEditVendor = (req, res) => {
+export const postEditVendor = (req, res) => {
   const ID = req.body.mongoID;
   const NEW_NAME = req.body.name;
   const NEW_USERNAME = req.body.username;
@@ -82,7 +82,7 @@ exports.postEditVendor = (req, res) => {
     "password": newEncrypted
   }
   if (!NEW_PASSWORD) {
-    update = {
+    let update = {
       "name": NEW_NAME,
       "username": NEW_USERNAME
     }

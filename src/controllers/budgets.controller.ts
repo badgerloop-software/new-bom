@@ -1,6 +1,6 @@
 const Budgets = require('../models/budget');
 
-exports.getEdit = (req, res) => {
+export const getEdit = (req, res) => {
   if(!req.user || (!req.user.isFSC && !req.user.isAdmin)) {
     req.flash('error', {msg: 'You are not authorized to do this'});
     return res.redirect('back');
@@ -25,7 +25,7 @@ function mongoObjectToHBS(mongoObject) {
   }
   return obj;
 }
-exports.postEdit = (req, res) => {
+export const postEdit = (req, res) => {
   if (!req.user || !req.user.isAdmin) {
     req.flash('error', {msg: 'You are not authorized to do this'});
     return res.redirect('back');
@@ -78,7 +78,7 @@ function createMongoBudget(req, res, teamList, budgetList) {
   }
 }
 
-exports.createBudgets = (req, res) => {
+export const createBudgets = (req, res) => {
   const NUMTEAMS = req.body.numTeams;
   let namesArray = [];
   let budgetsArray = [];
@@ -89,7 +89,7 @@ exports.createBudgets = (req, res) => {
   return createMongoBudget(req, res, namesArray, budgetsArray)
 }
 
-exports.getDelete = (req, res) => {
+export const getDelete = (req, res) => {
   Budgets.remove({}, () => {
     req.flash('success', {msg: 'Budget Deleted'});
     res.redirect('/admin/dashboard');

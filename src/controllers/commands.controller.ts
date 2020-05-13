@@ -1,5 +1,5 @@
 const SLACK = require('../services/slack')
-exports.getBugReport = (req, res) => {
+export const getBugReport = (req, res) => {
   const USER = req.body.user_name;
   const TEXT = req.body.text;
   const APP = TEXT.split(' ')[0];

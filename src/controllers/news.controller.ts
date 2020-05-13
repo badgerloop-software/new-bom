@@ -1,5 +1,5 @@
-const sponsors = require('../models/sponsor');
-const Sponsors = require('../models/sponsor');
+const news = require('../models/news');
+const News = require('../models/news');
 const Logs = require('../models/log');
 
 let date_ob = new Date();
@@ -10,13 +10,13 @@ let hours = date_ob.getHours();
 let minutes = date_ob.getMinutes();
 let seconds = date_ob.getSeconds();
 
-exports.sponsors_create = function (req, res) {
-    let sponsors = new Sponsors(
+export const news_create = function (req, res) {
+    let news = new News(
         {
-            tier: req.body.tier,
-            company: req.body.company,
-            website: req.body.website,
-            logo: req.body.logo,
+            title: req.body.title,
+            imgName: req.body.imgName,
+            subHeading: req.body.subHeading,
+            body: req.body.body,
         }
     );
 
@@ -24,78 +24,78 @@ exports.sponsors_create = function (req, res) {
         {
             time: year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds,
             name: req.user.name,
-            action: "create sponsor",
-            field: "Comapny Name: " + req.body.company,
+            action: "create news piece",
+            field: "Title: " + req.body.title,
         }
     );
 
-    sponsors.save(function (err) {
+    news.save(function (err, next) {
         if (err) {
             return next(err);
         }
-        req.flash('success', { msg: `Sponsor created successfully!` });
+        req.flash('success', { msg: `News piece created successfully!` });
         return res.redirect('/crud');
     });
-    logs.save(function (err) {
+    logs.save(function (err, next) {
         if (err) {
             return next(err);
         }
     });
 };
 
-exports.sponsors_details = function (req, res) {
-    sponsors.findById(req.params.id, function (err, sponsors) {
+export const news_details = function (req, res) {
+    news.findById(req.params.id, function (err, news) {
         if (err) throw err;
-        res.send(sponsors);
+        res.send(news);
     });
 };
 
-exports.sponsors_list = function (req, res) {
-    sponsors.find(function (err, sponsors) {
+export const news_list = function (req, res) {
+    news.find(function (err, news) {
         if (err) {
             console.log(err);
         } else {
-            res.json(sponsors);
+            res.json(news);
         }
     });
 };
 
-exports.sponsors_update = function (req, res) {
+export const news_update = function (req, res) {
     let logs = new Logs(
         {
             time: year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds,
             name: req.user.name,
-            action: "edit sponsor",
-            field: "Comapny Name: " + req.body.company,
+            action: "edit news piece",
+            field: "Title: " + req.body.title,
         }
     );
-    sponsors.findByIdAndUpdate(req.params.id, { $set: req.body }, function (err, sponsors) {
+    news.findByIdAndUpdate(req.params.id, { $set: req.body }, function (err, news, next) {
         if (err) return next(err);
-        req.flash('success', { msg: `Sponsor updated successfully!` });
+        req.flash('success', { msg: `News piece updated successfully!` });
         return res.redirect('/crud');
     });
-    logs.save(function (err) {
+    logs.save(function (err, next) {
         if (err) {
             return next(err);
         }
     });
 };
 
-exports.sponsors_delete = function (req, res) {
+export const news_delete = function (req, res) {
     let logs = new Logs(
         {
             time: year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds,
             name: req.user.name,
-            action: "delete sponsor",
-            field: "Company Name: " + req.body.company,
+            action: "delete news piece",
+            field: "Title: " + req.body.title,
         }
     );
-    sponsors.findByIdAndRemove(req.params.id, function (err) {
+    news.findByIdAndRemove(req.params.id, function (err, next) {
         if (err) return next(err);
-        req.flash('success', { msg: `Sponsor deleted successfully!` });
+        req.flash('success', { msg: `News piece deleted successfully!` });
         return res.redirect('/crud');
     });
-    logs.save(function (err) {
+    logs.save(function (err, next) {
         if (err) {
             return next(err);
         }

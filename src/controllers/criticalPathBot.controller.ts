@@ -1,6 +1,6 @@
 const cps = require('../models/cp');
 
-exports.getCriticalPaths = (req, res) => {
+export const getCriticalPaths = (req, res) => {
     if (!req.user || !req.user.isAdmin) {
         req.flash('errors', { msg: 'You are not authorized to view that!' });
         return res.redirect('back');

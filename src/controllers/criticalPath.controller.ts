@@ -12,7 +12,7 @@ exports.cp_create = function (req, res) {
         }
     );
 
-    cp.save(function (err) {
+    cp.save(function (err, next) {
         if (err) {
             return next(err);
         }
@@ -39,14 +39,14 @@ exports.cp_list = function (req, res) {
 };
 
 exports.cp_update = function (req, res) {
-    cp.findByIdAndUpdate(req.params.id, { $set: req.body }, function (err, cp) {
+    cp.findByIdAndUpdate(req.params.id, { $set: req.body }, function (err, cp, next) {
         if (err) return next(err);
         req.flash('success', { msg: `Critical Path updated successfully!` });
         return res.redirect('/cpb');
     });
 };
 
-exports.cp_delete = function (req, res) {
+exports.cp_delete = function (req, res, next) {
     cp.findByIdAndRemove(req.params.id, function (err) {
         if (err) return next(err);
         req.flash('success', { msg: `Critical Path deleted successfully!` });

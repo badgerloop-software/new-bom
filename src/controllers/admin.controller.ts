@@ -33,22 +33,22 @@ function findSum(orders) {
   return sum.toFixed(2);
 }
 
-function handleError(err) {
+function handleError(req, res, err) {
   console.error(err);
   req.flash('errors', { msg: 'Order Error occured, see console' });
   return res.redirect('/');
 }
 
-exports.getDash = (req, res) => {
+export const getDash = (req, res) => {
   Budgets.find({}, (err, budgets) => {
-    if (err) handleError(err);
+    if (err) handleError(req, res, err);
     budgets[0].formatAllNumbers();
     Orders.find({}, (err, orders) => {
-      if (err) handleError(err);
+      if (err) handleError(req, res, err);
       Users.find({}, (err, users) => {
-        if (err) handleError(err);
+        if (err) handleError(req, res, err);
         Orders.find({ isApproved: false }).exec((err, list) => {
-          if (err) handleError(err);
+          if (err) handleError(req, res, err);
           res.render('bom/adminDash', {
             user: req.user,
             users: users,
@@ -67,7 +67,7 @@ exports.getDash = (req, res) => {
   });
 };
 
-exports.setUser = (req, res) => {
+export const setUser = (req, res) => {
   let userQuery = { slackID: `${req.query.u}` };
   let role = req.query.r;
   let value = req.query.v;
@@ -96,7 +96,7 @@ exports.setUser = (req, res) => {
   });
 }
 
-exports.createBudget = (req, res) => {
+export const createBudget = (req, res) => {
   res.render('bom/createBudget', {
     user: req.user
   })

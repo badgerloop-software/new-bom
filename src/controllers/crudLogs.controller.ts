@@ -1,6 +1,6 @@
 const Logs = require('../models/log');
 
-exports.getCrudLogs = (req, res) => {
+export const getCrudLogs = (req, res) => {
     if (!req.user || !req.user.isAdmin) {
         req.flash('errors', { msg: 'You are not authorized to view that!' });
         return res.redirect('back');
