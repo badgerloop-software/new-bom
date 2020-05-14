@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/badgerloop-software/new-bom#readme",
   "dependencies": {
+    "@handlebars/allow-prototype-access": "^1.0.3",
     "@types/express": "^4.17.6",
     "@types/express-flash": "0.0.2",
     "@types/express-handlebars": "^3.1.0",
@@ -42,5 +43,8 @@
     "request": "^2.88.0",
     "request-promise": "^4.2.5",
     "ts-node": "^8.10.1"
+  },
+  "devDependencies": {
+    "handlebars": "^4.7.6"
   }
 }

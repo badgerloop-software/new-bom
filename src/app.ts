@@ -18,7 +18,7 @@ app.get('*', (req, res, next) => {
 });
 
 app.get('/', (req, res) => {
-  console.log(req.user);
+  
   res.render('homePage', {
     user: req.user,
     activeDashboard: true

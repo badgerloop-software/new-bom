@@ -1,11 +1,11 @@
-import * as mongoConfig from './mongo.config.js';
 import * as bodyParser from 'body-parser';
 import express from 'express';
 import flash from 'express-flash';
 import exphbs from 'express-handlebars';
 import session from 'express-session';
-import mongoose = require('mongoose');
 import passport from 'passport';
+import Handlebars from 'handlebars';
+const {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access');
 
 import orderRouter from '../routes/orders.routes';
 import authRouter from '../routes/auth.routes';
@@ -37,8 +37,11 @@ class ExpressConfiguration {
 
     private setupConfiguration() {
         this.app.set('view engine', 'handlebars');
-        this.app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
-        this.app.use(express.static('public'));
+        this.app.engine('handlebars', exphbs({ 
+            defaultLayout: 'main',
+            handlebars: allowInsecurePrototypeAccess(Handlebars) 
+        }));
+        this.app.use(express.static('src/public'));
         this.app.use(bodyParser.urlencoded({ extended: true }));
         this.app.use(bodyParser.json());
         this.app.use(session({
