@@ -5,7 +5,9 @@ import * as teamleadscontroller from '../controllers/teamleads.controllers';
 import multer from 'multer';
 import Logs from '../models/Log.model';
 const uploadTeamlead = multer({ dest: './uploads/teamleads' });
-let TeamLeadRouter = express.Router();
+let TeamLeadRouter = express.Router({
+  strict: true
+});
 
 let date_ob = new Date();
 let date = ("0" + date_ob.getDate()).slice(-2);

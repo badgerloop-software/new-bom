@@ -18,8 +18,9 @@ import criticalPathsRouter from '../routes/criticalPaths.routes';
 import CRUDRouter from '../routes/crud.routes';
 import newsRouter from '../routes/news.routes';
 import sponsorsRouter from '../routes/sponosors.routes';
-import teamLeadsRouter from '../routes/teamleads.routes';
 import vendorsRouter from '../routes/vendors.routes';
+
+import {TeamLeadRouter} from '../routes';
 
 const router = express.Router();
 
@@ -64,7 +65,7 @@ class ExpressConfiguration {
         this.app.use('/crud', CRUDRouter);
         this.app.use('/news', newsRouter);
         this.app.use('/sponsors', sponsorsRouter);
-        this.app.use('/teamleads', teamLeadsRouter);
+        this.app.use('/teamleads', TeamLeadRouter);
         this.app.use('/vendors', vendorsRouter);
     }
 }
