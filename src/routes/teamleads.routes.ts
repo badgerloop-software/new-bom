@@ -1,7 +1,8 @@
 // /teamleads
 import express from 'express';
 import fs from 'fs';
-import * as teamleadscontroller from '../controllers/teamleads.controllers';
+import{TeamleadController} from '../controllers/teamleads.controllers';
+const teamleadsController = new TeamleadController();
 import multer from 'multer';
 import Logs from '../models/Log.model';
 const uploadTeamlead = multer({ dest: './uploads/teamleads' });
@@ -17,11 +18,11 @@ let hours = date_ob.getHours();
 let minutes = date_ob.getMinutes();
 let seconds = date_ob.getSeconds();
 
-TeamLeadRouter.post('/create', teamleadscontroller.teamleads_create);
-TeamLeadRouter.get('/:id', teamleadscontroller.teamleads_details);
-TeamLeadRouter.get('/', teamleadscontroller.teamleads_list);
-TeamLeadRouter.post('/:id/update', teamleadscontroller.teamleads_update);
-TeamLeadRouter.post('/:id/delete', teamleadscontroller.teamleads_delete);
+TeamLeadRouter.post('/create', teamleadsController.teamleads_create);
+TeamLeadRouter.get('/:id', teamleadsController.teamleads_details);
+TeamLeadRouter.get('/', teamleadsController.teamleads_list);
+TeamLeadRouter.post('/:id/update', teamleadsController.teamleads_update);
+TeamLeadRouter.post('/:id/delete', teamleadsController.teamleads_delete);
 TeamLeadRouter.post('/teamleads/upload', uploadTeamlead.single('teamleadImg'), (req: any, res) => {
     if (req.file) {
       console.log('Uploading file...');

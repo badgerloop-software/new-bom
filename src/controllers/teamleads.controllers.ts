@@ -22,12 +22,15 @@ export class TeamleadController {
             }
         );
 
+        let currUser = req.user;
+
+
         let newLog = new Logs(
             {
                 time: year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds,
                 name: req.user.name,
                 action: "create teamlead",
-                field: "Teamlead Name: " + req.body.Name,
+                field: "Teamlead Name: " + req.body.name,
             }
         );
 

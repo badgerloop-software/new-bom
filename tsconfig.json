@@ -4,17 +4,18 @@
         "moduleResolution": "node",
         "pretty": true,
         "sourceMap": true,
-        "target": "es6",
+        "target": "ES6",
         "resolveJsonModule": true,
         "outDir": "./dist",
         "allowJs": true,
-        "esModuleInterop": true
+        "esModuleInterop": true,
     },
     "include": [
         "src/app.ts",
         "src/config/*.ts",
         "src/models/*.ts",
-        "src/controllers/**/*.ts"
+        "src/controllers/**/*.ts",
+        "src/@types/types.d.ts"
     ],
     "exclude": [
         "node_modules"
