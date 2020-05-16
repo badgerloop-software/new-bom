@@ -35,5 +35,4 @@ app.get('/', (req, res) => {
 });
 
 app.post('/slackEventSub', eventsController.getSlackTest);
-app.get('/getSlackChannels', eventsController.getChannelsTest);
 app.get('/calendar', passportConfig.isAuthenticated, utilsController.getCal);

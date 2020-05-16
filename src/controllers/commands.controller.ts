@@ -2,7 +2,7 @@
  * The commmands system is still highly in development, not sure how it got pushed to master but will be formatted as such
  */
 import {Request, Response} from 'express';
-import {SlackService} from '../services/slack'
+import {SlackService} from '../services/SlackService'
 
 export class CommandsController {
   public getBugReport(req: Request, res: Response) {

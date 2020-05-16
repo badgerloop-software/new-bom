@@ -31,66 +31,9 @@ export class EventsController {
   });
 }
 
-//Lol Luke this function is so jank
 function sendMsg(channel, msg) {
-  var channelID;
-  switch (channel) {
-    case "braking":
-      channelID = 'C0B3GCRMK';
-      break;
-    case "feasibility":
-      channelID = 'C0LGGGL3B';
-      break;
-    case "fsc":
-      channelID = 'C2BA9U72R';
-      break;
-    case "lowVoltage":
-      channelID = 'C75312S86';
-      break;
-    case "mechanicalReliability":
-      channelID = 'C2B6MS5K9';
-      break;
-    case "stability":
-      channelID = 'C0ACLJ2N9';
-      break;
-    case "vr":
-      channelID = 'C0BN6CJ95';
-      break;
-    case "propulsion":
-      channelID = 'C3XTCG589';
-      break;
-    case "structural":
-      channelID = 'C0ACK7G8K';
-      break;
-      case "communications":
-    channelID = 'C0G9JGR37';
-    break;
-    case "electrical":
-      channelID = 'C0ACMLAKX';
-      break;
-    case "highVoltage":
-      channelID = 'C75315NB0';
-      break;
-    case "industry":
-      channelID = 'C0ET77FD3';
-      break;
-    case "opsTeams":
-      channelID = 'C416E1YDS';
-      break;
-    case "software":
-      channelID = 'C0ACBQ59P';
-      break;
-    case "tech":
-      channelID = 'C4143C6LA';
-      break;
-    case "website":
-      channelID = 'C0CF235QE';
-      break;
-    case "controls":
-      channelID = 'C0L1P5JTA';
-      break;
-  }
-
+  // After
+  let channelID = SlackService.Channels.get(channel);
   SlackService.sendMessage(channelID, msg, null, (err, _response, body) => {
     if (err) throw new Error(err);
     console.log(body);
@@ -105,9 +48,4 @@ export const getSlackTest = (req, res) => {
     })
   })
   res.send(req.body.challenge).end(200);
-}
-
-export const getChannelsTest = async (req, res) => {
-  console.log(SlackService.Channels);
-  return res.redirect('back');
 }

@@ -1,6 +1,5 @@
 import request from 'request';
 import { get, put, post } from 'request-promise';
-export { channelMap, updateMap } from './channels';
 const TOKEN = process.env.SERVICES_TOKEN;
 
 export class SlackService {

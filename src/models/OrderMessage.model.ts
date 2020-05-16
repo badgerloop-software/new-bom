@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import * as mongoConfig from '../config/mongo.config'
 const bomDB = mongoose.createConnection(mongoConfig.BOM_URL);
-import {SlackService} from '../services/slack';
+import {SlackService} from '../services/SlackService';
 import Orders from '../models/Order.model';
 import {Users} from '../models/User.model';
 const PURCHASING_CHANNEL: string = process.env.PURCHASING_CHANNEL;

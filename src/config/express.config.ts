@@ -23,7 +23,7 @@ import vendorsRouter from '../routes/vendors.routes';
 
 import {TeamLeadRouter} from '../routes';
 
-import {SlackService} from '../services/slack'
+import {SlackService} from '../services/SlackService'
 export class ExpressConfiguration {
     public app: express.Application;
 
