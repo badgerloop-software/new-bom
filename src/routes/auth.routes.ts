@@ -1,6 +1,6 @@
 import express from 'express';
 import passport from 'passport';
-import * as authController from '../controllers/auth.controller';
+import {authController} from '../controllers';
 let AuthRouter = express.Router();
 
 AuthRouter.get('/slack/', passport.authenticate('slack'));

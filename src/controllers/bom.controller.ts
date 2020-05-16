@@ -1,15 +1,14 @@
+import {Request, Response} from 'express';
 import Budgets from '../models/Budget.model';
 import Orders from '../models/Order.model';
 
-export const getTableView = (req, res) => {
-  let user = req.user;
-  Budgets.find({}, (err, budgets) => {
-    if (err) throw err;
-    if (budgets === {}) {
-      req.flash('errors', { msg: 'The Budget has not been initalized' });
-      return res.redirect('/');
+export class BOMController {
+  public async getTableView(req: Request, res: Response): Promise<void> {
+    if (!Budgets.hasActiveBudget()) {
+      req.flash('errors', 'The budget has not been initalized, contact the finance lead');
+      return res.redirect('back');
     }
-    let budget = budgets[0];
+    let budget = await Budgets.getActiveBudget();
     if (req.query.q) {
       console.log(`Recieved serch term ${req.query.q}`);
       Orders.find(
@@ -18,7 +17,6 @@ export const getTableView = (req, res) => {
         { score: {$meta: "textScore"} },
       ).sort({score: {$meta : 'textScore'}}).exec((err, results) => {
         if (err) throw err;
-        console.log(results);
         res.render('bom/tableView', {
           user: req.user,
           orders: results,
@@ -36,10 +34,10 @@ export const getTableView = (req, res) => {
         });
       });
     }
-  });
-}
+  }
 
-export const postTableView = (req, res) => {
-  let query = req.body.search;
-  return res.redirect(`/bom?q=${query}`);
+  public postTableView(req: Request, res: Response): void {
+    let query = req.body.search;
+    return res.redirect(`/bom?q=${query}`);
+  }
 }

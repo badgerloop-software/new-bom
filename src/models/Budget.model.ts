@@ -51,6 +51,11 @@ BudgetSchema.statics.getActiveBudget = function(): any {
   return this.findOne({});
 }
 
+BudgetSchema.statics.hasActiveBudget = function(): boolean {
+  let budgets = this.find({});
+  return !(budgets === {});
+}
+
 BudgetSchema.virtual('totalSpent').get(function(): number {
   let totalSpent: number = 0;
   for(let i: number = 0; i < this.teamList.length; i++) {

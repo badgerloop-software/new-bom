@@ -1,9 +1,9 @@
 import express from 'express';
-import * as bomController from '../controllers/bom.controller';
+import {bomController} from '../controllers'
 import * as passportConfig from '../config/passport.config';
 let BomRouter = express.Router();
 
-BomRouter.get('/bom', passportConfig.isAuthenticated, bomController.getTableView);
-BomRouter.post('/bom', passportConfig.isAuthenticated, bomController.postTableView);
+BomRouter.get('/', passportConfig.isAuthenticated, bomController.getTableView);
+BomRouter.post('/', passportConfig.isAuthenticated, bomController.postTableView);
 
 export default BomRouter;
