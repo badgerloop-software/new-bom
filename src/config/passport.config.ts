@@ -4,7 +4,7 @@ const SlackStrategy = passportSlack.Strategy;
 
 import request from 'request';
 
-import User from '../models/User.model';
+import {Users} from '../models/User.model';
 const { CLIENT_ID, CLIENT_SECRET, SERVICES_TOKEN, SECRET_CHANNEL } = process.env;
 
 passport.serializeUser((user: any, done) => {
@@ -12,7 +12,7 @@ passport.serializeUser((user: any, done) => {
 });
 
 passport.deserializeUser((id, done) => {
-  User.findById(id, (err, user) => {
+  Users.findById(id, (err, user) => {
     done(err, user);
   });
 });
@@ -26,7 +26,7 @@ passport.use(new SlackStrategy({
   scope: ['identity.basic', 'identity.avatar']
 }, (_accessToken, _refreshToken, profile, done) => {
   console.log("Made it to the callback");
-  User.findOne({ "slackID": profile.id }).then((currentUser) => {
+  Users.findOne({ "slackID": profile.id }).then((currentUser) => {
     let isTeamLead = false; // Innocent until proven guilty
     let options = {
       method: 'GET',
@@ -69,7 +69,7 @@ export const isAuthenticated = (req, res, next) => {
 
   function createNewUser(profile, isTeamLead, cb) {
     console.log("You're new here");
-    let newUser = new User({
+    let newUser = new Users({
       name: profile.displayName,
       picture: profile.user.image_192,
       slackID: profile.id,

@@ -3,6 +3,7 @@ import express from 'express';
 import flash from 'express-flash';
 import exphbs from 'express-handlebars';
 import session from 'express-session';
+import cookieParser = require('cookie-parser');
 import passport from 'passport';
 import Handlebars from 'handlebars';
 const {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access');
@@ -21,8 +22,6 @@ import sponsorsRouter from '../routes/sponosors.routes';
 import vendorsRouter from '../routes/vendors.routes';
 
 import {TeamLeadRouter} from '../routes';
-
-const router = express.Router();
 
 class ExpressConfiguration {
     public app: express.Application;
@@ -45,14 +44,18 @@ class ExpressConfiguration {
         this.app.use(express.static('src/public'));
         this.app.use(bodyParser.urlencoded({ extended: true }));
         this.app.use(bodyParser.json());
+        this.app.use(flash());
+        this.app.use(cookieParser('IAmOnceAgainAskingForYourFinancialSupport'));
         this.app.use(session({
-            secret: 'secret',
-            saveUninitialized: true,
-            resave: true
+            secret: 'IAmOnceAgainAskingForYourFinancialSupport',
+            name: 'Badgerloop',
+            proxy: false,
+            resave: true,
+            saveUninitialized: true
+
         }));
         this.app.use(passport.initialize());
         this.app.use(passport.session());
-        this.app.use(flash());
         
         this.app.use('/orders', orderRouter);
         this.app.use('/auth', authRouter);

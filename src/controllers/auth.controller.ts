@@ -1,5 +1,5 @@
 import request from 'request';
-import User from '../models/User.model';
+// import {Users} from '../models/User.model';
 
 const {CLIENT_ID, CLIENT_SECRET} = process.env;
 

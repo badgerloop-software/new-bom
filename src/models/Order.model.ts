@@ -44,6 +44,15 @@ OrderSchema.index({'$**': 'text'}, {
 // }
 });
 
+OrderSchema.statics.getNumOrders = async function(): Promise<number> {
+  let orders =await this.find({}); // The find must be seperate from the .length
+  return orders.length;
+}
+
+OrderSchema.statics.getPendingOrders = async function(): Promise<any[]> {
+  let pendingOrders = await this.find({isApproved: false}); // Await call must be seperate than return
+  return pendingOrders
+}
 export default bomDB.model('Orders', OrderSchema);
 
 

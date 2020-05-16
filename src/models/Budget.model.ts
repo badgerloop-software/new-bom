@@ -3,9 +3,6 @@ import * as mongoConfig from '../config/mongo.config';
 const bomDB = mongoose.createConnection(mongoConfig.BOM_URL);
 
 const BudgetSchema = new mongoose.Schema({
-  totalAllocated: {type: Number, default: 0},
-  totalSpent: {type: Number, default: 0},
-  totalLeft: {type: Number, default: 0},
   currentLeft: [Number],
   currentSpent: [Number],
   setBudgets: [Number],
@@ -33,7 +30,6 @@ BudgetSchema.methods.findTeamIndex = function(query) {
 }
 
 BudgetSchema.methods.formatAllNumbers = function(fixed = 2) {
-  console.log('HERE');
   let budget = this;
   for (let i = 0; i < budget.currentSpent.length; i++) {
     budget.currentSpent[i] = Number(budget.currentSpent[i]).toFixed(fixed);
@@ -50,5 +46,17 @@ BudgetSchema.methods.findCurrentLeft = function(query = -1) {
         return this.currentLeft[query];
     }
 }
+
+BudgetSchema.statics.getActiveBudget = function(): any {
+  return this.findOne({});
+}
+
+BudgetSchema.virtual('totalSpent').get(function(): number {
+  let totalSpent: number = 0;
+  for(let i: number = 0; i < this.teamList.length; i++) {
+    totalSpent += this.currentSpent[i];
+  }
+  return totalSpent;
+});
 
 export default bomDB.model('Budgets', BudgetSchema);
