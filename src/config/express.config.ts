@@ -23,13 +23,22 @@ import vendorsRouter from '../routes/vendors.routes';
 
 import {TeamLeadRouter} from '../routes';
 
-class ExpressConfiguration {
+import {SlackService} from '../services/slack'
+export class ExpressConfiguration {
     public app: express.Application;
 
     constructor() {
         this.app = express();
         this.setupDatabase();
         this.setupConfiguration();
+    }
+
+    public async setupSlackIntegration(): Promise<boolean> { // This function CAN NOT be called in the constructor
+        let slackCheck: boolean = await SlackService.createChannelsMap();
+        if (!slackCheck) {
+            console.log("[Error] Cannot get Slack Channels");
+        }
+        return slackCheck
     }
 
     private setupDatabase() {
@@ -72,5 +81,3 @@ class ExpressConfiguration {
         this.app.use('/vendors', vendorsRouter);
     }
 }
-
-export default new ExpressConfiguration().app;

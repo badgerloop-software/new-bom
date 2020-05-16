@@ -7,9 +7,9 @@
     "clean": "rm -rf ./dist/",
     "build": "tsc --pretty",
     "dev": "npm run-script clean && npm run-script build && npm start",
-    "start": "nodemon ./dist/app.js",
+    "start": "node ./dist/app.js",
     "prod": "npm install && npm start",
-    "format": "prettier-standart '**/*.ts"
+    "format": "prettier-standard '**/*.ts"
   },
   "repository": {
     "type": "git",

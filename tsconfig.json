@@ -1,10 +1,10 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
+        "module": "CommonJS",
         "moduleResolution": "node",
         "pretty": true,
         "sourceMap": true,
-        "target": "ES6",
+        "target": "es2017",
         "resolveJsonModule": true,
         "outDir": "./dist",
         "allowJs": true,

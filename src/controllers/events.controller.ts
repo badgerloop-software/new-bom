@@ -1,38 +1,40 @@
+import {Request, Response} from 'express'
 import request from 'request';
 import CriticalPaths from '../models/CriticalPath.model';
-import * as schedule from 'node-schedule';
-const URL = process.env.APPS_TOKEN;
-const ONE_DAY=1000*60*60*24;
-let today: Date = new Date();
-var reveal=new Date(today.getFullYear()+1, 3, 16);
+import * as Schedule from 'node-schedule';
+import {SlackService} from '../services/slack';
 
-var j = schedule.scheduleJob('0 10 * * *', function (fireDate) { //uses node-schedule to run once every day at 10am (cron format)
-  CriticalPaths.find({}, (err, cpsList) => {
-    if (err) throw err;
-    if (cpsList.length==0) console.log("No critical path.");
-    else {
-      let index: number = cpsList.length-1;
-      let msg =
-        `:alert:  CURRENT CRITICAL PATH  :alert:
-      *Title*: ${cpsList[index].title}
-      *Description*: ${cpsList[index].description}
-      *Assignee*: ${cpsList[index].assignee}
-      *Due*: ${cpsList[index].due}
-      *Days until Reveal*: ${Math.ceil((reveal.getTime() - today.getTime()) / (ONE_DAY))}`;
-      var channels = cpsList[index].channels.split(',');
-      channels.forEach(function (x) {
-        sendMsg(x, msg);
-      });
-    }
+export class EventsController {
+   static URL: string = process.env.APPS_TOKEN;
+   static ONE_DAY: number = 1000*60*60*24;
+   static today: Date = new Date();
+   static reveal: Date = new Date(EventsController.today.getFullYear()+1, 3, 16); //TODO find some way to implement this better
+   static scheduler = Schedule.scheduleJob('0 10 * * *', function (fireDate) { //uses node-schedule to run once every day at 10am (cron format)
+    CriticalPaths.find({}, (err, cpsList) => {
+      if (err) throw err;
+      if (cpsList.length==0) console.log("No critical path.");
+      else {
+        let index: number = cpsList.length-1;
+        let msg =
+          `:alert:  CURRENT CRITICAL PATH  :alert:
+        *Title*: ${cpsList[index].title}
+        *Description*: ${cpsList[index].description}
+        *Assignee*: ${cpsList[index].assignee}
+        *Due*: ${cpsList[index].due}
+        *Days until Reveal*: ${Math.ceil((EventsController.reveal.getTime() - EventsController.today.getTime()) / (EventsController.ONE_DAY))}`;
+        var channels = cpsList[index].channels.split(',');
+        channels.forEach(function (x) {
+          sendMsg(x, msg);
+        });
+      }
+    });
   });
-});
+}
+
 //Lol Luke this function is so jank
 function sendMsg(channel, msg) {
   var channelID;
   switch (channel) {
-    case "analysis":
-      channelID = 'C72SNKW9W';
-      break;
     case "braking":
       channelID = 'C0B3GCRMK';
       break;
@@ -88,20 +90,9 @@ function sendMsg(channel, msg) {
       channelID = 'C0L1P5JTA';
       break;
   }
-  var options = {
-    msg: msg,
-    method: 'POST',
-    url: 'https://slack.com/api/chat.postMessage',
-    headers:
-    {
-      Authorization: 'Bearer ' + URL,
-      'Content-Type': 'application/json'
-    },
-    body: { channel: channelID, text: msg },
-    json: true
-  };
-  request(options, function (error, response, body) {
-    if (error) throw new Error(error);
+
+  SlackService.sendMessage(channelID, msg, null, (err, _response, body) => {
+    if (err) throw new Error(err);
     console.log(body);
   });
 }
@@ -114,4 +105,9 @@ export const getSlackTest = (req, res) => {
     })
   })
   res.send(req.body.challenge).end(200);
+}
+
+export const getChannelsTest = async (req, res) => {
+  console.log(SlackService.Channels);
+  return res.redirect('back');
 }

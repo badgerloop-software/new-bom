@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import * as mongoConfig from '../config/mongo.config'
 const bomDB = mongoose.createConnection(mongoConfig.BOM_URL);
-import * as slackService from '../services/slack.service';
+import {SlackService} from '../services/slack';
 import Orders from '../models/Order.model';
 import {Users} from '../models/User.model';
 const PURCHASING_CHANNEL: string = process.env.PURCHASING_CHANNEL;
@@ -18,7 +18,7 @@ const OrderMessageSchema = new mongoose.Schema({
 
 OrderMessageSchema.methods.checkApproved = function () {
     console.log(EXECUTITIVE_IDS);
-    slackService.checkOneThumbsUp(PURCHASING_CHANNEL, this.slackTS, EXECUTITIVE_IDS).then((user) => {
+    SlackService.checkOneThumbsUp(PURCHASING_CHANNEL, this.slackTS, EXECUTITIVE_IDS).then((user) => {
         if (user == -1) return //console.log(`${this.slackTS} doesn't have any reactions`);
         if (user == -2) return //console.log(`${this.slackTS} has not been reacted by an authorized user`);
         console.log(`${this.slackTS} is approved by ${user}`);
@@ -59,7 +59,7 @@ OrderMessageSchema.methods.editStatus = function (status: string, authorizingUse
     *Link*: http://${URL}/orders/edit/${order.id}
 ==== ==== ====`;
             let newMsg = currentMsg + `\n *Status: ${status}*`
-            slackService.editMessage(PURCHASING_CHANNEL, this.slackTS, newMsg, null);
+            SlackService.editMessage(PURCHASING_CHANNEL, this.slackTS, newMsg, null);
             let threadedMsg = `<@${user.slackID}>, your order has been ${status}`;
             if (authorizingUser) threadedMsg += ` by <@${authorizingUser}>`;
             if (status === "Approved") threadedMsg += `CC: <@${process.env.FSC_LEAD}>`
@@ -76,7 +76,7 @@ OrderMessageSchema.methods.editStatus = function (status: string, authorizingUse
                     ]
                 }
             ]
-            slackService.sendThread(PURCHASING_CHANNEL, threadedMsg, attachments, this.slackTS, null);
+            SlackService.sendThread(PURCHASING_CHANNEL, threadedMsg, attachments, this.slackTS, null);
         });
     });
 }

@@ -1,7 +1,7 @@
 import Order from '../models/Order.model'
 import Budget from '../models/Budget.model';
 import OrderMessage from '../models/OrderMessage.model';
-import * as SLACK_SERVICE from '../services/slack.service';
+import {SlackService} from '../services/slack';
 
 const URL = process.env.LOCAL_URL;
 const fscLead = "UG46HDHS7";
@@ -459,7 +459,7 @@ function sendOrderMessage(order, user) {
     *Link*: http://${URL}/orders/edit/${order.id}
   ==== ==== ====`
     }
-    SLACK_SERVICE.sendMessage(process.env.PURCHASING_CHANNEL, msg, null, (body) => {
+    SlackService.sendMessage(process.env.PURCHASING_CHANNEL, msg, null, (body) => {
       OrderMessage.create({
         slackTS: body.ts,
         order: order.id
@@ -477,7 +477,7 @@ function createSlackResponse(order, user) {
     if (err) throw err;
     let msg =
     `<@${fscLead}>Request for ${order.item} has been approved by <@${user.slackID}>!`
-  SLACK_SERVICE.sendThread(process.env.PURCHASING_CHANNEL, msg, null, thread.slackTS, (body) => {
+  SlackService.sendThread(process.env.PURCHASING_CHANNEL, msg, null, thread.slackTS, (body) => {
   });
   }); 
 }
