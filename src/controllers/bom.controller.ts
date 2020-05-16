@@ -9,8 +9,7 @@ export class BOMController {
       return res.redirect('back');
     }
     let budget = await Budgets.getActiveBudget();
-    if (req.query.q) {
-      console.log(`Recieved serch term ${req.query.q}`);
+    if (req.query.q) { // If someone searched
       Orders.find(
         { isOrdered: true,
           $text : {$search : req.query.q} },
@@ -23,7 +22,7 @@ export class BOMController {
           activeBOM: true
         });
       });
-    } else {
+    } else { // If visiting the page without a search
       Orders.find({ isOrdered: true }, null, { sort: { subteam: 1 } }, (err, orders) => {
         if (err) throw err;
         res.render('bom/tableView', {
