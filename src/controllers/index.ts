@@ -5,6 +5,7 @@ import {BOMController} from './bom.controller';
 import {BudgetsController} from './budgets.controller';
 import {CommandsController} from './commands.controller';
 import {CriticalPathsController} from './criticalPath.controller';
+import {CriticalPathBotController} from './criticalPathBot.controller';
 
 const teamleadController = new TeamleadController();
 const adminController = new AdminController();
@@ -13,6 +14,7 @@ const bomController = new BOMController();
 const budgetsController = new BudgetsController();
 const commandsController = new CommandsController();
 const criticalPathsController = new CriticalPathsController();
+const criticalPathBotController = new CriticalPathBotController();
 
 export {
     teamleadController,
@@ -21,5 +23,6 @@ export {
     bomController,
     budgetsController,
     commandsController,
-    criticalPathsController
+    criticalPathsController,
+    criticalPathBotController
 };

@@ -1,8 +1,8 @@
 // /cpb
 import express from 'express';
-import * as critialPathBotController from '../controllers/criticalPathBot.controller';
+import {criticalPathBotController} from '../controllers';
 let CriticalPathBotRouter = express.Router();
 
-CriticalPathBotRouter.get('/', critialPathBotController.getCriticalPaths);
+CriticalPathBotRouter.get('/', criticalPathBotController.getCriticalPaths);
 
 export default CriticalPathBotRouter;
