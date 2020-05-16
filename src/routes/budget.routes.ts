@@ -1,12 +1,12 @@
 import express from 'express';
 import * as passportConfig from '../config/passport.config';
-import * as budgetController from '../controllers/budgets.controller';
+import {budgetsController} from '../controllers';
 let BudgetRouter = express.Router();
 
-BudgetRouter.get('/edit', passportConfig.isAuthenticated, budgetController.getEdit);
-BudgetRouter.post('/createBudget', budgetController.createBudgets);
-BudgetRouter.get('/delete', passportConfig.isAuthenticated, budgetController.getDelete);
-BudgetRouter.get('/editBudget', budgetController.getEdit);
-BudgetRouter.post('/editBudget', budgetController.postEdit);
+BudgetRouter.get('/edit', passportConfig.isAuthenticated, budgetsController.getEdit);
+BudgetRouter.post('/createBudget', budgetsController.createBudgets);
+BudgetRouter.get('/delete', passportConfig.isAuthenticated, budgetsController.getDelete);
+BudgetRouter.get('/editBudget', budgetsController.getEdit);
+BudgetRouter.post('/editBudget', budgetsController.postEdit);
 
 export default BudgetRouter;

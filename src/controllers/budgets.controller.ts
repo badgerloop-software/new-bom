@@ -1,36 +1,55 @@
+import {Request, Response} from 'express';
 import Budgets from '../models/Budget.model';
 
-
-export const getEdit = (req, res) => {
-  if(!req.user || (!req.user.isFSC && !req.user.isAdmin)) {
-    req.flash('error', {msg: 'You are not authorized to do this'});
-    return res.redirect('back');
-  }
-  Budgets.findOne({}, (err, budget) => {
-    if (err) throw err;
-    console.log(budget);
-    res.render('bom/editBudget', {
-      user: req.user,
-      settings: mongoObjectToHBS(budget),
-      numTeams: budget.teamList.length
+export class BudgetsController {
+  public getEdit(req: Request, res: Response): void {
+    if(!req.user || (!req.user.isFSC && !req.user.isAdmin)) {
+      req.flash('error', "You are not authorized to do this");
+      return res.redirect('back');
+    }
+    Budgets.findOne({}, (err, budget) => {
+      if (err) throw err;
+      res.render('bom/editBudget', {
+        user: req.user,
+        settings: BudgetsController.convertToHandleBarsObj(budget),
+        numTeams: budget.teamList.length
+      });
     });
-  });
-}
-function mongoObjectToHBS(mongoObject) {
-  let obj = {};
-  let len = mongoObject.teamList.length;
-  let teamList = mongoObject.teamList;
-  let budgetList = mongoObject.setBudgets;
-  for(let i=0;i<len;i++) {
-    obj[i] = {"name" : teamList[i], "budget":budgetList[i]};
   }
-  return obj;
-}
-export const postEdit = (req, res) => {
-  if (!req.user || !req.user.isAdmin) {
-    req.flash('error', {msg: 'You are not authorized to do this'});
-    return res.redirect('back');
+
+  public postEdit(req: Request, res: Response): void {
+    if (!req.user || !req.user.isAdmin) {
+      req.flash('error', "You are not authorized to do this");
+      return res.redirect('back');
+    }
+      const NUMTEAMS = req.body.numTeams;
+      let namesArray = [];
+      let budgetsArray = [];
+      for (let i = 0; i < NUMTEAMS; i++) {
+        namesArray[i] = req.body[`name${i}`];
+        budgetsArray[i] = req.body[`budget${i}`]
+      }
+      return BudgetsController.updateMongoBudget(req, res, namesArray, budgetsArray);
   }
+
+  private static convertToHandleBarsObj(mongoObject): object {
+    let obj = {};
+    let len = mongoObject.teamList.length;
+    let teamList = mongoObject.teamList;
+    let budgetList = mongoObject.setBudgets;
+    for(let i=0;i<len;i++) {
+      obj[i] = {"name" : teamList[i], "budget":budgetList[i]};
+    }
+    return obj;
+  }
+  public getDelete(req: Request, res: Response) {
+    Budgets.remove({}, () => {
+      req.flash('success', 'Budget Deleted');
+      res.redirect('/admin/dashboard');
+    })
+  }
+
+  public createBudgets(req: Request, res: Response) {
     const NUMTEAMS = req.body.numTeams;
     let namesArray = [];
     let budgetsArray = [];
@@ -38,61 +57,42 @@ export const postEdit = (req, res) => {
       namesArray[i] = req.body[`name${i}`];
       budgetsArray[i] = req.body[`budget${i}`]
     }
-    return updateMongoBudget(req, res, namesArray, budgetsArray)
-}
-function updateMongoBudget(req, res, teamList, budgetList) {
-  if (req.user.isFSC || req.user.isAdmin) {
-    let options = {
-      setBudgets: budgetList
-    }
-
-    Budgets.findOneAndUpdate({},options, (err, budget) => {
-      if (err) throw err;
-      req.flash('success', { msg: 'Budget Updated, Systems updated' });
-      return res.redirect('/admin/dashboard');
-    });
-  } else {
-    req.flash('error', { msg: 'You are not authorized to do this' });
-    return res.redirect('/');
+    return BudgetsController.createMongoBudget(req, res, namesArray, budgetsArray)
   }
-}
-function createMongoBudget(req, res, teamList, budgetList) {
-  if (req.user.isFSC || req.user.isAdmin) {
-    let currentSpent = [];
-    for (let i = 0; i < teamList.length; i++) {
-      currentSpent[i] = 0;
+
+  private static updateMongoBudget(req: Request, res: Response, teamList: string[], budgetList: number[]) {
+    if (req.user.isFSC || req.user.isAdmin) {
+      let options = {
+        setBudgets: budgetList
+      }
+  
+      Budgets.findOneAndUpdate({},options, (err, budget) => {
+        if (err) throw err;
+        req.flash('success', "Budget Systems Updated");
+        return res.redirect('/admin/dashboard');
+      });
+    } else {
+      req.flash('error', "You are not authorized to do this");
+      return res.redirect('/');
     }
-    let options = {
-      teamList: teamList,
-      currentSpent: currentSpent,
-      setBudgets: budgetList
+  }
+
+  private static createMongoBudget(req: Request, res: Response, teamList: string[], budgetList: number[]) {
+    if (!(req.user.isFSC || req.user.isAdmin)) {
+      req.flash('error', "You are not authorized to do this");
+      return res.redirect('/');
     }
-
-    Budgets.create(options, (err, budget) => {
-      if (err) throw err;
-      req.flash('success', { msg: 'Budget Deployed, Welcome to the Badgerloop BOM Boss' });
-      return res.redirect('/admin/dashboard');
-    });
-  } else {
-    req.flash('error', { msg: 'You are not authorized to do this' });
-    return res.redirect('/');
+    let currentSpent = Budgets.createCurrentSpent();
+      let options = {
+        teamList: teamList,
+        currentSpent: currentSpent,
+        setBudgets: budgetList
+      }
+  
+      Budgets.create(options, (err, _budget) => {
+        if (err) throw err;
+        req.flash('success',"Budget deployed, Boss. Welcome to the BOM");
+        return res.redirect('/admin/dashboard');
+      });
   }
-}
-
-export const createBudgets = (req, res) => {
-  const NUMTEAMS = req.body.numTeams;
-  let namesArray = [];
-  let budgetsArray = [];
-  for (let i = 0; i < NUMTEAMS; i++) {
-    namesArray[i] = req.body[`name${i}`];
-    budgetsArray[i] = req.body[`budget${i}`]
-  }
-  return createMongoBudget(req, res, namesArray, budgetsArray)
-}
-
-export const getDelete = (req, res) => {
-  Budgets.remove({}, () => {
-    req.flash('success', {msg: 'Budget Deleted'});
-    res.redirect('/admin/dashboard');
-  })
 }

@@ -64,4 +64,12 @@ BudgetSchema.virtual('totalSpent').get(function(): number {
   return totalSpent;
 });
 
+BudgetSchema.statics.createCurrentSpent = function(numTeams: number): number[] {
+  let currentSpent = [];
+  for (let i = 0; i < numTeams; i++) {
+    currentSpent[i] = 0;
+  }
+  return currentSpent;
+}
+
 export default bomDB.model('Budgets', BudgetSchema);
