@@ -14,8 +14,7 @@
         "src/app.ts",
         "src/config/*.ts",
         "src/models/*.ts",
-        "src/controllers/**/*.ts",
-        "src/@types/types.d.ts"
+        "src/controllers/**/*.ts"
     ],
     "exclude": [
         "node_modules"

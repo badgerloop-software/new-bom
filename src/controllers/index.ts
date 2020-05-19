@@ -8,6 +8,8 @@ import {CriticalPathsController} from './criticalPath.controller';
 import {CriticalPathBotController} from './criticalPathBot.controller';
 import {CRUDController} from './CRUD.controller';
 import {CrudLogsController} from './crudLogs.controller';
+import {EventsController} from './events.controller';
+import {NewsController} from './news.controller';
 
 const teamleadController = new TeamleadController();
 const adminController = new AdminController();
@@ -19,6 +21,8 @@ const criticalPathsController = new CriticalPathsController();
 const criticalPathBotController = new CriticalPathBotController();
 const crudController = new CRUDController();
 const crudLogsController = new CrudLogsController();
+const eventsController = new EventsController();
+const newsController = new NewsController();
 
 
 export {
@@ -31,5 +35,7 @@ export {
     criticalPathsController,
     criticalPathBotController,
     crudController,
-    crudLogsController
+    crudLogsController,
+    eventsController,
+    newsController
 };

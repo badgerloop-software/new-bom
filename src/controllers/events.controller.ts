@@ -2,7 +2,8 @@ import {Request, Response} from 'express'
 import request from 'request';
 import CriticalPaths from '../models/CriticalPath.model';
 import * as Schedule from 'node-schedule';
-import {SlackService} from '../services/slack';
+import {SlackService} from '../services/SlackService';
+import OrderMessage from '../models/OrderMessage.model';
 
 export class EventsController {
    static URL: string = process.env.APPS_TOKEN;
@@ -24,28 +25,23 @@ export class EventsController {
         *Days until Reveal*: ${Math.ceil((EventsController.reveal.getTime() - EventsController.today.getTime()) / (EventsController.ONE_DAY))}`;
         var channels = cpsList[index].channels.split(',');
         channels.forEach(function (x) {
-          sendMsg(x, msg);
+          EventsController.sendMsg(x, msg);
         });
       }
     });
   });
-}
 
-function sendMsg(channel, msg) {
-  // After
-  let channelID = SlackService.Channels.get(channel);
-  SlackService.sendMessage(channelID, msg, null, (err, _response, body) => {
-    if (err) throw new Error(err);
-    console.log(body);
-  });
-}
+  private static sendMsg(channel: string, msg: string): void {
+    let channelID = SlackService.Channels.get(channel);
+    SlackService.sendMessage(channelID, msg, null, (err, _response, body) => {
+      if (err) throw new Error(err);
+      console.log(body);
+    });
+  }
 
-export const getSlackTest = (req, res) => {
-  require('../models/orderMessage').find({}, (err, messages) => {
-    if (err) throw err;
-    messages.forEach((message) => {
-      message.checkApproved();
-    })
-  })
-  res.send(req.body.challenge).end(200);
+  public handleEvent(req: Request, res: Response): void {
+    OrderMessage.checkAllMessages();
+    // This must always be at the bottom of the event handling
+    res.send(req.body.challenge).end(200);
+  }
 }

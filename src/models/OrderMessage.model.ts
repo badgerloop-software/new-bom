@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import * as mongoConfig from '../config/mongo.config'
 const bomDB = mongoose.createConnection(mongoConfig.BOM_URL);
 import {SlackService} from '../services/SlackService';
-import Orders from '../models/Order.model';
+import Orders from './orders/OrderRequest.model';
 import {Users} from '../models/User.model';
 const PURCHASING_CHANNEL: string = process.env.PURCHASING_CHANNEL;
 const EXECUTITIVE_IDS: string[] = String(process.env.EXECUTITIVES_IDS).split(',');
@@ -12,7 +12,7 @@ const URL: string = process.env.LOCAL_URL;
 const OrderMessageSchema = new mongoose.Schema({
     slackTS: String,
     replies: {},
-    order: mongoose.ObjectId,
+    order: mongoose.Schema.Types.ObjectId,
     reactions: {}
 });
 
@@ -79,5 +79,12 @@ OrderMessageSchema.methods.editStatus = function (status: string, authorizingUse
             SlackService.sendThread(PURCHASING_CHANNEL, threadedMsg, attachments, this.slackTS, null);
         });
     });
+}
+
+OrderMessageSchema.statics.checkAllMessages = function() {
+    this.find({}, (err, messages) => {
+        if (err) console.log("[Error] Error finding Order Messages: " + err);
+        messages.forEach(message => message.checkApproved());
+    })
 }
 export default bomDB.model('OrderMessages', OrderMessageSchema);

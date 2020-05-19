@@ -17,13 +17,24 @@ import commandRouter from '../routes/commands.routes';
 import criticalPathBotRouter from '../routes/criticalPathBot.routes';
 import criticalPathsRouter from '../routes/criticalPaths.routes';
 import CRUDRouter from '../routes/crud.routes';
+import eventsRouter from '../routes/events.routes';
 import newsRouter from '../routes/news.routes';
 import sponsorsRouter from '../routes/sponosors.routes';
 import vendorsRouter from '../routes/vendors.routes';
 
+import {IUserSchema} from '../models/User.model';
+
 import {TeamLeadRouter} from '../routes';
 
 import {SlackService} from '../services/SlackService'
+// Setup Global Types
+
+declare global {
+    namespace Express {
+        interface User extends IUserSchema {}
+    }
+}
+
 export class ExpressConfiguration {
     public app: express.Application;
 
@@ -75,6 +86,7 @@ export class ExpressConfiguration {
         this.app.use('/cpb', criticalPathBotRouter);
         this.app.use('/criticalPaths', criticalPathsRouter);
         this.app.use('/crud', CRUDRouter);
+        this.app.use('/events', eventsRouter);
         this.app.use('/news', newsRouter);
         this.app.use('/sponsors', sponsorsRouter);
         this.app.use('/teamleads', TeamLeadRouter);

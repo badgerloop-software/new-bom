@@ -34,11 +34,7 @@ export interface IUserSchema extends mongoose.Document {
   setAdmin: Function;
 }
 
-declare global {
-  namespace Express {
-      interface User extends IUserSchema {}
-  }
-}
+
 
 userSchema.methods.setFSC = function(status: boolean): void {
   this.isFSC = status;
