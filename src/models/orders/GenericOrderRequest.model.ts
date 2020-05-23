@@ -1,17 +1,21 @@
-import {Schema} from 'mongoose';
-import {BaseOrder} from './BaseOrder.model';
-import {Item} from './Item.model';
+import {Schema, createConnection} from 'mongoose';
+import {BaseOrderBlueprint} from './BaseOrder.model';
+import { GenericReimbursementBlueprint } from './GenericReimbursement.model';
+import * as mongoConfig from '../../config/mongo.config';
+const bomDB = createConnection(mongoConfig.BOM_URL);
 
-const GenericOrderRequestSchema = new Schema({
+export const GenericOrderRequestBlueprint = {
+    type: {type: String, default: "GenericOrderRequest"},
+    ...BaseOrderBlueprint,
     tax: {type: Number},
     isOrdered: {type: Boolean, default: false},
     orderedBy: {type: String},
     dateOrdered: {type: Date},
     needDate: {type: Date, default: Date.now},
-    item: Item
-},{
-    discriminatorKey: "kind"
-});
+    item: Schema.Types.Mixed
+}
 
-export const GenericOrderRequest = BaseOrder.discriminator('GenericOrderRequest', GenericOrderRequestSchema);
+const GenericOrderRequestSchema = new Schema(GenericReimbursementBlueprint);
+
+export const GenericOrderRequest = bomDB.model('Order', GenericOrderRequestSchema);
 

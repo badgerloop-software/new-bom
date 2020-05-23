@@ -5,6 +5,7 @@ import exphbs from 'express-handlebars';
 import session from 'express-session';
 import cookieParser = require('cookie-parser');
 import passport from 'passport';
+import {connect} from 'mongoose';
 import Handlebars from 'handlebars';
 const {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access');
 
@@ -27,6 +28,8 @@ import {IUserSchema} from '../models/User.model';
 import {TeamLeadRouter} from '../routes';
 
 import {SlackService} from '../services/SlackService'
+import * as mongoConfig from './mongo.config';
+
 // Setup Global Types
 
 declare global {
@@ -53,6 +56,8 @@ export class ExpressConfiguration {
     }
 
     private setupDatabase() {
+        connect(mongoConfig.BOM_URL);
+
     }
 
     private setupConfiguration() {

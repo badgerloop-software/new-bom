@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import {Users, IUserSchema}  from '../models/User.model';
 import Budgets from '../models/Budget.model';
-import Orders from '../models/Order.model';
+import Orders from '../models/orders/OrderRequest.model';
 
 
 export class AdminController {

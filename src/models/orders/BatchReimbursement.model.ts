@@ -1,13 +1,16 @@
-import {Schema} from 'mongoose';
-import {BaseBatch} from './BaseBatch.model';
+import {Schema, createConnection} from 'mongoose';
+import {BaseBatchBlueprint} from './BaseBatch.model';
+import * as mongoConfig from '../../config/mongo.config';
+const bomDB = createConnection(mongoConfig.BOM_URL);
 
-const BatchReimbursementSchema = new Schema({
-    isReimbursed: {type: Boolean, default: false},
-    reimbursedBy: {type: String},
-    dateReimbursed: {type: Date}
-},
-{
-    discriminatorKey: 'kind'
-});
+export const BatchReimbursementBlueprint = {
+        type: {type: String, default: "BatchReimbursement"},
+        ...BaseBatchBlueprint,
+        isReimbursed: {type: Boolean, default: false},
+        reimbursedBy: {type: String},
+        dateReimbursed: {type: Date}
+}
 
-export const BatchReimbursement = BaseBatch.discriminator('BatchReimbursement', BatchReimbursementSchema);
+const BatchReimbursementSchema = new Schema(BatchReimbursementBlueprint);
+
+export const BatchReimbursement = bomDB.model('Order', BatchReimbursementSchema);

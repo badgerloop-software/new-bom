@@ -1,6 +1,6 @@
 import {Request, Response} from 'express';
 import Budgets from '../models/Budget.model';
-import Orders from '../models/Order.model';
+import Orders from '../models/orders/OrderRequest.model';
 
 export class BOMController {
   public async getTableView(req: Request, res: Response): Promise<void> {

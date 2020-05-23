@@ -1,12 +1,17 @@
-import {Schema} from 'mongoose';
-import {GenericOrderRequest} from './GenericOrderRequest.model';
+import {Schema, createConnection} from 'mongoose';
+import {GenericOrderRequest, GenericOrderRequestBlueprint} from './GenericOrderRequest.model';
+import * as mongoConfig from '../../config/mongo.config';
+const bomDB = createConnection(mongoConfig.BOM_URL);
 
-const OnlineOrderRequestSchema = new Schema({
+
+export const OnlineOrderRequestBlueprint = {
+    type: {type: String, default: "OnlineOrderRequest"},
+    ...GenericOrderRequestBlueprint,
     shipping: {type: Number},
     trackingNum: {type: String},
     link: {type: String}
-},{
-    discriminatorKey: 'kind'
-});
+}
 
-export const OnlineOrderRequest = GenericOrderRequest.discriminator('OnlineOrderRequest', OnlineOrderRequestSchema)
+const OnlineOrderRequestSchema = new Schema(OnlineOrderRequestBlueprint);
+
+export const OnlineOrderRequest = bomDB.model('Order', OnlineOrderRequestSchema);

@@ -1,12 +1,14 @@
-import {Schema, model, createConnection} from 'mongoose';
+import {Schema, model, createConnection, connect} from 'mongoose';
 import * as mongoConfig from '../../config/mongo.config';
 
 const bomDB = createConnection(mongoConfig.BOM_URL);
+connect(mongoConfig.BOM_URL);
 
-const BaseOrderSchema = new Schema({
+export const BaseOrderBlueprint = {
+    type: {type: String, default: "Base", required: true},
     requestor: {type: String, required: true},
-    Subteam: {type: String, required: true},
-    Supplier: {type: String, required: true},
+    subteam: {type: String, required: true},
+    supplier: {type: String, required: true},
     isApproved: {type: Boolean, default: false},
     approvedBy: {type: String},
     dateRequested: {type: Date, default: Date.now},
@@ -18,6 +20,7 @@ const BaseOrderSchema = new Schema({
         ref: "SlackMessage",
 
     }
-});
+}
 
-export const BaseOrder = bomDB.model("BaseOrder", BaseOrderSchema);
+const BaseOrderSchema = new Schema(BaseOrderBlueprint);
+export const BaseOrder = bomDB.model('Order', BaseOrderSchema);

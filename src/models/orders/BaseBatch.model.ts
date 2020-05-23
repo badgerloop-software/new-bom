@@ -2,9 +2,13 @@ import {Schema} from 'mongoose';
 import {BaseOrder} from './BaseOrder.model';
 import {Item} from './Item.model';
 
-const BaseBatchSchema = new Schema({
+export const BaseBatchBlueprint = {
     tax: {type: Number},
-    items: [Item]
+    items: Schema.Types.Mixed // These will be instances of Item
+}
+
+const BaseBatchSchema = new Schema({
+
 },
 {
     discriminatorKey: "kind"

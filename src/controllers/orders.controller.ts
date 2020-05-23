@@ -1,4 +1,4 @@
-import Order from '../models/Order.model'
+import Order from '../models/orders/OrderRequest.model';
 import Budget from '../models/Budget.model';
 import OrderMessage from '../models/OrderMessage.model';
 import {SlackService} from '../services/SlackService';

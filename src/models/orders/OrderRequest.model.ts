@@ -18,8 +18,6 @@ const OrderRequestSchema = new Schema({
   needDate: {type: Date, default: Date.now}
 });
 
-const OrderRequest = BaseOrder.discriminator('OrderRequest', OrderRequestSchema, OPTIONS);
-
 const OrderSchema = new Schema({
   requestor: String, // E
   item: String, // E
@@ -45,7 +43,7 @@ const OrderSchema = new Schema({
   countsTowardPodCost: {type: Boolean, default: false}, // E
   needDate: String, // Requests
   isDigikey: {type: Boolean, default: false}, // Delete
-  messageId: mongoose.ObjectId // E
+  messageId: Schema.Types.ObjectID // E
 });
 
 OrderSchema.index({'$**': 'text'}, {
