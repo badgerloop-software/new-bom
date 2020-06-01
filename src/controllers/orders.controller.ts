@@ -1,4 +1,4 @@
-import Order from '../models/orders/OrderRequest.model';
+import {Order} from '../models/orders';
 import Budget from '../models/Budget.model';
 import OrderMessage from '../models/OrderMessage.model';
 import {SlackService} from '../services/SlackService';
@@ -94,12 +94,13 @@ export const postMakeOrder = (req, res, next) => {
 
 
 
-export const getViewOrders = (req, res) => {
+export const getViewOrders = async (req, res) => {
   if (req.query.search) {
     console.log(`Recieved serch term ${req.query.search}`);
     Order.find(
       {
         isOrdered: false,
+        isReimbursed: false,
         $text: { $search: req.query.search }
       },
       { score: { $meta: "textScore" } },
@@ -114,14 +115,13 @@ export const getViewOrders = (req, res) => {
     });
   } else {
     console.log(req.user);
-    Order.find({ isOrdered: false }, (err, orders) => {
-      if (err) throw err;
+    let pendingOrders = await Order.findAllPendingOrders();
+    pendingOrders = pendingOrders.map(x => x.toObject());
       res.render('bom/viewOrders', {
         user: req.user,
-        orders: orders,
+        orders: pendingOrders,
         activeView: true
       })
-    });
   }
 }
 

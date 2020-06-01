@@ -5,11 +5,12 @@ export class Item {
     cost: number;
     project: string;
 
-    constructor(name: string, productNum: string, cost: number, project: string) {
+    constructor(name: string, productNum: string, cost: number, quantity: number, project: string) {
         this.name = name;
         this.productNum = productNum;
         this.cost = cost;
         this.project = project;
+        this.quantity = quantity;
     }
 
     public getTotalCost(): Number {

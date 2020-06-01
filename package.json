@@ -45,7 +45,8 @@
     "passport-slack": "0.0.7",
     "request": "^2.88.0",
     "request-promise": "^4.2.5",
-    "ts-node": "^8.10.1"
+    "ts-node": "^8.10.1",
+    "typescript": "^3.9.3"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.33.0",

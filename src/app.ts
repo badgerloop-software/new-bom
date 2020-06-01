@@ -34,6 +34,19 @@ app.get('/', (req, res) => {
   });
 });
 
+app.get('/newPlace', (req, res) => {
+  res.render('bom/chooseOrder', {
+    user: req.user
+  });
+});
+
+app.get('/orders/request', (req, res) => {
+  res.render('bom/makeOrder', {
+    type: 'Request',
+    user: req.user
+  });
+})
+
 app.get('/test', (req, res) => {
 let testOrder = new GenericReimbursement({
   requestor: "Eric Udlis",

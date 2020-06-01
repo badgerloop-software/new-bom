@@ -33,6 +33,12 @@
   padding: 10px;
 }
 
+.SquareButton {
+  height: 2vw;
+  width: 2vw;
+  text-align: center;
+}
+
 #makeForm input,
 textarea,
 button {
@@ -44,13 +50,40 @@ button {
 #makeForm input:focus {
   border-color: red;
 }
-#makeForm {
+
+#orderDetails {
   display: grid;
-  grid-template-columns: 25vw 30vw 25vw;
-  grid-gap: 20px;
-  grid-column-gap: 40px;
+  grid-template-columns: 25vw 25vw 25vw;
+  grid-gap: 10px;
   grid-auto-rows: .5fr;
 }
+
+#orderItems {
+  display: grid;
+  grid-template-columns: 100%;
+  grid-auto-rows: auto;
+  row-gap: 40px;
+}
+
+.ItemDetails {
+  display: grid;
+  grid-template-columns: 15vw 15vw 10vw 10vw 15vw 5vw;
+  grid-gap: 10px;
+  grid-auto-rows: .5fr;
+}
+
+#finalDetails {
+  display: grid;
+  grid-template-columns: 15vw 25vw 15vw;
+  gap: 10vw
+}
+/* #makeForm {
+  display: grid;
+  grid-template-columns: 25vw 25vw 25vw;
+  grid-gap: 10px;
+  grid-column-gap: 40px;
+  grid-auto-rows: .5fr;
+} */
 #makeForm label {
   display: block;
 }

@@ -1,68 +1,79 @@
-<h1>Make Purchase</h1>
+<h1>Make {{type}}</h1>
 <br><br>
 <form id="makeForm" action="/orders/purchase" method="POST">
-  <p>
-    <label>Requestor</label>
-    <input class="form-control" name="requestor" type="text" value="{{user.name}}" readonly>
-  </p>
-  <p>
-    <label>Subteam</label>
-    <select class="form-control custom-select" name="subteam" id="subteamDropdown">
-      {{!-- {{> teamsDropdown}} --}}
-    </select>
-  </p>
-  <p>
-    <label>Project</label>
-    <input class="form-control" type="text" name="project">
-  </p>
-  <p>
-    <label>Item</label>
-    <input class="form-control" id="item" name="item" type="text" required>
-  </p>
-  <p>
-    <label>Supplier</label>
-    <input class="form-control" id="supplier" name="supplier" type="text" required>
-  </p>
-  <p>
-    <label>Product Number</label>
-    <input class="form-control" id="productNum" name="productNum">
-  </p>
-  <p>
-    <label>Estimated Quantity</label>
-    <input class="form-control" name="quantity" id="quantity" type="number" required>
-  </p>
-  <p>
-
-    <label>Estimated <b>Individual</b> Cost</label></td>
-    <input class="form-control" name="cost" id="cost" type="number" step="0.000001" min="0" required>
-
-  </p>
-  <p>
-    <label for="podCost">Counts toward pod cost?</label>
-    <input type="checkbox" name="podCost">
-  </p>
-  <p>
-    <label for="link">Link to Purchase</label>
-    <input class="form-control" type="text" name="link" id="link">
-  </p>
-  <p>
-    <label for="date">Needed By:</label>
-    <input class="form-control" type="date" name="date" id="date">
-  </p>
-  <p>
-    <label for="fileInput">Click Here to Upload Digikey Excel File : <b>Note this will only work for DIGIKEY
-        orders</b></label>
-    <input type="file" id="fileInput" onchange="Upload()" class="form-control" />
-  </p>
+  <h3>{{type}} Details</h3>
+  <div id="orderDetails">
+    <p>
+      <label>Requestor</label>
+      <input class="form-control" name="requestor" type="text" value="{{user.name}}" readonly>
+    </p>
+    <p>
+      <label>Subteam</label>
+      <select class="form-control custom-select" name="subteam" id="subteamDropdown" required>
+        {{!-- {{> teamsDropdown}} --}}
+      </select>
+    </p>
+    <p>
+      <label>Supplier</label>
+      <input class="form-control" id="supplier" name="supplier" type="text" required>
+    </p>
+  </div>
+  <hr />
+  <h3>Items</h3>
+  <div id="orderItems">
+    <div id="item1" class="ItemDetails">
+      <p>
+        <label>Item Name</label>
+        <input class="form-control" id="itemName" name="itemName" type="text" required>
+      </p>
+      <p>
+        <label>Product Number</label>
+        <input class="form-control" id="productNum" name="productNum" type="text">
+      </p>
+      <p>
+        <label>Price</label>
+        <input class="form-control" id="itemPrice" name="itemPrice" type="number" min="0" step="0.01" required>
+      </p>
+      <p>
+        <label>Quantity</label>
+        <input class="form-control" id="quantity" name="quantity" type="number" min="1" step="1" required>
+      </p>
+      <p>
+        <label>Project</label>
+        <input class="form-control" id="project" name="project" type="text">
+      </p>
+      <p id="editButtons">
+        <span id="addButton" type="button" onclick="addItem()" class="SquareButton btn-success">+</span>
+        <span id="remButton" type="button" onclick="removeItem()" class="SquareButton btn-danger">-</span>
+      </p>
+    </div>
+  </div>
+  <hr />
+  <h3>Finalize</h3>
+  <div id="finalDetails">
+    <p>
+      <label for="podCost">Counts toward pod cost?</label>
+      <input type="checkbox" name="podCost">
+    </p>
+    <p>
+      <label for="link">Link to Purchase</label>
+      <input class="form-control" type="text" name="link" id="link">
+    </p>
+    <p>
+      <label for="date">Needed By:</label>
+      <input class="form-control" type="date" name="date" id="date">
+    </p>
+  </div>
   <p class="full-width">
     <label for="comments">Comments:</label>
     <textarea name="comments" id="comments" cols="30" rows="4"></textarea>
   </p>
+  <hr />
   <p>
-    <input type="checkbox" name="notARequest" id="notArequestCheck"> I will/did purchase this myself (Make sure you get
-    written or verbal approval)<br>
-    <input type="checkbox" name="confirm" required> I have double checked that I need this item and all information is
-    correct (required)<br>
+    <label style="display:inline" for="confirm">I have double checked that I need this item and all information is
+      correct (required)</label>
+    <input style="width:auto" type="checkbox" name="confirm" required>
+    <br>
   </p>
   <br><br>
   <p>
@@ -70,6 +81,27 @@
   </p>
 </form>
 
+<script>
+  let numItems = 1; // Ew Global vars //TODO this for later
+  co
+  function addItem() {
+    let template = document.querySelector('#item' + numItems);
+    let buttons = document.querySelector("#editButtons");
+    let clone = template.cloneNode(true);
+    clone.id = 'item' + ++numItems;
+    template.removeChild(buttons);
+    template.after(clone);
+  }
+
+  function removeItem() {
+    if (numItems == 1) return;
+    let lastItem = document.querySelector('#item' + numItems);
+    let secondLastItem = document.querySelector('#item' + --numItems);
+    let buttons = document.querySelector("#editButtons");
+    secondLastItem.appendChild(buttons);
+    lastItem.parentNode.removeChild(lastItem);
+  }
+</script>
 <script>
   const DROPDOWN = document.getElementById('subteamDropdown');
   const TEAMS_LIST_STRING = "{{teamList}}";

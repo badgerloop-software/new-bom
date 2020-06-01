@@ -6,6 +6,7 @@ const bomDB = createConnection(mongoConfig.BOM_URL);
 export const GenericReimbursementBlueprint = {
     type: {type: String, default: "SingleReimbursement"},
     ...BaseOrderBlueprint,
+    itemName: {type: String, required: true},
     isReimbursed: { type: Boolean, default: false },
     reimbursedBy: { type: String },
     dateReimbursed: { type: Date },
