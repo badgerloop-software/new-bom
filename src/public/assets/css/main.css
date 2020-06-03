@@ -34,8 +34,8 @@
 }
 
 .SquareButton {
-  height: 2vw;
-  width: 2vw;
+  height: 5vw;
+  width: 5vw;
   text-align: center;
 }
 
@@ -74,8 +74,8 @@ button {
 
 #finalDetails {
   display: grid;
-  grid-template-columns: 15vw 25vw 15vw;
-  gap: 10vw
+  grid-template-columns: 10vw 10vw 5vw 25vw 15vw;
+  gap: 20px
 }
 /* #makeForm {
   display: grid;

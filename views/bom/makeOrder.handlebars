@@ -1,6 +1,6 @@
 <h1>Make {{type}}</h1>
 <br><br>
-<form id="makeForm" action="/orders/purchase" method="POST">
+<form id="makeForm" action="/orders/request" method="POST">
   <h3>{{type}} Details</h3>
   <div id="orderDetails">
     <p>
@@ -24,23 +24,23 @@
     <div id="item1" class="ItemDetails">
       <p>
         <label>Item Name</label>
-        <input class="form-control" id="itemName" name="itemName" type="text" required>
+        <input class="form-control" id="item1Name" name="item1Name" type="text" required>
       </p>
       <p>
         <label>Product Number</label>
-        <input class="form-control" id="productNum" name="productNum" type="text">
+        <input class="form-control" id="item1ProductNum" name="item1ProductNum" type="text">
       </p>
       <p>
         <label>Price</label>
-        <input class="form-control" id="itemPrice" name="itemPrice" type="number" min="0" step="0.01" required>
+        <input class="form-control" id="item1Price" name="item1Price" type="number" min="0" step="0.01" required>
       </p>
       <p>
         <label>Quantity</label>
-        <input class="form-control" id="quantity" name="quantity" type="number" min="1" step="1" required>
+        <input class="form-control" id="item1Quantity" name="item1Quantity" type="number" min="1" step="1" required>
       </p>
       <p>
         <label>Project</label>
-        <input class="form-control" id="project" name="project" type="text">
+        <input class="form-control" id="item1Project" name="item1Project" type="text">
       </p>
       <p id="editButtons">
         <span id="addButton" type="button" onclick="addItem()" class="SquareButton btn-success">+</span>
@@ -51,6 +51,14 @@
   <hr />
   <h3>Finalize</h3>
   <div id="finalDetails">
+    <p>
+      <label>Shipping</label>
+      <input class="form-control" type="number" step="0.01" min="0" name="shipping">
+    </p>
+    <p>
+      <label>Tax</label>
+      <input class="form-control" type="number" step="0.01" min="0" name="tax">
+    </p>
     <p>
       <label for="podCost">Counts toward pod cost?</label>
       <input type="checkbox" name="podCost">
@@ -76,30 +84,56 @@
     <br>
   </p>
   <br><br>
+  {{!-- Supplemental Data to be posted but not for user input --}}
+  <input type="number" style="display: none;" name="numItems" value="1">
+  <input type="text" style="display: none;" name="type" value="{{type}}">
+  {{!-- End Supplemental Post Data --}}
   <p>
     <button class="btn btn-lg btn-success" type="submit">Submit Order</button>
   </p>
 </form>
 
 <script>
-  let numItems = 1; // Ew Global vars //TODO this for later
-  co
   function addItem() {
-    let template = document.querySelector('#item' + numItems);
+    let template = document.querySelector('#item' + getNumItems());
     let buttons = document.querySelector("#editButtons");
     let clone = template.cloneNode(true);
-    clone.id = 'item' + ++numItems;
+    incrementNumItems()
+    clone.id = 'item' + getNumItems();
+    setBoxNames(clone, getNumItems())
     template.removeChild(buttons);
     template.after(clone);
   }
 
   function removeItem() {
-    if (numItems == 1) return;
-    let lastItem = document.querySelector('#item' + numItems);
-    let secondLastItem = document.querySelector('#item' + --numItems);
+    if (getNumItems() === 1) return;
+    let lastItem = document.querySelector('#item' + getNumItems());
+    decrementNumItems()
+    let secondLastItem = document.querySelector('#item' + getNumItems());
     let buttons = document.querySelector("#editButtons");
     secondLastItem.appendChild(buttons);
     lastItem.parentNode.removeChild(lastItem);
+  }
+
+  function incrementNumItems() {
+    document.querySelector('#numItems').value++;
+  }
+
+  function decrementNumItems() {
+    document.querySelector('#numItems').value--;
+  }
+
+  function getNumItems() {
+    return Number(document.querySelector('#numItems').value)
+  }
+
+  function setBoxNames(elem, number) {
+    let children = elem.children
+    for(let i=0; i< children.length; i++) {
+      let old = String(children[i].innerHTML);
+      let newContent = old.replace("item" + String(number-1), "item"+number);
+      children[i].innerHTML = newContent
+    }
   }
 </script>
 <script>
@@ -113,15 +147,6 @@
     option.innerHTML = String(team);
     DROPDOWN.appendChild(option);
   });
-
-  /* const FORM_INPUT = document.getElementById('fileInput');
-
-  FORM_INPUT.addEventListener('change', () => {
-    readXlsxFile(input.files[0]).then((rows) => {
-      console.log(rows);
-    });
-
-  }); */
 </script>
 
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>

@@ -3,6 +3,7 @@ import {ExpressConfiguration} from './config/express.config';
 import * as passportConfig from './config/passport.config';
 import * as utilsController from './controllers/utils.controller';
 import {GenericReimbursement } from './models/orders/';
+import * as ordersController from './controllers/orders.controller';
 
 const PORT = process.env.PORT || 7001;
 
@@ -43,9 +44,12 @@ app.get('/newPlace', (req, res) => {
 app.get('/orders/request', (req, res) => {
   res.render('bom/makeOrder', {
     type: 'Request',
-    user: req.user
+    user: req.user,
+    teamList: "testTeam"
   });
-})
+});
+
+app.post('/orders/request', ordersController.postNewRequest);
 
 app.get('/test', (req, res) => {
 let testOrder = new GenericReimbursement({

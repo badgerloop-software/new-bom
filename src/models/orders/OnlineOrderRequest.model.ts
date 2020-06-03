@@ -5,8 +5,8 @@ const bomDB = createConnection(mongoConfig.BOM_URL);
 
 
 export const OnlineOrderRequestBlueprint = {
-    type: {type: String, default: "OnlineOrderRequest"},
     ...GenericOrderRequestBlueprint,
+    type: {type: String, default: "OnlineOrderRequest"},
     shipping: {type: Number},
     trackingNum: {type: String},
     link: {type: String}

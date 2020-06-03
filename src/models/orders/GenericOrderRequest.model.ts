@@ -7,7 +7,7 @@ const bomDB = createConnection(mongoConfig.BOM_URL);
 export const GenericOrderRequestBlueprint = {
     type: {type: String, default: "GenericOrderRequest"},
     ...BaseOrderBlueprint,
-    tax: {type: Number},
+    tax: {type: Number, required: true},
     isOrdered: {type: Boolean, default: false},
     orderedBy: {type: String},
     dateOrdered: {type: Date},

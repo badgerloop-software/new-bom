@@ -1,7 +1,8 @@
-import {Order} from '../models/orders';
+import {OnlineOrderRequest, Order, Item} from '../models/orders';
 import Budget from '../models/Budget.model';
 import OrderMessage from '../models/OrderMessage.model';
 import {SlackService} from '../services/SlackService';
+import {Request, Response} from 'express'
 
 const URL = process.env.LOCAL_URL;
 const fscLead = "UG46HDHS7";
@@ -89,6 +90,57 @@ export const postMakeOrder = (req, res, next) => {
       msg: 'Order Submitted'
     })
     return res.redirect('/');
+  });
+}
+
+export const postNewRequest = async (req: Request, res: Response) => {
+  const SuccessResponse = () => {
+    req.flash('success', `Request created!`);
+    res.redirect('/orders/view');
+  }
+  const FailureResponse = (errMsg: string) => {
+    req.flash(`errors`, `Error creating your request! Give er another shot!`);
+    req.flash('errors', errMsg)
+    res.redirect('back');
+  }
+  let creationStatus: boolean = true; // Innocent until proven guilty
+  if (req.body.numItems < 1) {
+    req.flash('errors', 'Number of items can not be less than 1');
+    res.redirect('back');
+  }
+  if (req.body.numItems == 1) {
+    createOrderRequest(req.body, SuccessResponse, FailureResponse);
+  } 
+  if (req.body.numItems > 1) {
+    //TODO create batch
+  }
+}
+
+ async function createOrderRequest(formBody: any, successResponse: () => void, failureResponse: (errMsg: string) => void): Promise<void>{
+  console.log(formBody)
+  let requestedItem = new Item(formBody.item1Name, formBody.item1ProductNum, formBody.item1Price, formBody.item1Quantity, formBody.item1Project);
+  let totalCost = (requestedItem.cost * requestedItem.quantity) + Number(formBody.shipping) + Number(formBody.tax);
+  let orderTitle = requestedItem.name;
+  let newRequest = new OnlineOrderRequest({
+    requestor: formBody.requestor,
+    subteam: formBody.subteam,
+    supplier: formBody.supplier,
+    tax: formBody.tax,
+    needDate: formBody.date,
+    item: requestedItem,
+    shipping: formBody.shipping,
+    link: formBody.link,
+    totalCost: totalCost,
+    title: orderTitle
+  });
+
+  return await newRequest.save((err: Error) => {
+    if (err) {
+      console.log('[Error] ' + err.message);
+      failureResponse(err.message);
+    } else {
+      successResponse()
+    }
   });
 }
 

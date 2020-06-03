@@ -19,7 +19,9 @@ export const BaseOrderBlueprint = {
         type: Schema.Types.ObjectID,
         ref: "SlackMessage",
 
-    }
+    },
+    totalCost: {type: Number, required: [true, 'Must calculate and save totcal cost!']},
+    title: {type: String, required: [true, 'Must create a title!']}
 }
 
 const BaseOrderSchema = new Schema(BaseOrderBlueprint);
