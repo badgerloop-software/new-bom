@@ -13,7 +13,19 @@ export class Item {
         this.quantity = quantity;
     }
 
-    public getTotalCost(): Number {
+    public getTotalCost() {
         return (this.cost * this.quantity);
     }
+
+    public static calculateTotalCostOfItems(items: Item[]): number {
+        let sum: number = 0;
+        items.forEach((item) => sum += (item.cost * item.quantity));
+        return sum;
+    }
+
+    public static getListOfNames(items: Item[]): string[] {
+        let list: string[] = [];
+        items.forEach((item) => list.push(item.name));
+        return list
+    } 
 }

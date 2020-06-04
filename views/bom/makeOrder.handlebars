@@ -85,7 +85,7 @@
   </p>
   <br><br>
   {{!-- Supplemental Data to be posted but not for user input --}}
-  <input type="number" style="display: none;" name="numItems" value="1">
+  <input type="number" style="display: none;" id="numItems" name="numItems" value="1">
   <input type="text" style="display: none;" name="type" value="{{type}}">
   {{!-- End Supplemental Post Data --}}
   <p>
@@ -95,7 +95,7 @@
 
 <script>
   function addItem() {
-    let template = document.querySelector('#item' + getNumItems());
+    let template = document.querySelector('#item1');
     let buttons = document.querySelector("#editButtons");
     let clone = template.cloneNode(true);
     incrementNumItems()
@@ -131,7 +131,7 @@
     let children = elem.children
     for(let i=0; i< children.length; i++) {
       let old = String(children[i].innerHTML);
-      let newContent = old.replace("item" + String(number-1), "item"+number);
+      let newContent = old.replaceAll("item" + String(number-1), "item"+number);
       children[i].innerHTML = newContent
     }
   }

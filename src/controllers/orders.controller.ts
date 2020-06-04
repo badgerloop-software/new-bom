@@ -1,8 +1,9 @@
-import {OnlineOrderRequest, Order, Item} from '../models/orders';
+import {OnlineOrderRequest, Order, Item, OnlineBatchRequest} from '../models/orders';
 import Budget from '../models/Budget.model';
 import OrderMessage from '../models/OrderMessage.model';
 import {SlackService} from '../services/SlackService';
 import {Request, Response} from 'express'
+import { createBrotliDecompress } from 'zlib';
 
 const URL = process.env.LOCAL_URL;
 const fscLead = "UG46HDHS7";
@@ -94,16 +95,15 @@ export const postMakeOrder = (req, res, next) => {
 }
 
 export const postNewRequest = async (req: Request, res: Response) => {
-  const SuccessResponse = () => {
+  const SuccessResponse = () => { // What will happen on sucessful post
     req.flash('success', `Request created!`);
     res.redirect('/orders/view');
   }
-  const FailureResponse = (errMsg: string) => {
-    req.flash(`errors`, `Error creating your request! Give er another shot!`);
+  const FailureResponse = (errMsg: string) => { // What will happen on failed post
+    req.flash(`errors`, `Error creating your request!`);
     req.flash('errors', errMsg)
     res.redirect('back');
   }
-  let creationStatus: boolean = true; // Innocent until proven guilty
   if (req.body.numItems < 1) {
     req.flash('errors', 'Number of items can not be less than 1');
     res.redirect('back');
@@ -112,15 +112,14 @@ export const postNewRequest = async (req: Request, res: Response) => {
     createOrderRequest(req.body, SuccessResponse, FailureResponse);
   } 
   if (req.body.numItems > 1) {
-    //TODO create batch
+    createBatchRequest(req.body, SuccessResponse, FailureResponse);
   }
 }
 
- async function createOrderRequest(formBody: any, successResponse: () => void, failureResponse: (errMsg: string) => void): Promise<void>{
-  console.log(formBody)
-  let requestedItem = new Item(formBody.item1Name, formBody.item1ProductNum, formBody.item1Price, formBody.item1Quantity, formBody.item1Project);
-  let totalCost = (requestedItem.cost * requestedItem.quantity) + Number(formBody.shipping) + Number(formBody.tax);
-  let orderTitle = requestedItem.name;
+function createOrderRequest(formBody: any, successResponse: () => void, failureResponse: (errMsg: string) => void): void{
+  let requestedItem: Item = new Item(formBody.item1Name, formBody.item1ProductNum, formBody.item1Price, formBody.item1Quantity, formBody.item1Project);
+  let totalCost: number = requestedItem.getTotalCost() + Number(formBody.shipping) + Number(formBody.tax);
+  let orderTitle: string = requestedItem.name;
   let newRequest = new OnlineOrderRequest({
     requestor: formBody.requestor,
     subteam: formBody.subteam,
@@ -134,7 +133,7 @@ export const postNewRequest = async (req: Request, res: Response) => {
     title: orderTitle
   });
 
-  return await newRequest.save((err: Error) => {
+    newRequest.save((err: Error) => {
     if (err) {
       console.log('[Error] ' + err.message);
       failureResponse(err.message);
@@ -144,6 +143,47 @@ export const postNewRequest = async (req: Request, res: Response) => {
   });
 }
 
+function createBatchRequest(formBody: any, successResponse: () => void, failureResponse: (errMsg: string) => void): void {
+  let itemsList: Item[] = createItemsList(formBody, formBody.numItems);
+  let totalCost = Item.calculateTotalCostOfItems(itemsList) + Number(formBody.shipping) + Number(formBody.tax);
+  let orderTitle = Item.getListOfNames(itemsList).join(', ');
+  let newBatchRequest = new OnlineBatchRequest({
+    requestor: formBody.requestor,
+    subteam: formBody.subteam,
+    supplier: formBody.supplier,
+    tax: formBody.tax,
+    needDate: formBody.date,
+    items: itemsList,
+    shipping: formBody.shipping,
+    link: formBody.link,
+    totalCost: totalCost,
+    title: orderTitle
+  });
+
+  newBatchRequest.save((err: Error) => {
+    if (err) {
+      console.log('[Error] ' + err.message);
+      failureResponse(err.message);
+    } else {
+      successResponse();
+    }
+  })
+
+}
+
+function createItemsList(formBody: any, numItems: number): Item[] {
+  let items: Item[] = [];
+  for(let i:number = 1; i <= numItems; i++) {
+    let name: string = formBody[`item${i}Name`];
+    let productNum: string = formBody[`item${i}ProductNum`];
+    let price: number = Number(formBody[`item${i}Price`]);
+    let quantity: number = Number(formBody[`item${i}Quantity`]);
+    let project: string = formBody[`item${i}Project`];
+    let newItem = new Item(name, productNum, price, quantity, project);
+    items.push(newItem);
+  }
+  return items;
+}
 
 
 export const getViewOrders = async (req, res) => {

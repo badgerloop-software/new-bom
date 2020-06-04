@@ -7,10 +7,7 @@ export const BaseBatchBlueprint = {
     items: Schema.Types.Mixed // These will be instances of Item
 }
 
-const BaseBatchSchema = new Schema({
-
-},
-{
+const BaseBatchSchema = new Schema(BaseBatchBlueprint, {
     discriminatorKey: "kind"
 });
 
