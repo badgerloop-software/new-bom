@@ -47,7 +47,8 @@ app.get('/orders/request', (req, res) => {
     isRequest: true,
     isReimbursement: false,
     user: req.user,
-    teamList: "testTeam"
+    teamList: "testTeam",
+    post: "/orders/request"
   });
 });
 
@@ -57,11 +58,13 @@ app.get('/orders/reimbursement', (req, res) => {
     isRequest: false,
     isReimbursement: true,
     user: req.user,
-    teamList: "testTeam"
+    teamList: "testTeam",
+    post: "/orders/reimbursement"
   })
 })
 
 app.post('/orders/request', ordersController.postNewRequest);
+app.post('/orders/reimbursement', ordersController.postNewReimbursement);
 
 app.get('/test', (req, res) => {
 let testOrder = new GenericReimbursement({

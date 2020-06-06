@@ -1,6 +1,6 @@
 <h1>Make {{type}}</h1>
 <br><br>
-<form id="makeForm" action="/orders/request" method="POST">
+<form id="makeForm" action="{{post}}" method="POST">
   <h3>{{type}} Details</h3>
   <div id="orderDetails">
     <p>
@@ -19,7 +19,7 @@
     </p>
   </div>
   <hr />
-  <h3>Items</h3>
+  <h3 id="itemsTitle">Items</h3>
   <div id="orderItems">
     {{#if isReimbursement}}
     <div id="reimbursementButtons">
@@ -132,6 +132,8 @@
 </form>
 
 <script>
+  let reimbursementDetailsTemplate = document.querySelector('#reimbursementDetails').cloneNode(true); // Ew Global Vars but :shrug:
+  let itemDetailsTemplate = document.querySelector('#item1').cloneNode(true);
   function addItem() {
     let template = document.querySelector('#item' + getNumItems());
     let buttons = document.querySelector("#editButtons");
@@ -169,195 +171,225 @@
     let children = elem.children
     for (let i = 0; i < children.length; i++) {
       let old = String(children[i].innerHTML);
-      let newContent = old.replaceAll("item" + String(number - 1), "item" + number);
+      let re = new RegExp('item' + String(number - 1), "g"); // Must use regex to replace all instances
+      let newContent = old.replace(re, "item" + number);
       children[i].innerHTML = newContent
     }
   }
-{{#if isReimbursement}}
+
+  {{#if isReimbursement}}
   function setupGeneric() {
-    hideButtons()
-    let reimbursementDetails = document.querySelector('#reimbursementDetails');
+    hideButtons();
+    document.querySelector('#itemsTitle').innerText = 'Cost'
+    let reimbursementDetails = reimbursementDetailsTemplate.cloneNode(true);
+    document.querySelector('#orderItems').appendChild(reimbursementDetails);
     reimbursementDetails.style.display = 'grid';
-    let taxBox = document.querySelector('#tax');
-    taxBox.readOnly = true;
-    taxBox.setAttribute('value', '0');
+    disableTaxBox()
+    document.querySelector('#numItems').value = 0;
   }
 
   function showOptions() {
     showButtons();
+    document.querySelector('#itemsTitle').innerText = 'Select Reimbursement Type'
     let reimbursementDetails = document.querySelector('#reimbursementDetails');
-    reimbursementDetails.style.display = 'none';
     let itemBox = document.querySelector('#item1');
-    itemBox.style.display = 'none'
-    let taxBox = document.querySelector('#tax');
-    taxBox.readOnly = false
-    taxBox.setAttribute('value', '');
+    if (reimbursementDetails) { // If there are generic details
+      reimbursementDetailsTemplate = reimbursementDetails.cloneNode(true);
+      reimbursementDetails.parentNode.removeChild(reimbursementDetails);
+    }
+    if (itemBox) { //If there are item details
+      if (getNumItems() > 0) {
+        while (getNumItems() > 1) {
+          removeItem();
+        }
+
+        itemDetailsTemplate = itemBox.cloneNode(true)
+        itemBox.parentNode.removeChild(itemBox);
+      }
+
+    }
   }
 
-  function showButtons() {
-    let buttons = document.querySelector('#reimbursementButtons');
-    buttons.style.display = 'block';
-  }
+    function enableTaxBox() {
+      let taxBox = document.querySelector('#tax');
+      taxBox.readOnly = false
+      taxBox.setAttribute('type', 'number');
+      taxBox.setAttribute('value', ' ');
+    }
 
-  function hideButtons() {
-    let buttons = document.querySelector('#reimbursementButtons');
-    buttons.style.display = 'none';
-  }
+    function disableTaxBox() {
+      let taxBox = document.querySelector('#tax');
+      taxBox.setAttribute('type', 'text');
+      taxBox.setAttribute('value', 'N/A');
+      taxBox.readOnly = true
+    }
 
-  function setupItemized() {
-    hideButtons()
-    let item1 = document.querySelector('#item1');
-    item1.style.display = 'grid';
-  }
-  {{/if}}
+    function showButtons() {
+      let buttons = document.querySelector('#reimbursementButtons');
+      buttons.style.display = 'block';
+    }
+
+    function hideButtons() {
+      let buttons = document.querySelector('#reimbursementButtons');
+      buttons.style.display = 'none';
+    }
+
+    function setupItemized() {
+      document.querySelector('#itemsTitle').innerText = 'Items'
+      hideButtons()
+      let itemDetails = itemDetailsTemplate.cloneNode(true);
+      document.querySelector('#orderItems').appendChild(itemDetails);
+      itemDetails.style.display = 'grid';
+
+      document.querySelector('#numItems').value = 1
+      enableTaxBox();
+    }
+
+    // Init showing options
+    showOptions()
+    {{/if}}
 </script>
 <script>
-  const DROPDOWN = document.getElementById('subteamDropdown');
-  const TEAMS_LIST_STRING = "{{teamList}}";
-  const TEAMS_LIST = TEAMS_LIST_STRING.split(',');
-  TEAMS_LIST.forEach((team) => {
-    let option = document.createElement('option');
-    option.id = String(team);
-    option.name = String(team);
-    option.innerHTML = String(team);
-    DROPDOWN.appendChild(option);
-  });
+        const DROPDOWN = document.getElementById('subteamDropdown');
+        const TEAMS_LIST_STRING = "{{teamList}}";
+        const TEAMS_LIST = TEAMS_LIST_STRING.split(',');
+        TEAMS_LIST.forEach((team) => {
+          let option = document.createElement('option');
+          option.id = String(team);
+          option.name = String(team);
+          option.innerHTML = String(team);
+          DROPDOWN.appendChild(option);
+        });
 </script>
-
-{{#if isReimbursement}}
-<script>
-  document.querySelector('#item1').style.display = 'none';
-</script>
-{{/if}}
 
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
 <script type="text/javascript">
-  function Upload() {
-    //Reference the FileUpload element.
-    var fileUpload = document.getElementById("fileInput");
+        function Upload() {
+          //Reference the FileUpload element.
+          var fileUpload = document.getElementById("fileInput");
 
-    //Validate whether File is valid Excel file.
-    var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.xls|.xlsx)$/;
-    if (regex.test(fileUpload.value.toLowerCase())) {
-      if (typeof (FileReader) != "undefined") {
-        var reader = new FileReader();
+          //Validate whether File is valid Excel file.
+          var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.xls|.xlsx)$/;
+          if (regex.test(fileUpload.value.toLowerCase())) {
+            if (typeof (FileReader) != "undefined") {
+              var reader = new FileReader();
 
-        //For Browsers other than IE.
-        if (reader.readAsBinaryString) {
-          reader.onload = function (e) {
-            ProcessExcel(e.target.result);
-          };
-          reader.readAsBinaryString(fileUpload.files[0]);
-        } else {
-          //For IE Browser.
-          reader.onload = function (e) {
-            var data = "";
-            var bytes = new Uint8Array(e.target.result);
-            for (var i = 0; i < bytes.byteLength; i++) {
-              data += String.fromCharCode(bytes[i]);
+              //For Browsers other than IE.
+              if (reader.readAsBinaryString) {
+                reader.onload = function (e) {
+                  ProcessExcel(e.target.result);
+                };
+                reader.readAsBinaryString(fileUpload.files[0]);
+              } else {
+                //For IE Browser.
+                reader.onload = function (e) {
+                  var data = "";
+                  var bytes = new Uint8Array(e.target.result);
+                  for (var i = 0; i < bytes.byteLength; i++) {
+                    data += String.fromCharCode(bytes[i]);
+                  }
+                  ProcessExcel(data);
+                };
+                reader.readAsArrayBuffer(fileUpload.files[0]);
+              }
+            } else {
+              alert("This browser does not support HTML5.");
             }
-            ProcessExcel(data);
-          };
-          reader.readAsArrayBuffer(fileUpload.files[0]);
-        }
-      } else {
-        alert("This browser does not support HTML5.");
-      }
-    } else {
-      alert("Please upload a valid Excel file.");
-    }
-  };
-  function ProcessExcel(data) {
-    console.log('processing')
-    //Read the Excel File data.
-    var workbook = XLSX.read(data, {
-      type: 'binary'
-    });
+          } else {
+            alert("Please upload a valid Excel file.");
+          }
+        };
+        function ProcessExcel(data) {
+          console.log('processing')
+          //Read the Excel File data.
+          var workbook = XLSX.read(data, {
+            type: 'binary'
+          });
 
-    console.log(workbook);
-    let sheet = workbook.SheetNames[0];
-    let rows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheet]);
-    console.log(rows);
-    const NUM_ROWS = rows.length
+          console.log(workbook);
+          let sheet = workbook.SheetNames[0];
+          let rows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheet]);
+          console.log(rows);
+          const NUM_ROWS = rows.length
 
-    function getListOfPartNames() {
-      let output = []; // Empty part list
-      for (let i = 0; i < NUM_ROWS; i++) {
-        output[i] = rows[i].Description;
-      }
-      return output.toString();
-    }
+          function getListOfPartNames() {
+            let output = []; // Empty part list
+            for (let i = 0; i < NUM_ROWS; i++) {
+              output[i] = rows[i].Description;
+            }
+            return output.toString();
+          }
 
-    function getListOfProductNums() {
-      let output = [];
-      for (let i = 0; i < NUM_ROWS; i++) {
-        output[i] = rows[i]["Manufacturer Part Number"];
-      }
-      return output.toString();
-    }
+          function getListOfProductNums() {
+            let output = [];
+            for (let i = 0; i < NUM_ROWS; i++) {
+              output[i] = rows[i]["Manufacturer Part Number"];
+            }
+            return output.toString();
+          }
 
-    function getListOfQuantities() {
-      let output = [];
-      for (let i = 0; i < NUM_ROWS; i++) {
-        output[i] = rows[i].Quantity;
-      }
-      return output.toString();
-    }
+          function getListOfQuantities() {
+            let output = [];
+            for (let i = 0; i < NUM_ROWS; i++) {
+              output[i] = rows[i].Quantity;
+            }
+            return output.toString();
+          }
 
-    function getRowCost(rowIndex) {
-      let price = Number(rows[rowIndex]["Unit Price"]);
-      let quantity = Number(rows[rowIndex].Quantity);
-      console.log(`${price} * ${quantity}`)
-      return price * quantity;
-    }
+          function getRowCost(rowIndex) {
+            let price = Number(rows[rowIndex]["Unit Price"]);
+            let quantity = Number(rows[rowIndex].Quantity);
+            console.log(`${price} * ${quantity}`)
+            return price * quantity;
+          }
 
-    function getListOfCosts() {
-      let output = [];
-      for (let i = 0; i < NUM_ROWS; i++) {
-        output[i] = rows[i]["Unit Price"];
-      }
-      return output.toString();
-    }
+          function getListOfCosts() {
+            let output = [];
+            for (let i = 0; i < NUM_ROWS; i++) {
+              output[i] = rows[i]["Unit Price"];
+            }
+            return output.toString();
+          }
 
-    function getTotalCost() {
-      let output = 0;
-      for (let i = 0; i < NUM_ROWS; i++) {
-        output += getRowCost(i);
-        console.log(output)
-      }
-      return output.toString();
-    }
+          function getTotalCost() {
+            let output = 0;
+            for (let i = 0; i < NUM_ROWS; i++) {
+              output += getRowCost(i);
+              console.log(output)
+            }
+            return output.toString();
+          }
 
-    function getListOfManPartNums() {
-      let output = [];
-      for (let i = 0; i < NUM_ROWS; i++) {
-        output[i] = rows[i]["Manufacturer Part Number"];
-      }
-      return output.toString();
-    }
+          function getListOfManPartNums() {
+            let output = [];
+            for (let i = 0; i < NUM_ROWS; i++) {
+              output[i] = rows[i]["Manufacturer Part Number"];
+            }
+            return output.toString();
+          }
 
-    function fillComments() {
-      let output = "";
-      output += "Manufacturer Part Numbers: ";
-      output += getListOfManPartNums();
-      output += '\n';
+          function fillComments() {
+            let output = "";
+            output += "Manufacturer Part Numbers: ";
+            output += getListOfManPartNums();
+            output += '\n';
 
-      return output.toString();
-    }
-    console.log(getListOfPartNames());
-    document.getElementById('item').value = `${getListOfPartNames()}`;
-    document.getElementById('productNum').value = getListOfProductNums();
-    document.getElementById('quantity').setAttribute('type', 'text');
-    document.getElementById('quantity').value = getListOfQuantities();
-    document.getElementById('cost').setAttribute('type', 'text');
-    document.getElementById('cost').value = getListOfCosts();
-    document.getElementById('supplier').value = "Digikey";
-    document.getElementById('comments').value = fillComments();
-    let isDigikeyOrder = document.createElement('input');
-    isDigikeyOrder.name = 'isDigikeyOrder';
-    isDigikeyOrder.style.display = 'none';
-    isDigikeyOrder.value = getTotalCost();
-    document.getElementById('makeForm').appendChild(isDigikeyOrder);
-  };
+            return output.toString();
+          }
+          console.log(getListOfPartNames());
+          document.getElementById('item').value = `${getListOfPartNames()}`;
+          document.getElementById('productNum').value = getListOfProductNums();
+          document.getElementById('quantity').setAttribute('type', 'text');
+          document.getElementById('quantity').value = getListOfQuantities();
+          document.getElementById('cost').setAttribute('type', 'text');
+          document.getElementById('cost').value = getListOfCosts();
+          document.getElementById('supplier').value = "Digikey";
+          document.getElementById('comments').value = fillComments();
+          let isDigikeyOrder = document.createElement('input');
+          isDigikeyOrder.name = 'isDigikeyOrder';
+          isDigikeyOrder.style.display = 'none';
+          isDigikeyOrder.value = getTotalCost();
+          document.getElementById('makeForm').appendChild(isDigikeyOrder);
+        };
 </script>

@@ -1,4 +1,4 @@
-import {OnlineOrderRequest, Order, Item, OnlineBatchRequest} from '../models/orders';
+import {OnlineOrderRequest, Order, Item, OnlineBatchRequest, GenericReimbursement, OrderReimbursement, BatchReimbursement} from '../models/orders';
 import Budget from '../models/Budget.model';
 import OrderMessage from '../models/OrderMessage.model';
 import {SlackService} from '../services/SlackService';
@@ -94,26 +94,100 @@ export const postMakeOrder = (req, res, next) => {
   });
 }
 
-export const postNewRequest = async (req: Request, res: Response) => {
+export const postNewReimbursement = (req: Request, res: Response) => {
   const SuccessResponse = () => { // What will happen on sucessful post
-    req.flash('success', `Request created!`);
+    req.flash('success', `Reimbursement Submitted!`);
     res.redirect('/orders/view');
   }
   const FailureResponse = (errMsg: string) => { // What will happen on failed post
-    req.flash(`errors`, `Error creating your request!`);
+    req.flash(`errors`, `Error creating your reimbursement request!`);
     req.flash('errors', errMsg)
     res.redirect('back');
   }
-  if (req.body.numItems < 1) {
-    req.flash('errors', 'Number of items can not be less than 1');
-    res.redirect('back');
+  if (req.body.numItems < 0) {
+    req.flash('errors', 'Number of items can not be less than 0');
+    return res.redirect('back');
+  }
+  if (req.body.numItems == 0) { // Process Generic Reimbursement
+    return createGenericReimbursement(req.body, SuccessResponse, FailureResponse);
   }
   if (req.body.numItems == 1) {
-    createOrderRequest(req.body, SuccessResponse, FailureResponse);
-  } 
-  if (req.body.numItems > 1) {
-    createBatchRequest(req.body, SuccessResponse, FailureResponse);
+    return createOrderReimbursement(req.body, SuccessResponse, FailureResponse);
   }
+  if (req.body.numItems > 1) {
+    return createBatchReimbursement(req.body, SuccessResponse, FailureResponse);
+  }
+}
+
+function createBatchReimbursement(formBody: any, successResponse: () => void, failureResponse: (msg: string) => void): void {
+  let itemsList: Item[] = createItemsList(formBody, formBody.numItems);
+  let totalCost = Item.calculateTotalCostOfItems(itemsList) + Number(formBody.tax);
+  let orderTitle = Item.getListOfNames(itemsList).join(', ');
+  let newBatchRequest = new BatchReimbursement({
+    requestor: formBody.requestor,
+    subteam: formBody.subteam,
+    supplier: formBody.supplier,
+    tax: formBody.tax,
+    needDate: formBody.date,
+    items: itemsList,
+    shipping: formBody.shipping,
+    link: formBody.link,
+    totalCost: totalCost,
+    title: orderTitle,
+    comments: formBody.comments
+  });
+
+  newBatchRequest.save((err: Error) => {
+    if (err) {
+      console.log('[Error] ' + err.message);
+      failureResponse(err.message);
+    } else {
+      successResponse();
+    }
+  });
+
+}
+
+function createGenericReimbursement(formBody: any, successResponse: () => void, failureResponse: (msg: string) => void): any {
+  let newReimbursement = new GenericReimbursement({
+    requestor: formBody.requestor,
+    title: formBody.title,
+    subteam: formBody.subteam,
+    supplier: formBody.supplier,
+    totalCost: formBody.totalCost,
+    project: formBody.project
+  });
+
+  newReimbursement.save((err: Error) => {
+    if (err) {
+      console.log('[Error] ' + err.message);
+      return failureResponse(err.message);
+    }
+    successResponse();
+  });
+}
+
+function createOrderReimbursement(formBody: any, successResponse: () => void, failureResponse: (msg: string) => void): void {
+  let newItem: Item = new Item(formBody.item1Name, formBody.item1ProductNum, formBody.item1Price, formBody.item1Quantity, formBody.item1Project);
+  let totalCost: number = newItem.getTotalCost() + Number(formBody.tax);
+  let newReimbursement = new OrderReimbursement({
+    requestor: formBody.requestor,
+    subteam: formBody.subteam,
+    supplier: formBody.supplier,
+    tax: formBody.tax,
+    item: newItem,
+    totalCost: totalCost,
+    title: newItem.name,
+    comments: formBody.comments
+  });
+
+  newReimbursement.save((err: Error) => {
+    if (err) {
+      console.log('[Error] ' + err.message);
+      return failureResponse(err.message);
+    }
+    successResponse()
+  })
 }
 
 function createOrderRequest(formBody: any, successResponse: () => void, failureResponse: (errMsg: string) => void): void{
@@ -130,7 +204,8 @@ function createOrderRequest(formBody: any, successResponse: () => void, failureR
     shipping: formBody.shipping,
     link: formBody.link,
     totalCost: totalCost,
-    title: orderTitle
+    title: orderTitle,
+    comments: formBody.comments
   });
 
     newRequest.save((err: Error) => {
@@ -157,7 +232,8 @@ function createBatchRequest(formBody: any, successResponse: () => void, failureR
     shipping: formBody.shipping,
     link: formBody.link,
     totalCost: totalCost,
-    title: orderTitle
+    title: orderTitle,
+    comments: formBody.comments
   });
 
   newBatchRequest.save((err: Error) => {
@@ -167,9 +243,31 @@ function createBatchRequest(formBody: any, successResponse: () => void, failureR
     } else {
       successResponse();
     }
-  })
-
+  });
 }
+
+export const postNewRequest = (req: Request, res: Response) => {
+  const SuccessResponse = () => { // What will happen on sucessful post
+    req.flash('success', `Request created!`);
+    res.redirect('/orders/view');
+  }
+  const FailureResponse = (errMsg: string) => { // What will happen on failed post
+    req.flash(`errors`, `Error creating your request!`);
+    req.flash('errors', errMsg)
+    res.redirect('back');
+  }
+  if (req.body.numItems < 1) {
+    req.flash('errors', 'Number of items can not be less than 1');
+    res.redirect('back');
+  }
+  if (req.body.numItems == 1) {
+    createOrderRequest(req.body, SuccessResponse, FailureResponse);
+  } 
+  if (req.body.numItems > 1) {
+    createBatchRequest(req.body, SuccessResponse, FailureResponse);
+  }
+}
+
 
 function createItemsList(formBody: any, numItems: number): Item[] {
   let items: Item[] = [];

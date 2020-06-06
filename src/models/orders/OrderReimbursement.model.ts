@@ -8,6 +8,7 @@ export const OrderReimbursementBlueprint = {
     ...BaseOrderBlueprint,
     type: {type: String, default: "ItemReimbursement"},
     item: Schema.Types.Mixed,
+    tax: {type: Number},
     isReimbursed: { type: Boolean, default: false },
     reimbursedBy: { type: String },
     dateReimbursed: { type: Date },

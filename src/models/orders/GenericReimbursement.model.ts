@@ -9,6 +9,7 @@ export const GenericReimbursementBlueprint = {
     isReimbursed: { type: Boolean, default: false },
     reimbursedBy: { type: String },
     dateReimbursed: { type: Date },
+    project: {type: String}
 };
 
 const GenericReimbursementSchema = new Schema(GenericReimbursementBlueprint);

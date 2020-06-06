@@ -4,8 +4,8 @@ import * as mongoConfig from '../../config/mongo.config';
 const bomDB = createConnection(mongoConfig.BOM_URL);
 
 export const BatchReimbursementBlueprint = {
-        type: {type: String, default: "BatchReimbursement"},
         ...BaseBatchBlueprint,
+        type: {type: String, default: "BatchReimbursement"},
         isReimbursed: {type: Boolean, default: false},
         reimbursedBy: {type: String},
         dateReimbursed: {type: Date}
