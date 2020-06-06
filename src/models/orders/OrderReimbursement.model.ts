@@ -3,14 +3,16 @@ import { BaseOrderBlueprint } from './BaseOrder.model';
 import * as mongoConfig from '../../config/mongo.config';
 const bomDB = createConnection(mongoConfig.BOM_URL);
 
-export const GenericReimbursementBlueprint = {
+
+export const OrderReimbursementBlueprint = {
     ...BaseOrderBlueprint,
-    type: {type: String, default: "SingleReimbursement"},
+    type: {type: String, default: "ItemReimbursement"},
+    item: Schema.Types.Mixed,
     isReimbursed: { type: Boolean, default: false },
     reimbursedBy: { type: String },
     dateReimbursed: { type: Date },
 };
 
-const GenericReimbursementSchema = new Schema(GenericReimbursementBlueprint);
+const OrderReimbursementSchema = new Schema(OrderReimbursementBlueprint);
 
-export const GenericReimbursement = bomDB.model('Order', GenericReimbursementSchema);
+export const OrderReimbursement = bomDB.model('Order', OrderReimbursementSchema);

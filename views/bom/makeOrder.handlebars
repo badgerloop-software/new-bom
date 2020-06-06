@@ -21,6 +21,24 @@
   <hr />
   <h3>Items</h3>
   <div id="orderItems">
+    {{#if isReimbursement}}
+    <div id="reimbursementButtons">
+      <button type="button" onclick="setupGeneric()" class="btn btn-sm btn-primary">Generic Reimbursement</button>
+      <button type="button" onclick="setupItemized()" class="btn btn-sm btn-primary">Itemized Reimbursement</button>
+    </div>
+
+    <div id="reimbursementDetails">
+      <p>
+        <label>Reimbursement Title</label>
+        <input class="form-control" name="title" type="text" required>
+      </p>
+      <p>
+        <label for="">Total Cost</label>
+        <input class="form-control" name="totalCost" type="number" min="0" step="0.01" required>
+      </p>
+      <button type="button" onclick="showOptions()" class="btn btn-sm btn-danger">Undo</button>
+    </div>
+    {{/if}}
     <div id="item1" class="ItemDetails">
       <p>
         <label>Item Name</label>
@@ -45,32 +63,52 @@
       <p id="editButtons">
         <span id="addButton" type="button" onclick="addItem()" class="SquareButton btn-success">+</span>
         <span id="remButton" type="button" onclick="removeItem()" class="SquareButton btn-danger">-</span>
+        {{#if isReimbursement}}
+        <span id="undoButton" onClick="showOptions()" class="SquareButton btn-warning">Undo</span>
+        {{/if}}
       </p>
     </div>
   </div>
   <hr />
   <h3>Finalize</h3>
   <div id="finalDetails">
+    {{#if isRequest}}
     <p>
       <label>Shipping</label>
-      <input class="form-control" type="number" step="0.01" min="0" name="shipping">
+      <input class="form-control" type="number" step="0.01" min="0" name="shipping" {{#if isReimbursement}} value="0"
+        readonly {{/if}}>
     </p>
+    {{/if}}
     <p>
       <label>Tax</label>
-      <input class="form-control" type="number" step="0.01" min="0" name="tax">
+      <input class="form-control" type="number" step="0.01" min="0" name="tax" id="tax">
     </p>
     <p>
       <label for="podCost">Counts toward pod cost?</label>
       <input type="checkbox" name="podCost">
     </p>
+    {{#if isRequest}}
     <p>
       <label for="link">Link to Purchase</label>
       <input class="form-control" type="text" name="link" id="link">
     </p>
+    {{/if}}
+    {{#if isReimbursement}}
+    <p>
+      <label>Project</label>
+      <input class="form-control" id="item1Project" name="item1Project" type="text">
+    </p>
+    <p>
+      <label for="link">Link to Invoice</label>
+      <input class="form-control" type="text" name="link" id="link">
+    </p>
+    {{/if}}
+    {{#if isRequest}}
     <p>
       <label for="date">Needed By:</label>
       <input class="form-control" type="date" name="date" id="date">
     </p>
+    {{/if}}
   </div>
   <p class="full-width">
     <label for="comments">Comments:</label>
@@ -95,7 +133,7 @@
 
 <script>
   function addItem() {
-    let template = document.querySelector('#item1');
+    let template = document.querySelector('#item' + getNumItems());
     let buttons = document.querySelector("#editButtons");
     let clone = template.cloneNode(true);
     incrementNumItems()
@@ -129,12 +167,49 @@
 
   function setBoxNames(elem, number) {
     let children = elem.children
-    for(let i=0; i< children.length; i++) {
+    for (let i = 0; i < children.length; i++) {
       let old = String(children[i].innerHTML);
-      let newContent = old.replaceAll("item" + String(number-1), "item"+number);
+      let newContent = old.replaceAll("item" + String(number - 1), "item" + number);
       children[i].innerHTML = newContent
     }
   }
+{{#if isReimbursement}}
+  function setupGeneric() {
+    hideButtons()
+    let reimbursementDetails = document.querySelector('#reimbursementDetails');
+    reimbursementDetails.style.display = 'grid';
+    let taxBox = document.querySelector('#tax');
+    taxBox.readOnly = true;
+    taxBox.setAttribute('value', '0');
+  }
+
+  function showOptions() {
+    showButtons();
+    let reimbursementDetails = document.querySelector('#reimbursementDetails');
+    reimbursementDetails.style.display = 'none';
+    let itemBox = document.querySelector('#item1');
+    itemBox.style.display = 'none'
+    let taxBox = document.querySelector('#tax');
+    taxBox.readOnly = false
+    taxBox.setAttribute('value', '');
+  }
+
+  function showButtons() {
+    let buttons = document.querySelector('#reimbursementButtons');
+    buttons.style.display = 'block';
+  }
+
+  function hideButtons() {
+    let buttons = document.querySelector('#reimbursementButtons');
+    buttons.style.display = 'none';
+  }
+
+  function setupItemized() {
+    hideButtons()
+    let item1 = document.querySelector('#item1');
+    item1.style.display = 'grid';
+  }
+  {{/if}}
 </script>
 <script>
   const DROPDOWN = document.getElementById('subteamDropdown');
@@ -148,6 +223,12 @@
     DROPDOWN.appendChild(option);
   });
 </script>
+
+{{#if isReimbursement}}
+<script>
+  document.querySelector('#item1').style.display = 'none';
+</script>
+{{/if}}
 
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>

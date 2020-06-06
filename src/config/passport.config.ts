@@ -25,7 +25,6 @@ passport.use(new SlackStrategy({
   skipUserProfile: false,
   scope: ['identity.basic', 'identity.avatar']
 }, (_accessToken, _refreshToken, profile, done) => {
-  console.log("Made it to the callback");
   Users.findOne({ "slackID": profile.id }).then((currentUser) => {
     let isTeamLead = false; // Innocent until proven guilty
     let options = {
@@ -62,7 +61,6 @@ export const isAuthenticated = (req, res, next) => {
     user.picture = profile.user.image_192;
     user.save((err) => {
       if (err) throw err;
-      console.log('Current User is' + user);
       return cb(null, user);
     });
   }

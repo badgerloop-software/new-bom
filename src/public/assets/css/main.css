@@ -77,13 +77,14 @@ button {
   grid-template-columns: 10vw 10vw 5vw 25vw 15vw;
   gap: 20px
 }
-/* #makeForm {
-  display: grid;
-  grid-template-columns: 25vw 25vw 25vw;
+
+#reimbursementDetails {
+  grid-template-columns: 20vw 20vw 15vw;
   grid-gap: 10px;
-  grid-column-gap: 40px;
   grid-auto-rows: .5fr;
-} */
+  display: none;
+}
+
 #makeForm label {
   display: block;
 }

@@ -44,10 +44,22 @@ app.get('/newPlace', (req, res) => {
 app.get('/orders/request', (req, res) => {
   res.render('bom/makeOrder', {
     type: 'Request',
+    isRequest: true,
+    isReimbursement: false,
     user: req.user,
     teamList: "testTeam"
   });
 });
+
+app.get('/orders/reimbursement', (req, res) => {
+  res.render('bom/makeOrder', {
+    type: 'Reimbursement',
+    isRequest: false,
+    isReimbursement: true,
+    user: req.user,
+    teamList: "testTeam"
+  })
+})
 
 app.post('/orders/request', ordersController.postNewRequest);
 

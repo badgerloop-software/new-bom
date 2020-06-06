@@ -7,12 +7,13 @@
 <div class="container-fluid mt-4">
   <div class="row justify-content-center">
 {{#each orders}}
-<script>
-  console.log({{this}});
-</script>
+
 <div class="col mb-3">
 <div class="card order-card">
-  <div class="card-header"><h3>{{this.title}}</h3></div>
+  <div class="card-header">
+    <h3>{{this.title}}</h3>
+    <h3><small>{{this.type}}</small></h3>
+  </div>
   <div class="card-body">
     <ul>
       <li><b>Requestor</b>: {{this.requestor}}</li>
