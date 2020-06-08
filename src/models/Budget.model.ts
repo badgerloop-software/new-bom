@@ -1,75 +1,69 @@
-import mongoose from 'mongoose';
+import { createConnection, Schema, Types, connection } from 'mongoose';
 import * as mongoConfig from '../config/mongo.config';
-const bomDB = mongoose.createConnection(mongoConfig.BOM_URL);
+import { runInNewContext } from 'vm';
+const bomDB = createConnection(mongoConfig.BOM_URL);
 
-const BudgetSchema = new mongoose.Schema({
-  currentLeft: [Number],
-  currentSpent: [Number],
-  setBudgets: [Number],
-  teamList: {type: [String], default: ['Analysis', 'Battery', 'Braking', 'Controls', 'Electrical Reliability', 'Electrical Hardware', 'Executitive', 'Operations', 'Powertrain', 'Propulsion', 'Software', 'Stability', 'Structural', 'ToolsAndWorkshop']},
-
+const BudgetSchema = new Schema({
+  name: {type: String, required: true},
+  allocatedBudget: {type: Number ,required: true},
+  orders: [Types.ObjectId]
 });
 
-BudgetSchema.methods.calculateTotal = function() {
-  let top = this;
-  this.total = 0;
-  let subteams = Object.keys(top.subteams);
-  subteams.forEach((team) => {
-    top.total += top.subteams[team];
-  });
-}
-
-BudgetSchema.methods.findTeamIndex = function(query) {
-  let budget = this;
-  for(let i = 0; i < budget.teamList.length; i++ ) {
-    if (query === budget.teamList[i]) {
-      return i;
-    }
-  }
-  return null;
-}
-
-BudgetSchema.methods.formatAllNumbers = function(fixed = 2) {
-  let budget = this;
-  for (let i = 0; i < budget.currentSpent.length; i++) {
-    budget.currentSpent[i] = Number(budget.currentSpent[i]).toFixed(fixed);
-  }
-}
-BudgetSchema.methods.findCurrentLeft = function(query = -1) {
-    if (query == -1) { // If no team specified
-        for(let i = 0; i < this.teamList.length; i++) {
-            this.currentLeft[i] = Number(this.setBudgets[i] - this.currentSpent[i]).toFixed(2);
-            return;
-        }
-    }else {
-        this.currentLeft[query] = Number(this.setBudgets[query] - this.currentSpent[query]).toFixed(2);
-        return this.currentLeft[query];
-    }
-}
-
-BudgetSchema.statics.getActiveBudget = function(): any {
-  return this.findOne({});
-}
-
-BudgetSchema.statics.hasActiveBudget = function(): boolean {
-  let budgets = this.find({});
-  return !(budgets === {});
-}
-
-BudgetSchema.virtual('totalSpent').get(function(): number {
+BudgetSchema.methods.getTotalSpent = function(): number {
   let totalSpent: number = 0;
-  for(let i: number = 0; i < this.teamList.length; i++) {
-    totalSpent += this.currentSpent[i];
-  }
+  this.orders.forEach((order) => totalSpent += order.totalCost);
   return totalSpent;
-});
-
-BudgetSchema.statics.createCurrentSpent = function(numTeams: number): number[] {
-  let currentSpent = [];
-  for (let i = 0; i < numTeams; i++) {
-    currentSpent[i] = 0;
-  }
-  return currentSpent;
 }
 
-export default bomDB.model('Budgets', BudgetSchema);
+BudgetSchema.methods.getAmountLeft = function(): number {
+  return this.allocatedBudget - this.getTotalSpent();
+}
+
+BudgetSchema.methods.addOrder = function(newID: Types.ObjectId): void {
+  this.orders.push(newID);
+}
+
+BudgetSchema.post('save', async function(doc, next) {
+  console.log('[INFO] Function post save is running');
+  BudgetList.findOne({}, (err, list) => {
+    if (err) {
+      console.log('[ERROR] Error finding Budget' + err.message);
+    }
+    console.log(list);
+    list.addTeam(doc._id);
+    next();
+  });
+});
+
+const BudgetListSchema = new Schema({
+  budgets: {type: [Types.ObjectId], default: []},
+  year: {type: Number}
+});
+
+BudgetListSchema.methods.calculateTotal = function(): number {
+  let sum: number = 0;
+  this.budgets.forEach((budget) => sum += budget.getTotalSpent());
+  return sum;
+}
+
+BudgetListSchema.methods.addTeam = function(newTeam: any): void {
+  this.budgets.push(newTeam);
+  this.save((err: Error) => {
+    if (err) {
+      console.log('[ERROR] ' + err.message);
+    }
+  })
+}
+
+BudgetListSchema.statics.getActiveBudget = async function(): Promise<any> {
+  let budget = await this.findOne({});
+  return budget;
+}
+
+BudgetListSchema.statics.hasActiveBudget = async function(): Promise<boolean> {
+  let count = await this.count({});
+  return !(count === 0);
+}
+
+export const Budget = bomDB.model('Budget', BudgetSchema);
+export const BudgetList = bomDB.model('BudgetList', BudgetListSchema);

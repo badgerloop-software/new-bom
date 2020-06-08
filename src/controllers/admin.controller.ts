@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import {Users, IUserSchema}  from '../models/User.model';
-import Budgets from '../models/Budget.model';
+import { Users, IUserSchema } from '../models/User.model';
+import { Budget, BudgetList } from '../models/Budget.model';
 import Orders from '../models/orders/OrderRequest.model';
 
 
@@ -11,21 +11,25 @@ export class AdminController {
     let numPendingOrders: number = pendingOrders.length;
     let users: IUserSchema[] = await Users.getAllUsers();
     let numUsers = users.length;
-    let budget = await Budgets.getActiveBudget();
-    budget.formatAllNumbers();
-    let budgetingTable = AdminController.setTable(budget);
-      let totalSpent: string = Number(budget.totalSpent).toFixed(2);
-      res.render('bom/adminDash', {
-        user: req.user,
-        users: users,
-        activeAdmin: true,
-        awaitingApproval: numPendingOrders,
-        numUsers: numUsers,
-        numOrders: numOrders,
-        totalDollars: totalSpent,
-        budget: budget,
-        table: budgetingTable
-      });
+    let budget = null;
+    let budgetingTable = null;
+    let totalSpent;
+    budget = await BudgetList.getActiveBudget();
+    if (budget) {
+      budgetingTable = AdminController.setTable(budget);
+      totalSpent = Number(budget.totalSpent).toFixed(2);
+    }
+    res.render('bom/adminDash', {
+      user: req.user,
+      users: users,
+      activeAdmin: true,
+      awaitingApproval: numPendingOrders,
+      numUsers: numUsers,
+      numOrders: numOrders,
+      totalDollars: totalSpent,
+      budget: budget,
+      table: budgetingTable
+    });
   }
 
   public async setUser(req: Request, res: Response): Promise<void> {
@@ -51,16 +55,16 @@ export class AdminController {
     });
   }
   private static setTable(budget: any): object {
-    let table = [];
-    if (!budget.teamList) throw new Error("[Error] Budget does not include a teamlist");
-    if (!budget.setBudgets) throw new Error("[Error] Budget does not include set budgets");
-    if (!budget.currentSpent) throw new Error("[Error] Budget does not include a current spent array");
-    for (let i = 0; i < budget.teamList.length; i++) {
-      let spent = budget.currentSpent[i];
-      let left = Number(budget.setBudgets[i] - budget.currentSpent[i]).toFixed(2);
-      let teamArray = [budget.teamList[i], budget.setBudgets[i], spent, left]
-      table.push(teamArray);
+    if (!budget) {
+      console.log('[Warning] Attempting to load table with no budget')
+      return {}
     }
+    let table = [];
+    budget.budgets.forEach((budget) => {
+      let teamArray = [budget.name, budget.setBudget, budget.getTotalSpent(), 
+        budget.getAmountLeft()]
+      table.push(teamArray);
+    });
     return table;
   }
 }

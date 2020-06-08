@@ -132,8 +132,11 @@
 </form>
 
 <script>
+  {{#if isReimbursement}}
+  // Reimbursement ONLY logic
   let reimbursementDetailsTemplate = document.querySelector('#reimbursementDetails').cloneNode(true); // Ew Global Vars but :shrug:
   let itemDetailsTemplate = document.querySelector('#item1').cloneNode(true);
+  {{/if}}
   function addItem() {
     let template = document.querySelector('#item' + getNumItems());
     let buttons = document.querySelector("#editButtons");
@@ -176,8 +179,8 @@
       children[i].innerHTML = newContent
     }
   }
-
   {{#if isReimbursement}}
+  // Reimbursement ONLY Logic
   function setupGeneric() {
     hideButtons();
     document.querySelector('#itemsTitle').innerText = 'Cost'

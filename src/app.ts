@@ -4,6 +4,7 @@ import * as passportConfig from './config/passport.config';
 import * as utilsController from './controllers/utils.controller';
 import {GenericReimbursement } from './models/orders/';
 import * as ordersController from './controllers/orders.controller';
+import { BudgetList } from './models/Budget.model';
 
 const PORT = process.env.PORT || 7001;
 
@@ -61,6 +62,16 @@ app.get('/orders/reimbursement', (req, res) => {
     teamList: "testTeam",
     post: "/orders/reimbursement"
   })
+});
+
+app.get('/hasBudget',  async (req, res) => {
+  let exists = await BudgetList.hasActiveBudget();
+  res.send(exists);
+});
+
+app.get('/seeBudget', async (req, res) => {
+  let list = await BudgetList.getActiveBudget();
+  res.send(list);
 })
 
 app.post('/orders/request', ordersController.postNewRequest);

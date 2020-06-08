@@ -1,5 +1,5 @@
 import {OnlineOrderRequest, Order, Item, OnlineBatchRequest, GenericReimbursement, OrderReimbursement, BatchReimbursement} from '../models/orders';
-import Budget from '../models/Budget.model';
+import {Budget} from '../models/Budget.model';
 import OrderMessage from '../models/OrderMessage.model';
 import {SlackService} from '../services/SlackService';
 import {Request, Response} from 'express'
