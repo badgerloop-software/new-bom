@@ -6,7 +6,7 @@ const bomDB = createConnection(mongoConfig.BOM_URL);
 const BudgetSchema = new Schema({
   name: {type: String, required: true},
   allocatedBudget: {type: Number ,required: true},
-  orders: [{type: Types.ObjectId, ref: 'order'}]
+  orders: [{type: Types.ObjectId, ref: 'Order'}]
 });
 
 BudgetSchema.methods.getTotalSpent = function(): number {
@@ -61,6 +61,21 @@ BudgetListSchema.statics.getActiveBudget = async function(): Promise<any> {
 BudgetListSchema.statics.hasActiveBudget = async function(): Promise<boolean> {
   let count = await this.count({});
   return !(count === 0);
+}
+
+BudgetListSchema.statics.getListOfNames = async function(): Promise<string[]> {
+  let hasBudget = await this.hasActiveBudget();
+  if (!hasBudget) throw new Error("[ERROR] Can not get list of names from a non existant budget");
+  let budget = await this.getActiveBudget();
+  await budget.populate('budgets').execPopulate();
+  let list = []
+  budget.budgets.forEach((budget) => list.push(budget.name));
+  return list;
+}
+
+BudgetListSchema.statics.getStringOfNames = async function(): Promise<string> {
+  let list = await this.getListOfNames();
+  return list.join(',')
 }
 
 BudgetListSchema.pre('remove', async function(next) {

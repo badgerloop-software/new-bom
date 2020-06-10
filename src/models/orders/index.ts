@@ -11,6 +11,11 @@ OrderFunctionsSchema.statics.findAllPendingOrders = function(): any[] {
     return this.find({$or: [{'isOrdered': false}, {'isReimbursed': false}]});
 }
 
+OrderFunctionsSchema.post('save', function(doc, next) {
+    console.log(doc);
+    next();
+});
+
 export const Order = bomDB.model('Order', OrderFunctionsSchema);
 
 

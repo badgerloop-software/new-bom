@@ -4,7 +4,7 @@ import * as passportConfig from './config/passport.config';
 import * as utilsController from './controllers/utils.controller';
 import {GenericReimbursement } from './models/orders/';
 import * as ordersController from './controllers/orders.controller';
-import { BudgetList } from './models/Budget.model';
+import { BudgetList, Budget } from './models/Budget.model';
 
 const PORT = process.env.PORT || 7001;
 
@@ -42,37 +42,39 @@ app.get('/newPlace', (req, res) => {
   });
 });
 
-app.get('/orders/request', (req, res) => {
+app.get('/orders/request', async (req, res) => {
+ let hasBudget: boolean = await BudgetList.hasActiveBudget();
+ if (!hasBudget) {
+   req.flash('errors', 'Error: This year\'s budget has not been set up yet');
+   return res.redirect('back')
+ }
+ let teamNames = await BudgetList.getStringOfNames();
   res.render('bom/makeOrder', {
     type: 'Request',
     isRequest: true,
     isReimbursement: false,
     user: req.user,
-    teamList: "testTeam",
+    teamList: teamNames,
     post: "/orders/request"
   });
 });
 
-app.get('/orders/reimbursement', (req, res) => {
+app.get('/orders/reimbursement', async (req, res) => {
+  let hasBudget: boolean = await BudgetList.hasActiveBudget();
+  if (!hasBudget) {
+    req.flash('errors', 'Error: This year\'s budget has not been set up yet');
+    return res.redirect('back')
+  }
+  let teamNames = await BudgetList.getStringOfNames();
   res.render('bom/makeOrder', {
     type: 'Reimbursement',
     isRequest: false,
     isReimbursement: true,
     user: req.user,
-    teamList: "testTeam",
+    teamList: teamNames,
     post: "/orders/reimbursement"
   })
 });
-
-app.get('/hasBudget',  async (req, res) => {
-  let exists = await BudgetList.hasActiveBudget();
-  res.send(exists);
-});
-
-app.get('/seeBudget', async (req, res) => {
-  let list = await BudgetList.getActiveBudget();
-  res.send(list);
-})
 
 app.post('/orders/request', ordersController.postNewRequest);
 app.post('/orders/reimbursement', ordersController.postNewReimbursement);

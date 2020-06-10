@@ -8,6 +8,8 @@ export const BaseOrderBlueprint = {
     type: {type: String, default: "Base", required: true},
     requestor: {type: String, required: true},
     subteam: {type: String, required: true},
+    // subteam: {type: Schema.Types.ObjectId, ref: 'Budget',
+    //             required: [true, 'Must include a ref to subteam budget']},
     supplier: {type: String, required: true},
     isApproved: {type: Boolean, default: false},
     approvedBy: {type: String},
