@@ -14,11 +14,12 @@ export class AdminController {
     let budget = null;
     let budgetingTable = null;
     let totalSpent;
-    budget = await BudgetList.getActiveBudget();
-    if (budget) {
-      budgetingTable = AdminController.setTable(budget);
+    let hasBudget = await BudgetList.hasActiveBudget()
+    if(hasBudget) {
+      budget = await BudgetList.getActiveBudget();
+      budgetingTable = await AdminController.setTable(budget);
       totalSpent = Number(budget.totalSpent).toFixed(2);
-    }
+  }
     res.render('bom/adminDash', {
       user: req.user,
       users: users,
@@ -54,14 +55,15 @@ export class AdminController {
       user: req.user
     });
   }
-  private static setTable(budget: any): object {
-    if (!budget) {
+  private static async setTable(budgetList: any): Promise<object> {
+    if (!budgetList) {
       console.log('[Warning] Attempting to load table with no budget')
       return {}
     }
     let table = [];
-    budget.budgets.forEach((budget) => {
-      let teamArray = [budget.name, budget.setBudget, budget.getTotalSpent(), 
+    await budgetList.populate('budgets').execPopulate();
+    budgetList.budgets.forEach((budget) => {
+      let teamArray = [budget.name, budget.allocatedBudget, budget.getTotalSpent(), 
         budget.getAmountLeft()]
       table.push(teamArray);
     });

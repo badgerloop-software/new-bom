@@ -33,6 +33,10 @@ export class BudgetsController {
   }
 
   private static convertToHandleBarsObj(mongoObject): object {
+    mongoObject.budgets.forEach((budget) => {
+      console.log(budget)
+    })
+    
     let obj = {};
     let len = mongoObject.teamList.length;
     let teamList = mongoObject.teamList;
@@ -42,11 +46,17 @@ export class BudgetsController {
     }
     return obj;
   }
-  public getDelete(req: Request, res: Response) {
-    Budget.remove({}, () => {
+  public async getDelete(req: Request, res: Response) {
+    let budgetList = await BudgetList.getActiveBudget();
+    budgetList.remove({}, (err: Error) => {
+      if (err) {
+        console.log('[ERROR] Can not delete budget list: ' + err.message)
+        req.flash('errors', 'Can not delete budget ' + err.message)
+      } else {
       req.flash('success', 'Budget Deleted');
+      }
       res.redirect('/admin/dashboard');
-    })
+    });
   }
 
   public createBudgets(req: Request, res: Response) {

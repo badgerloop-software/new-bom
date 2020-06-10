@@ -1,12 +1,12 @@
 import { createConnection, Schema, Types, connection } from 'mongoose';
 import * as mongoConfig from '../config/mongo.config';
-import { runInNewContext } from 'vm';
+
 const bomDB = createConnection(mongoConfig.BOM_URL);
 
 const BudgetSchema = new Schema({
   name: {type: String, required: true},
   allocatedBudget: {type: Number ,required: true},
-  orders: [Types.ObjectId]
+  orders: [{type: Types.ObjectId, ref: 'order'}]
 });
 
 BudgetSchema.methods.getTotalSpent = function(): number {
@@ -24,19 +24,17 @@ BudgetSchema.methods.addOrder = function(newID: Types.ObjectId): void {
 }
 
 BudgetSchema.post('save', async function(doc, next) {
-  console.log('[INFO] Function post save is running');
   BudgetList.findOne({}, (err, list) => {
     if (err) {
       console.log('[ERROR] Error finding Budget' + err.message);
     }
-    console.log(list);
-    list.addTeam(doc._id);
+    list.addTeam(doc);
     next();
   });
 });
 
 const BudgetListSchema = new Schema({
-  budgets: {type: [Types.ObjectId], default: []},
+  budgets: [{type: Types.ObjectId, default: [], ref: 'Budget'}],
   year: {type: Number}
 });
 
@@ -64,6 +62,14 @@ BudgetListSchema.statics.hasActiveBudget = async function(): Promise<boolean> {
   let count = await this.count({});
   return !(count === 0);
 }
+
+BudgetListSchema.pre('remove', async function(next) {
+  await this.populate('budgets').execPopulate()
+  this.budgets.forEach((budget) => {
+    budget.remove()
+  });
+  next();
+});
 
 export const Budget = bomDB.model('Budget', BudgetSchema);
 export const BudgetList = bomDB.model('BudgetList', BudgetListSchema);
