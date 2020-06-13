@@ -3,8 +3,6 @@ import {Budget} from '../models/Budget.model';
 import OrderMessage from '../models/OrderMessage.model';
 import {SlackService} from '../services/SlackService';
 import {Request, Response} from 'express'
-import { createBrotliDecompress } from 'zlib';
-
 const URL = process.env.LOCAL_URL;
 const fscLead = "UG46HDHS7";
 
@@ -94,7 +92,7 @@ export const postMakeOrder = (req, res, next) => {
   });
 }
 
-export const postNewReimbursement = (req: Request, res: Response) => {
+export const postNewReimbursement = async (req: Request, res: Response) => {
   const SuccessResponse = () => { // What will happen on sucessful post
     req.flash('success', `Reimbursement Submitted!`);
     res.redirect('/orders/view');
@@ -109,20 +107,21 @@ export const postNewReimbursement = (req: Request, res: Response) => {
     return res.redirect('back');
   }
   if (req.body.numItems == 0) { // Process Generic Reimbursement
-    return createGenericReimbursement(req.body, SuccessResponse, FailureResponse);
+    return await createGenericReimbursement(req.body, SuccessResponse, FailureResponse);
   }
   if (req.body.numItems == 1) {
     return createOrderReimbursement(req.body, SuccessResponse, FailureResponse);
   }
   if (req.body.numItems > 1) {
-    return createBatchReimbursement(req.body, SuccessResponse, FailureResponse);
+    return await createBatchReimbursement(req.body, SuccessResponse, FailureResponse);
   }
 }
 
-function createBatchReimbursement(formBody: any, successResponse: () => void, failureResponse: (msg: string) => void): void {
+async function createBatchReimbursement(formBody: any, successResponse: () => void, failureResponse: (msg: string) => void): Promise<void> {
   let itemsList: Item[] = createItemsList(formBody, formBody.numItems);
   let totalCost = Item.calculateTotalCostOfItems(itemsList) + Number(formBody.tax);
   let orderTitle = Item.getListOfNames(itemsList).join(', ');
+  let budget = await Budget.findByTeamName(formBody.subteam)
   let newBatchRequest = new BatchReimbursement({
     requestor: formBody.requestor,
     subteam: formBody.subteam,
@@ -134,28 +133,31 @@ function createBatchReimbursement(formBody: any, successResponse: () => void, fa
     link: formBody.link,
     totalCost: totalCost,
     title: orderTitle,
-    comments: formBody.comments
+    comments: formBody.comments,
+    budget: budget
   });
 
-  newBatchRequest.save((err: Error) => {
+  newBatchRequest.save(async (err: Error, order: any) => {
     if (err) {
       console.log('[Error] ' + err.message);
       failureResponse(err.message);
     } else {
-      successResponse();
+     successResponse()
     }
   });
 
 }
 
-function createGenericReimbursement(formBody: any, successResponse: () => void, failureResponse: (msg: string) => void): any {
+async function createGenericReimbursement(formBody: any, successResponse: () => void, failureResponse: (msg: string) => void): Promise<void> {
+  let budget = await Budget.findByTeamName(formBody.subteam);
   let newReimbursement = new GenericReimbursement({
     requestor: formBody.requestor,
     title: formBody.title,
     subteam: formBody.subteam,
     supplier: formBody.supplier,
     totalCost: formBody.totalCost,
-    project: formBody.project
+    project: formBody.project,
+    budget: budget
   });
 
   newReimbursement.save((err: Error) => {
@@ -163,13 +165,15 @@ function createGenericReimbursement(formBody: any, successResponse: () => void, 
       console.log('[Error] ' + err.message);
       return failureResponse(err.message);
     }
+    budget.addOrder(newReimbursement);
     successResponse();
   });
 }
 
-function createOrderReimbursement(formBody: any, successResponse: () => void, failureResponse: (msg: string) => void): void {
+async function createOrderReimbursement(formBody: any, successResponse: () => void, failureResponse: (msg: string) => void): Promise<void> {
   let newItem: Item = new Item(formBody.item1Name, formBody.item1ProductNum, formBody.item1Price, formBody.item1Quantity, formBody.item1Project);
   let totalCost: number = newItem.getTotalCost() + Number(formBody.tax);
+  let budget = await Budget.findByTeamName(formBody.subteam);
   let newReimbursement = new OrderReimbursement({
     requestor: formBody.requestor,
     subteam: formBody.subteam,
@@ -178,7 +182,8 @@ function createOrderReimbursement(formBody: any, successResponse: () => void, fa
     item: newItem,
     totalCost: totalCost,
     title: newItem.name,
-    comments: formBody.comments
+    comments: formBody.comments,
+    budget: budget
   });
 
   newReimbursement.save((err: Error) => {
@@ -194,6 +199,7 @@ function createOrderRequest(formBody: any, successResponse: () => void, failureR
   let requestedItem: Item = new Item(formBody.item1Name, formBody.item1ProductNum, formBody.item1Price, formBody.item1Quantity, formBody.item1Project);
   let totalCost: number = requestedItem.getTotalCost() + Number(formBody.shipping) + Number(formBody.tax);
   let orderTitle: string = requestedItem.name;
+  
   let newRequest = new OnlineOrderRequest({
     requestor: formBody.requestor,
     subteam: formBody.subteam,
@@ -222,6 +228,7 @@ function createBatchRequest(formBody: any, successResponse: () => void, failureR
   let itemsList: Item[] = createItemsList(formBody, formBody.numItems);
   let totalCost = Item.calculateTotalCostOfItems(itemsList) + Number(formBody.shipping) + Number(formBody.tax);
   let orderTitle = Item.getListOfNames(itemsList).join(', ');
+
   let newBatchRequest = new OnlineBatchRequest({
     requestor: formBody.requestor,
     subteam: formBody.subteam,

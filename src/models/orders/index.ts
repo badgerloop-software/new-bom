@@ -2,19 +2,33 @@
 import {createConnection, Schema, Document} from 'mongoose';
 import * as mongoConfig from '../../config/mongo.config';
 import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
+import { BudgetList, Budget } from '../Budget.model';
 const bomDB = createConnection(mongoConfig.BOM_URL);
 
-
+/**
+ * The OrderFunctionsSchema only works for STATIC METHODS
+ * Due to the inability of mongoose to do schema inheritance more than 2 levels
+ * and the way I've chosen to implement my own inheritance system any instance methods
+ * must created and treated as generic functions elsewhere or static functions here
+ */
 let OrderFunctionsSchema = new Schema({});
 
 OrderFunctionsSchema.statics.findAllPendingOrders = function(): any[] {
     return this.find({$or: [{'isOrdered': false}, {'isReimbursed': false}]});
 }
 
-OrderFunctionsSchema.post('save', function(doc, next) {
-    console.log(doc);
-    next();
-});
+OrderFunctionsSchema.statics.addBudget = async function(order: any, subteam: string, successResponse: () => void, failureResponse: (msg: string) => void): Promise<void> {
+    let hasBudget = await BudgetList.hasActiveBudget();
+    if (!hasBudget) return failureResponse('Budget does not exist');
+    let budget = await Budget.findByTeamName(subteam);
+    order.budget = budget;
+    order.save((err: Error) =>{
+        if (err) {
+            return failureResponse(err.message);
+        }
+        successResponse();;
+    });
+}
 
 export const Order = bomDB.model('Order', OrderFunctionsSchema);
 

@@ -63,7 +63,7 @@ app.get('/orders/reimbursement', async (req, res) => {
   let hasBudget: boolean = await BudgetList.hasActiveBudget();
   if (!hasBudget) {
     req.flash('errors', 'Error: This year\'s budget has not been set up yet');
-    return res.redirect('back')
+    return res.redirect('back');
   }
   let teamNames = await BudgetList.getStringOfNames();
   res.render('bom/makeOrder', {

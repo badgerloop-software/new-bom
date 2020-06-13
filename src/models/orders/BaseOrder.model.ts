@@ -1,4 +1,4 @@
-import {Schema, model, createConnection, connect} from 'mongoose';
+import {Schema, model, Types, createConnection, connect} from 'mongoose';
 import * as mongoConfig from '../../config/mongo.config';
 
 const bomDB = createConnection(mongoConfig.BOM_URL);
@@ -8,8 +8,6 @@ export const BaseOrderBlueprint = {
     type: {type: String, default: "Base", required: true},
     requestor: {type: String, required: true},
     subteam: {type: String, required: true},
-    // subteam: {type: Schema.Types.ObjectId, ref: 'Budget',
-    //             required: [true, 'Must include a ref to subteam budget']},
     supplier: {type: String, required: true},
     isApproved: {type: Boolean, default: false},
     approvedBy: {type: String},
@@ -23,7 +21,8 @@ export const BaseOrderBlueprint = {
 
     },
     totalCost: {type: Number, required: [true, 'Must calculate and save totcal cost!']},
-    title: {type: String, required: [true, 'Must create a title!']}
+    title: {type: String, required: [true, 'Must create a title!']},
+    budget: {type: Types.ObjectId, ref: 'Budget'},
 }
 
 const BaseOrderSchema = new Schema(BaseOrderBlueprint);

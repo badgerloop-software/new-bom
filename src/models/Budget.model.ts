@@ -1,29 +1,48 @@
 import { createConnection, Schema, Types, connection } from 'mongoose';
 import * as mongoConfig from '../config/mongo.config';
+import {Order} from '../models/orders'
 
 const bomDB = createConnection(mongoConfig.BOM_URL);
 
 const BudgetSchema = new Schema({
   name: {type: String, required: true},
   allocatedBudget: {type: Number ,required: true},
-  orders: [{type: Types.ObjectId, ref: 'Order'}]
+  orders: [{type: Types.ObjectId, refPath: 'Order'}]
 });
 
-BudgetSchema.methods.getTotalSpent = function(): number {
+BudgetSchema.methods.getTotalSpent = async function(): Promise<number> {
   let totalSpent: number = 0;
-  this.orders.forEach((order) => totalSpent += order.totalCost);
+  await this.populate('orders').execPopulate();
+  this.orders.forEach(async (orderID) => {
+    let order = await Order.findOne({_id: orderID}).exec();
+    if (order) {
+      let cost = Number(order._doc.totalCost);
+      if (!isNaN(cost)) totalSpent += Number(order._doc.totalCost); // If Not not a number
+    }
+});
   return totalSpent;
 }
 
-BudgetSchema.methods.getAmountLeft = function(): number {
-  return this.allocatedBudget - this.getTotalSpent();
+BudgetSchema.methods.getAmountLeft = async function(): Promise<number> {
+  let spent = await this.getTotalSpent();
+  return this.allocatedBudget - spent;
 }
 
-BudgetSchema.methods.addOrder = function(newID: Types.ObjectId): void {
+BudgetSchema.methods.addOrder = function(newID: any): void{
   this.orders.push(newID);
+  this.save((err: Error) => {
+    if (err) {
+      console.log('[ERROR] Can not add team to budget: ' + err.message);
+    }
+  })
 }
 
-BudgetSchema.post('save', async function(doc, next) {
+BudgetSchema.statics.findByTeamName = async function(name: string): Promise<any> {
+  let budget = await this.findOne({name: name});
+  return budget;
+}
+
+BudgetSchema.post('create', async function(doc, next) {
   BudgetList.findOne({}, (err, list) => {
     if (err) {
       console.log('[ERROR] Error finding Budget' + err.message);
@@ -38,12 +57,6 @@ const BudgetListSchema = new Schema({
   year: {type: Number}
 });
 
-BudgetListSchema.methods.calculateTotal = function(): number {
-  let sum: number = 0;
-  this.budgets.forEach((budget) => sum += budget.getTotalSpent());
-  return sum;
-}
-
 BudgetListSchema.methods.addTeam = function(newTeam: any): void {
   this.budgets.push(newTeam);
   this.save((err: Error) => {
@@ -51,6 +64,14 @@ BudgetListSchema.methods.addTeam = function(newTeam: any): void {
       console.log('[ERROR] ' + err.message);
     }
   })
+}
+
+BudgetListSchema.statics.calculateTotal = async function(): Promise<number> {
+  let sum: number = 0;
+  let budgetList = await this.getActiveBudget();
+  await budgetList.populate('budgets').execPopulate();
+  this.budgets.forEach(async (budget) => sum += await budget.getTotalSpent());
+  return sum;
 }
 
 BudgetListSchema.statics.getActiveBudget = async function(): Promise<any> {

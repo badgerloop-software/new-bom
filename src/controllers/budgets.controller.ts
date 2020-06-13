@@ -110,12 +110,11 @@ export class BudgetsController {
 
     private  static fillBudgetList(req: Request, res: Response, budgetList: any, numTeams: number, teamList: string[], allocationList: number[]): any {
       for (let i: number = 0; i < numTeams; i++) {
-        let newTeamBudget = new Budget({
+        let newTeamBudget = {
           name: teamList[i],
           allocatedBudget: allocationList[i]
-        });
-
-        newTeamBudget.save((err: Error) => {
+        };
+        Budget.create(newTeamBudget, function(err: Error, _budget) {
           if (err) {
             console.log('[ERROR] Error saving new team budget: ' + err.message);
           }
