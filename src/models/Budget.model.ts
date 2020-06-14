@@ -42,16 +42,6 @@ BudgetSchema.statics.findByTeamName = async function(name: string): Promise<any>
   return budget;
 }
 
-BudgetSchema.post('create', async function(doc, next) {
-  BudgetList.findOne({}, (err, list) => {
-    if (err) {
-      console.log('[ERROR] Error finding Budget' + err.message);
-    }
-    list.addTeam(doc);
-    next();
-  });
-});
-
 const BudgetListSchema = new Schema({
   budgets: [{type: Types.ObjectId, default: [], ref: 'Budget'}],
   year: {type: Number}

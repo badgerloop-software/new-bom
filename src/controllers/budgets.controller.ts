@@ -108,19 +108,25 @@ export class BudgetsController {
     }
   }
 
-    private  static fillBudgetList(req: Request, res: Response, budgetList: any, numTeams: number, teamList: string[], allocationList: number[]): any {
+    private static fillBudgetList(req: Request, res: Response, budgetList: any, numTeams: number, teamList: string[], allocationList: number[]): any {
+      let budgets = [];
       for (let i: number = 0; i < numTeams; i++) {
         let newTeamBudget = {
           name: teamList[i],
           allocatedBudget: allocationList[i]
         };
-        Budget.create(newTeamBudget, function(err: Error, _budget) {
+        budgets.push(newTeamBudget);
+      }
+      Budget.insertMany(budgets, function(err: Error, budgetDocs) {
           if (err) {
             console.log('[ERROR] Error saving new team budget: ' + err.message);
+          } else {
+            budgetDocs.forEach(doc => {
+              budgetList.addTeam(doc);
+            });
+            req.flash('success', 'Budget sucessfully initialized!');
+            return res.redirect('/admin/dashboard');
           }
         });
-      }
-      req.flash('success', 'Budget sucessfully initialized!');
-      res.redirect('/admin/dashboard');
     }
   }
