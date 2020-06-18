@@ -1,7 +1,6 @@
 // This file is just syntaxical sugar for importing from other modules
 import {createConnection, Schema, Document} from 'mongoose';
 import * as mongoConfig from '../../config/mongo.config';
-import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
 import { BudgetList, Budget } from '../Budget.model';
 const bomDB = createConnection(mongoConfig.BOM_URL);
 
@@ -26,7 +25,7 @@ OrderFunctionsSchema.statics.addBudget = async function(order: any, subteam: str
         if (err) {
             return failureResponse(err.message);
         }
-        successResponse();;
+        successResponse();
     });
 }
 

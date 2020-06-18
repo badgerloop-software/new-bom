@@ -18,7 +18,7 @@ export class AdminController {
     if(hasBudget) {
       budget = await BudgetList.getActiveBudget();
       budgetingTable = await AdminController.setTable(budget);
-      totalSpent = Number(BudgetList.calculateTotal()).toFixed(2);
+      totalSpent = await BudgetList.calculateTotal();
   }
     res.render('bom/adminDash', {
       user: req.user,

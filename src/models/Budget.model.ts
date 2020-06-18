@@ -1,25 +1,26 @@
 import { createConnection, Schema, Types, connection } from 'mongoose';
 import * as mongoConfig from '../config/mongo.config';
 import {Order} from '../models/orders'
+import { isNumber } from 'util';
 
 const bomDB = createConnection(mongoConfig.BOM_URL);
 
 const BudgetSchema = new Schema({
   name: {type: String, required: true},
   allocatedBudget: {type: Number ,required: true},
-  orders: [{type: Types.ObjectId, refPath: 'Order'}]
+  orders: [{type: Types.ObjectId}]
 });
 
 BudgetSchema.methods.getTotalSpent = async function(): Promise<number> {
   let totalSpent: number = 0;
-  await this.populate('orders').execPopulate();
-  this.orders.forEach(async (orderID) => {
+  for (let orderID of this.orders) {
     let order = await Order.findOne({_id: orderID}).exec();
     if (order) {
+      if (!(order._doc.isOrdered || order._doc.isReimbursed)) continue;
       let cost = Number(order._doc.totalCost);
       if (!isNaN(cost)) totalSpent += Number(order._doc.totalCost); // If Not not a number
     }
-});
+}
   return totalSpent;
 }
 
@@ -60,7 +61,10 @@ BudgetListSchema.statics.calculateTotal = async function(): Promise<number> {
   let sum: number = 0;
   let budgetList = await this.getActiveBudget();
   await budgetList.populate('budgets').execPopulate();
-  this.budgets.forEach(async (budget) => sum += await budget.getTotalSpent());
+  for (let budget of budgetList.budgets) {
+    let budgetTotal: number = await budget.getTotalSpent();
+    if (isNumber(budgetTotal)) sum += budgetTotal;
+  }
   return sum;
 }
 

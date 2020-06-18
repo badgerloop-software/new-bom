@@ -3,6 +3,7 @@ import {Budget} from '../models/Budget.model';
 import OrderMessage from '../models/OrderMessage.model';
 import {SlackService} from '../services/SlackService';
 import {Request, Response} from 'express'
+import { budgetsController } from '.';
 const URL = process.env.LOCAL_URL;
 const fscLead = "UG46HDHS7";
 
@@ -110,7 +111,7 @@ export const postNewReimbursement = async (req: Request, res: Response) => {
     return await createGenericReimbursement(req.body, SuccessResponse, FailureResponse);
   }
   if (req.body.numItems == 1) {
-    return createOrderReimbursement(req.body, SuccessResponse, FailureResponse);
+    return await createOrderReimbursement(req.body, SuccessResponse, FailureResponse);
   }
   if (req.body.numItems > 1) {
     return await createBatchReimbursement(req.body, SuccessResponse, FailureResponse);
@@ -122,7 +123,7 @@ async function createBatchReimbursement(formBody: any, successResponse: () => vo
   let totalCost = Item.calculateTotalCostOfItems(itemsList) + Number(formBody.tax);
   let orderTitle = Item.getListOfNames(itemsList).join(', ');
   let budget = await Budget.findByTeamName(formBody.subteam)
-  let newBatchRequest = new BatchReimbursement({
+  let newBatchReimbursement = new BatchReimbursement({
     requestor: formBody.requestor,
     subteam: formBody.subteam,
     supplier: formBody.supplier,
@@ -137,12 +138,13 @@ async function createBatchReimbursement(formBody: any, successResponse: () => vo
     budget: budget
   });
 
-  newBatchRequest.save(async (err: Error, order: any) => {
+  newBatchReimbursement.save(async (err: Error, order: any) => {
     if (err) {
       console.log('[Error] ' + err.message);
       failureResponse(err.message);
     } else {
-     successResponse()
+      budget.addOrder(newBatchReimbursement);
+      successResponse()
     }
   });
 
@@ -191,15 +193,16 @@ async function createOrderReimbursement(formBody: any, successResponse: () => vo
       console.log('[Error] ' + err.message);
       return failureResponse(err.message);
     }
+    budget.addOrder(newReimbursement);
     successResponse()
   })
 }
 
-function createOrderRequest(formBody: any, successResponse: () => void, failureResponse: (errMsg: string) => void): void{
+async function createOrderRequest(formBody: any, successResponse: () => void, failureResponse: (errMsg: string) => void): Promise<void>{
   let requestedItem: Item = new Item(formBody.item1Name, formBody.item1ProductNum, formBody.item1Price, formBody.item1Quantity, formBody.item1Project);
   let totalCost: number = requestedItem.getTotalCost() + Number(formBody.shipping) + Number(formBody.tax);
   let orderTitle: string = requestedItem.name;
-  
+  let budget = await Budget.findByTeamName(formBody.subteam);
   let newRequest = new OnlineOrderRequest({
     requestor: formBody.requestor,
     subteam: formBody.subteam,
@@ -219,16 +222,18 @@ function createOrderRequest(formBody: any, successResponse: () => void, failureR
       console.log('[Error] ' + err.message);
       failureResponse(err.message);
     } else {
+      budget.addOrder(newRequest);
       successResponse()
     }
   });
 }
 
-function createBatchRequest(formBody: any, successResponse: () => void, failureResponse: (errMsg: string) => void): void {
+async function createBatchRequest(formBody: any, successResponse: () => void, failureResponse: (errMsg: string) => void): Promise<void> {
   let itemsList: Item[] = createItemsList(formBody, formBody.numItems);
   let totalCost = Item.calculateTotalCostOfItems(itemsList) + Number(formBody.shipping) + Number(formBody.tax);
   let orderTitle = Item.getListOfNames(itemsList).join(', ');
-
+  let budget = await Budget.findByTeamName(formBody.subteam);
+  let slackMessage = await Slac
   let newBatchRequest = new OnlineBatchRequest({
     requestor: formBody.requestor,
     subteam: formBody.subteam,
@@ -248,12 +253,13 @@ function createBatchRequest(formBody: any, successResponse: () => void, failureR
       console.log('[Error] ' + err.message);
       failureResponse(err.message);
     } else {
+      budget.addOrder(newBatchRequest);
       successResponse();
     }
   });
 }
 
-export const postNewRequest = (req: Request, res: Response) => {
+export const postNewRequest = async (req: Request, res: Response) => {
   const SuccessResponse = () => { // What will happen on sucessful post
     req.flash('success', `Request created!`);
     res.redirect('/orders/view');
@@ -268,10 +274,10 @@ export const postNewRequest = (req: Request, res: Response) => {
     res.redirect('back');
   }
   if (req.body.numItems == 1) {
-    createOrderRequest(req.body, SuccessResponse, FailureResponse);
+   await createOrderRequest(req.body, SuccessResponse, FailureResponse);
   } 
   if (req.body.numItems > 1) {
-    createBatchRequest(req.body, SuccessResponse, FailureResponse);
+    await createBatchRequest(req.body, SuccessResponse, FailureResponse);
   }
 }
 
