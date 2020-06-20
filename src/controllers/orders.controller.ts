@@ -1,6 +1,6 @@
 import {OnlineOrderRequest, Order, Item, OnlineBatchRequest, GenericReimbursement, OrderReimbursement, BatchReimbursement} from '../models/orders';
 import {Budget} from '../models/Budget.model';
-import OrderMessage from '../models/OrderMessage.model';
+import {OrderMessage, IOrderMessage} from '../models/OrderMessage.model';
 import {SlackService} from '../services/SlackService';
 import {Request, Response} from 'express'
 import { budgetsController } from '.';
@@ -137,7 +137,9 @@ async function createBatchReimbursement(formBody: any, successResponse: () => vo
     comments: formBody.comments,
     budget: budget
   });
-
+  
+  let slackMessage: IOrderMessage = OrderMessage.createMessageFromOrder(newBatchReimbursement);
+  newBatchReimbursement.slackMessage = slackMessage;
   newBatchReimbursement.save(async (err: Error, order: any) => {
     if (err) {
       console.log('[Error] ' + err.message);
@@ -161,6 +163,9 @@ async function createGenericReimbursement(formBody: any, successResponse: () => 
     project: formBody.project,
     budget: budget
   });
+
+  let slackMessage = OrderMessage.createFromOrder(newReimbursement);
+  newReimbursement.slackMessage = newReimbursement;
 
   newReimbursement.save((err: Error) => {
     if (err) {
@@ -187,6 +192,9 @@ async function createOrderReimbursement(formBody: any, successResponse: () => vo
     comments: formBody.comments,
     budget: budget
   });
+
+  let slackMessage: IOrderMessage = OrderMessage.createMessageFromOrder(newReimbursement);
+  newReimbursement.slackMessage = slackMessage;
 
   newReimbursement.save((err: Error) => {
     if (err) {
@@ -216,7 +224,8 @@ async function createOrderRequest(formBody: any, successResponse: () => void, fa
     title: orderTitle,
     comments: formBody.comments
   });
-
+  let slackMessage: IOrderMessage = OrderMessage.createMessageFromOrder(newRequest);
+  newRequest.slackMessage = slackMessage;
     newRequest.save((err: Error) => {
     if (err) {
       console.log('[Error] ' + err.message);
@@ -233,7 +242,6 @@ async function createBatchRequest(formBody: any, successResponse: () => void, fa
   let totalCost = Item.calculateTotalCostOfItems(itemsList) + Number(formBody.shipping) + Number(formBody.tax);
   let orderTitle = Item.getListOfNames(itemsList).join(', ');
   let budget = await Budget.findByTeamName(formBody.subteam);
-  let slackMessage = await Slac
   let newBatchRequest = new OnlineBatchRequest({
     requestor: formBody.requestor,
     subteam: formBody.subteam,
@@ -247,7 +255,9 @@ async function createBatchRequest(formBody: any, successResponse: () => void, fa
     title: orderTitle,
     comments: formBody.comments
   });
-
+  let slackMessage = await OrderMessage.createFromOrder(newBatchRequest);
+  newBatchRequest.slackMessage = slackMessage;
+  
   newBatchRequest.save((err: Error) => {
     if (err) {
       console.log('[Error] ' + err.message);

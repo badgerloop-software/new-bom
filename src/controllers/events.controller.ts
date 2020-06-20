@@ -3,7 +3,7 @@ import request from 'request';
 import CriticalPaths from '../models/CriticalPath.model';
 import * as Schedule from 'node-schedule';
 import {SlackService} from '../services/SlackService';
-import OrderMessage from '../models/OrderMessage.model';
+import {OrderMessage} from '../models/OrderMessage.model';
 
 export class EventsController {
    static URL: string = process.env.APPS_TOKEN;

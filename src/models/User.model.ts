@@ -73,4 +73,8 @@ userSchema.statics.findBySlackID = function(slackID: string): IUserSchema {
 userSchema.statics.getAllUsers = function(): any[] {
   return this.find({});
 }
+
+userSchema.statics.findByName = async function(name: string): Promise<IUserSchema> {
+  return await this.findOne({name: name}).exec();
+}
 export const Users = bomDB.model('User', userSchema);
