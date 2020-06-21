@@ -49,9 +49,11 @@
     "typescript": "^3.9.3"
   },
   "devDependencies": {
+    "@types/mongodb": "^3.5.23",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
     "eslint": "^7.0.0",
-    "handlebars": "^4.7.6"
+    "handlebars": "^4.7.6",
+    "mongodb": "^3.5.9"
   }
 }

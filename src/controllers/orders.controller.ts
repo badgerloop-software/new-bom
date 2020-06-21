@@ -1,8 +1,8 @@
-import {OnlineOrderRequest, Order, Item, OnlineBatchRequest, GenericReimbursement, OrderReimbursement, BatchReimbursement} from '../models/orders';
-import {Budget} from '../models/Budget.model';
-import {OrderMessage, IOrderMessage} from '../models/OrderMessage.model';
-import {SlackService} from '../services/SlackService';
-import {Request, Response} from 'express'
+import { OnlineOrderRequest, Order, Item, OnlineBatchRequest, GenericReimbursement, OrderReimbursement, BatchReimbursement } from '../models/orders';
+import { Budget } from '../models/Budget.model';
+import { OrderMessage, IOrderMessage } from '../models/OrderMessage.model';
+import { SlackService } from '../services/SlackService';
+import { Request, Response } from 'express'
 import { budgetsController } from '.';
 const URL = process.env.LOCAL_URL;
 const fscLead = "UG46HDHS7";
@@ -73,7 +73,6 @@ export const postMakeOrder = (req, res, next) => {
         req.flash('errors', { msg: 'The Budget has not been initalized yet' });
         return res.redirect('back');
       }
-      updateBudget(budgets[0], order, null, null);
     });
   }
   order.save((err) => {
@@ -137,8 +136,8 @@ async function createBatchReimbursement(formBody: any, successResponse: () => vo
     comments: formBody.comments,
     budget: budget
   });
-  
-  let slackMessage: IOrderMessage = OrderMessage.createMessageFromOrder(newBatchReimbursement);
+
+  let slackMessage: IOrderMessage = await OrderMessage.createFromOrder(newBatchReimbursement);
   newBatchReimbursement.slackMessage = slackMessage;
   newBatchReimbursement.save(async (err: Error, order: any) => {
     if (err) {
@@ -164,8 +163,8 @@ async function createGenericReimbursement(formBody: any, successResponse: () => 
     budget: budget
   });
 
-  let slackMessage = OrderMessage.createFromOrder(newReimbursement);
-  newReimbursement.slackMessage = newReimbursement;
+  let slackMessage: IOrderMessage = await OrderMessage.createFromOrder(newReimbursement);
+  newReimbursement.slackMessage = slackMessage;
 
   newReimbursement.save((err: Error) => {
     if (err) {
@@ -193,7 +192,7 @@ async function createOrderReimbursement(formBody: any, successResponse: () => vo
     budget: budget
   });
 
-  let slackMessage: IOrderMessage = OrderMessage.createMessageFromOrder(newReimbursement);
+  let slackMessage: IOrderMessage = await OrderMessage.createFromOrder(newReimbursement);
   newReimbursement.slackMessage = slackMessage;
 
   newReimbursement.save((err: Error) => {
@@ -206,7 +205,7 @@ async function createOrderReimbursement(formBody: any, successResponse: () => vo
   })
 }
 
-async function createOrderRequest(formBody: any, successResponse: () => void, failureResponse: (errMsg: string) => void): Promise<void>{
+async function createOrderRequest(formBody: any, successResponse: () => void, failureResponse: (errMsg: string) => void): Promise<void> {
   let requestedItem: Item = new Item(formBody.item1Name, formBody.item1ProductNum, formBody.item1Price, formBody.item1Quantity, formBody.item1Project);
   let totalCost: number = requestedItem.getTotalCost() + Number(formBody.shipping) + Number(formBody.tax);
   let orderTitle: string = requestedItem.name;
@@ -224,9 +223,9 @@ async function createOrderRequest(formBody: any, successResponse: () => void, fa
     title: orderTitle,
     comments: formBody.comments
   });
-  let slackMessage: IOrderMessage = OrderMessage.createMessageFromOrder(newRequest);
+  let slackMessage: IOrderMessage = await OrderMessage.createFromOrder(newRequest);
   newRequest.slackMessage = slackMessage;
-    newRequest.save((err: Error) => {
+  newRequest.save((err: Error) => {
     if (err) {
       console.log('[Error] ' + err.message);
       failureResponse(err.message);
@@ -255,9 +254,9 @@ async function createBatchRequest(formBody: any, successResponse: () => void, fa
     title: orderTitle,
     comments: formBody.comments
   });
-  let slackMessage = await OrderMessage.createFromOrder(newBatchRequest);
+  let slackMessage: IOrderMessage = await OrderMessage.createFromOrder(newBatchRequest);
   newBatchRequest.slackMessage = slackMessage;
-  
+
   newBatchRequest.save((err: Error) => {
     if (err) {
       console.log('[Error] ' + err.message);
@@ -284,8 +283,8 @@ export const postNewRequest = async (req: Request, res: Response) => {
     res.redirect('back');
   }
   if (req.body.numItems == 1) {
-   await createOrderRequest(req.body, SuccessResponse, FailureResponse);
-  } 
+    await createOrderRequest(req.body, SuccessResponse, FailureResponse);
+  }
   if (req.body.numItems > 1) {
     await createBatchRequest(req.body, SuccessResponse, FailureResponse);
   }
@@ -294,7 +293,7 @@ export const postNewRequest = async (req: Request, res: Response) => {
 
 function createItemsList(formBody: any, numItems: number): Item[] {
   let items: Item[] = [];
-  for(let i:number = 1; i <= numItems; i++) {
+  for (let i: number = 1; i <= numItems; i++) {
     let name: string = formBody[`item${i}Name`];
     let productNum: string = formBody[`item${i}ProductNum`];
     let price: number = Number(formBody[`item${i}Price`]);
@@ -330,11 +329,11 @@ export const getViewOrders = async (req, res) => {
     console.log(req.user);
     let pendingOrders = await Order.findAllPendingOrders();
     pendingOrders = pendingOrders.map(x => x.toObject());
-      res.render('bom/viewOrders', {
-        user: req.user,
-        orders: pendingOrders,
-        activeView: true
-      })
+    res.render('bom/viewOrders', {
+      user: req.user,
+      orders: pendingOrders,
+      activeView: true
+    })
   }
 }
 
@@ -416,27 +415,21 @@ export const postEditOrder = (req, res) => {
     order.countsTowardPodCost = podCost;
     order.needDate = needDate;
     if (order.isOrdered) {
-	    console.log("This item has already been ordered, updating BOM");
-      Budget.find({}, (err, list) => {
-        updateBudget(list[0], order, oldCost, (err) => {
-		console.log("Made it");
+      console.log("This item has already been ordered, updating BOM");
+        order.save((err) => {
+          console.log("Saved");
           if (err) throw err;
-          order.save((err) => {
-		  console.log("Saved");
-            if (err) throw err;
-            req.flash('success', { msg: 'Order Sucessfully Updated' });
-            return res.redirect('back');
-          });
-        });
+          req.flash('success', { msg: 'Order Sucessfully Updated' });
+          return res.redirect('back');
       });
-    } else {
-      order.save((err) => {
-        if (err) throw err;
-        req.flash('success', { msg: 'Order Sucessfully Updated' });
-        return res.redirect('back');
-      });
-    }
+} else {
+  order.save((err) => {
+    if (err) throw err;
+    req.flash('success', { msg: 'Order Sucessfully Updated' });
+    return res.redirect('back');
   });
+    }
+});
 }
 
 export const getCancelOrder = (req, res) => {
@@ -452,15 +445,11 @@ export const getCancelOrder = (req, res) => {
     Order.findById(req.query.q, (err, order) => {
       if (err) throw err;
       if (order.isOrdered) {
-        Budget.find({}, (err, list) => {
-          deleteOrderFromBudget(list[0], order, () => {
             Order.deleteOne({ '_id': req.query.q }, (err) => {
               if (err) throw err;
               req.flash('success', { msg: 'Order Cancelled' });
               res.redirect('/orders/view');
             });
-          });
-        });
       } else {
         Order.deleteOne({ '_id': req.query.q }, (err) => {
           if (err) throw err;
@@ -497,14 +486,6 @@ export const getOrdering = (req, res) => {
       order.isOrdered = true;
       order.save((err) => {
         if (err) throw err;
-        Budget.find({}, (err, list) => {
-          if (err) throw new Error(err);
-          updateBudget(list[0], order, null, (err, list) => {
-            console.log("Updated Budget");
-            req.flash('success', { msg: 'Order Updated' });
-            return res.redirect('/orders/view');
-          });
-        });
       });
     } else {
       let numParts = order.item.split(',').length;
@@ -536,12 +517,6 @@ export const getOrdering = (req, res) => {
             totalCost: totalCost,
             link: order.link
           });
-        Budget.find({}, (err, list) => {
-        if (err) throw new Error(err);
-        updateBudget(list[0], order, null, (err, budget) => {
-          console.log('budget updated')
-        });
-      });
         } else {
           newPart = new Order({
             isApproved: true,
@@ -576,31 +551,26 @@ export const getOrdering = (req, res) => {
   });
 }
 
-export const getApproving = (req, res) => {
+export const getApproving = async (req: Request, res: Response) => {
   let user = req.user;
   let orderID = req.params.id || req.query.q;
   if (!user || !user.isAdmin) {
-    req.flash('errors', { msg: 'You are not authorized to approve an order' });
+    req.flash('errors', 'You are not authorized to approve an order');
     return res.redirect('back');
   }
-  Order.findOne({ _id: orderID }).select("_id").lean().then(exists => {
-    if (!exists) {
-      req.flash('errors', { msg: 'That order no longer exists' });
-      return res.redirect('/');
-    }
-    Order.findById(orderID, (err, order) => {
-      order.isApproved = true;
-      order.approvedBy = String(req.user.name);
-      order.save((err) => {
-        if (err) throw err;
-        OrderMessage.findById(order.messageId, (err, msg) => {
-          if (err) throw err;
-          msg.editStatus("Approved", req.user.slackID);
-        })
-        req.flash('success', { msg: 'Order Approved' });
-        return res.redirect('/orders/view');
-      });
-    });
+  let exists = await Order.IDexists(orderID);
+  if (!exists) {
+    req.flash('errors', 'That order no longer exists');
+    return res.redirect('back');
+  }
+
+  Order.approveOrderByID(orderID, user).then((code) => {
+    req.flash('info', code);
+    req.flash('success', 'Order Approved');
+    return res.redirect('/orders/view')
+  }).catch((errMsg) => {
+    req.flash('errors', 'Can not approve order ' + errMsg);
+    res.redirect('back');
   });
 };
 
@@ -611,40 +581,18 @@ export const getDelivered = (req, res) => {
   Order.findById(req.params.id, (err, order) => {
     if (err) throw err;
     if (!order) {
-      req.flash('errors', {msg: 'This order does not exist'});
+      req.flash('errors', { msg: 'This order does not exist' });
       res.redirect('/');
     }
     OrderMessage.findById(order.messageId, (err, msg) => {
       if (err) throw err;
       msg.editStatus("Delivered");
-      req.flash('success', {msg: 'Order Status Updated'});
+      req.flash('success', { msg: 'Order Status Updated' });
       res.redirect('/');
     });
   });
 }
 
-
-function updateBudget(budget, order, oldCost, callback) {
-  let budgetID: number = budget._id;
-	console.log(`${budgetID} is the budgetID`);
-  let teamIndex: number = budget.findTeamIndex(order.subteam);
-	console.log(`${teamIndex} is the teamIndex`);
-  let newCurrentSpent = budget.currentSpent;
-  if (oldCost) newCurrentSpent[teamIndex] -= oldCost;
-  newCurrentSpent[teamIndex] += order.totalCost;
-	console.log(`${oldCost} is oldCost ${order.totalCost} is new cost`);
-    let update = { currentSpent: newCurrentSpent };
-  Budget.findByIdAndUpdate(budgetID, update, { new: true }, callback);
-}
-
-function deleteOrderFromBudget(budget, order, callback) {
-  let budgetID: Number = budget._id;
-  let teamIndex: number = budget.findTeamIndex(order.subteam);
-  let newCurrentSpent = budget.currentSpent;
-  newCurrentSpent[teamIndex] -= order.totalCost;
-  let update = { currentSpent: newCurrentSpent };
-  Budget.findByIdAndUpdate(budgetID, update, { new: true }, callback);
-}
 
 function isURL(str) {
   var urlRegex = '^(?!mailto:)(?:(?:http|https|ftp)://)(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))|localhost)(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?$';
@@ -655,44 +603,44 @@ function isURL(str) {
 function sendOrderMessage(order, user) {
   let msg;
   if (order.reimbursement) {
-      msg =
-        `====${order.subteam}====
+    msg =
+      `====${order.subteam}====
       *Requestor*: <@${user.slackID}>
       *Items*: ${order.item}
       *Cost*: $${order.cost}
       *This is a reimbursement*
       *Link*: http://${URL}/orders/edit/${order.id}
     ==== ==== ====`
-    } else {
-      msg =
-        `====${order.subteam}====
+  } else {
+    msg =
+      `====${order.subteam}====
     *Requestor*: <@${user.slackID}>
     *Items*: ${order.item}
     *Cost*: $${order.cost}
     *Link*: http://${URL}/orders/edit/${order.id}
   ==== ==== ====`
-    }
-    SlackService.sendMessage(process.env.PURCHASING_CHANNEL, msg, null, (body) => {
-      OrderMessage.create({
-        slackTS: body.ts,
-        order: order.id
-      }, (err, msg) => {
+  }
+  SlackService.sendMessage(process.env.PURCHASING_CHANNEL, msg, null, (body) => {
+    OrderMessage.create({
+      slackTS: body.ts,
+      order: order.id
+    }, (err, msg) => {
+      if (err) throw err;
+      Order.findByIdAndUpdate(order.id, { messageId: msg._id }, { new: true }, (err, list) => {
         if (err) throw err;
-        Order.findByIdAndUpdate(order.id,{messageId: msg._id}, {new: true}, (err, list) => {
-          if (err) throw err;
-        });
       });
-    })
+    });
+  })
 }
 
 function createSlackResponse(order, user) {
   OrderMessage.findById(order.messageId, (err, thread) => {
     if (err) throw err;
     let msg =
-    `<@${fscLead}>Request for ${order.item} has been approved by <@${user.slackID}>!`
-  SlackService.sendThread(process.env.PURCHASING_CHANNEL, msg, null, thread.slackTS, (body) => {
+      `<@${fscLead}>Request for ${order.item} has been approved by <@${user.slackID}>!`
+    SlackService.sendThread(process.env.PURCHASING_CHANNEL, msg, null, thread.slackTS, (body) => {
+    });
   });
-  }); 
 }
 export const sendApprovedResponse = createSlackResponse;
 function redirectToMain(req, res) {

@@ -2,9 +2,12 @@ require('dotenv').config();
 import {ExpressConfiguration} from './config/express.config';
 import * as passportConfig from './config/passport.config';
 import * as utilsController from './controllers/utils.controller';
-import {GenericReimbursement } from './models/orders/';
+import {GenericReimbursement, Order } from './models/orders/';
 import * as ordersController from './controllers/orders.controller';
 import { BudgetList, Budget } from './models/Budget.model';
+import mongoose = require('mongoose');
+var MongoClient = require('mongodb').MongoClient;
+var url = "mongodb://localhost:27017/";
 
 const PORT = process.env.PORT || 7001;
 
@@ -80,16 +83,7 @@ app.post('/orders/request', ordersController.postNewRequest);
 app.post('/orders/reimbursement', ordersController.postNewReimbursement);
 
 app.get('/test', (req, res) => {
-let testOrder = new GenericReimbursement({
-  requestor: "Eric Udlis",
-  totalCost: 100
-});
 
-testOrder.save((err) => {
-  if (err) throw err;
-  console.log('[Info] Saved');
-  res.redirect('/');
-})
 });
 
 app.get('/calendar', passportConfig.isAuthenticated, utilsController.getCal);

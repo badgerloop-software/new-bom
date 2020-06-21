@@ -1,8 +1,14 @@
 // This file is just syntaxical sugar for importing from other modules
-import {createConnection, Schema, Document} from 'mongoose';
+import { createConnection, Schema, Document } from 'mongoose';
 import * as mongoConfig from '../../config/mongo.config';
-import { BudgetList, Budget } from '../Budget.model';
+import { IUserSchema } from '../User.model';
+import { IOrderMessage, OrderMessage } from '../OrderMessage.model';
+import { ObjectId } from 'mongodb';
+import { resolve } from 'path';
+import { rejects } from 'assert';
 const bomDB = createConnection(mongoConfig.BOM_URL);
+const MongoClient = require('mongodb').MongoClient;
+
 
 /**
  * The OrderFunctionsSchema only works for STATIC METHODS
@@ -12,33 +18,69 @@ const bomDB = createConnection(mongoConfig.BOM_URL);
  */
 let OrderFunctionsSchema = new Schema({});
 
-OrderFunctionsSchema.statics.findAllPendingOrders = function(): any[] {
-    return this.find({$or: [{'isOrdered': false}, {'isReimbursed': false}]});
+OrderFunctionsSchema.statics.findAllPendingOrders = function (): any[] {
+    return this.find({ $or: [{ 'isOrdered': false }, { 'isReimbursed': false }] });
 }
 
-OrderFunctionsSchema.statics.addBudget = async function(order: any, subteam: string, successResponse: () => void, failureResponse: (msg: string) => void): Promise<void> {
-    let hasBudget = await BudgetList.hasActiveBudget();
-    if (!hasBudget) return failureResponse('Budget does not exist');
-    let budget = await Budget.findByTeamName(subteam);
-    order.budget = budget;
-    order.save((err: Error) =>{
-        if (err) {
-            return failureResponse(err.message);
-        }
-        successResponse();
+OrderFunctionsSchema.statics.approveOrderByID = function (orderID, approvingUser: IUserSchema): Promise<number> {
+    return new Promise(function (resolve, reject) {
+        Order.queryApproval(orderID, approvingUser.name).then((order) => {
+            console.log(order);
+            OrderMessage.findOne({ _id: order.slackMessage }, (err, slackMessage) => {
+                if (err) reject(err);
+                slackMessage.editStatus('Approved', approvingUser.slackID);
+                resolve(1);
+            });
+        }).catch((err) => {
+            reject(err);
+        })
+    });
+}
+
+/**
+ * Must use native MongoDB here likely due to an issue with Mongoose, I can not for the fucking
+ * life of me get an order to update via mongoose. If someone can fix it, more power to ya.
+ * @param orderID The ID of the order
+ */
+OrderFunctionsSchema.statics.queryApproval = async function (orderID: string, approvingUserName: string): Promise<any> {
+    return await this.updateOrder(orderID, {isApproved: true, approvedBy: approvingUserName});
+}
+
+OrderFunctionsSchema.statics.updateOrder = function (orderID: string, update: any): Promise<any> {
+    return new Promise(function(resolve, reject) {
+        MongoClient.connect(mongoConfig.BASE_URL, (err, db) => {
+            if (err) reject(err);
+            var dbo = db.db('devBLBOM');
+            let query = { _id: new ObjectId(orderID) };
+            let modify = { $set: update};
+            dbo.collection('orders').findOneAndUpdate(query, modify, { returnNewDocument: true }, (err, res) => {
+                if (err) reject(err);
+                dbo.collection('orders').findOne(query, (err, order) => {
+                    if (err) reject(err)
+                    resolve(order);
+                    db.close();
+                });
+            });
+        });
+    }
+}
+
+OrderFunctionsSchema.statics.IDexists = function (orderID): Promise<boolean> {
+    return this.findOne({ _id: orderID }).select("_id").lean().then(exists => {
+        return exists;
     });
 }
 
 export const Order = bomDB.model('Order', OrderFunctionsSchema);
 
 
-export {GenericBatchRequest} from './GenericBatchRequest.model';
-export {GenericOrderRequest} from './GenericOrderRequest.model';
-export {GenericReimbursement} from './GenericReimbursement.model';
-export {BatchReimbursement} from './BatchReimbursement.model'
-export {OnlineBatchRequest} from './OnlineBatchRequest.model';
-export {OnlineOrderRequest} from './OnlineOrderRequest.model';
-export {OrderReimbursement} from './OrderReimbursement.model'
-export {Item} from './Item.model'
+export { GenericBatchRequest } from './GenericBatchRequest.model';
+export { GenericOrderRequest } from './GenericOrderRequest.model';
+export { GenericReimbursement } from './GenericReimbursement.model';
+export { BatchReimbursement } from './BatchReimbursement.model'
+export { OnlineBatchRequest } from './OnlineBatchRequest.model';
+export { OnlineOrderRequest } from './OnlineOrderRequest.model';
+export { OrderReimbursement } from './OrderReimbursement.model'
+export { Item } from './Item.model'
 
 

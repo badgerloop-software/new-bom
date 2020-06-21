@@ -75,6 +75,6 @@ userSchema.statics.getAllUsers = function(): any[] {
 }
 
 userSchema.statics.findByName = async function(name: string): Promise<IUserSchema> {
-  return await this.findOne({name: name}).exec();
+  return await this.findOne({name: name}).exec().lean();
 }
 export const Users = bomDB.model('User', userSchema);

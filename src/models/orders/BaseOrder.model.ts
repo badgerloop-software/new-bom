@@ -17,7 +17,7 @@ export const BaseOrderBlueprint = {
     countsTowardsPodCost: {type: Boolean, default: false},
     slackMessage: {
         type: Schema.Types.ObjectID,
-        ref: "SlackMessage",
+        ref: "OrderMessage",
 
     },
     totalCost: {type: Number, required: [true, 'Must calculate and save totcal cost!']},

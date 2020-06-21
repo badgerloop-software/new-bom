@@ -1,10 +1,10 @@
-import {Schema, Model, Document, createConnection, ObjectID, model} from 'mongoose';
+import { Schema, Model, Document, createConnection, ObjectID, model } from 'mongoose';
 import * as mongoConfig from '../config/mongo.config'
 const bomDB = createConnection(mongoConfig.BOM_URL);
-import {SlackService} from '../services/SlackService';
+import { SlackService } from '../services/SlackService';
 import Orders from './orders/OrderRequest.model';
-import {Item} from './orders'
-import {Users, IUserSchema} from '../models/User.model';
+import { Item } from './orders'
+import { Users, IUserSchema } from '../models/User.model';
 import NewsArticleModel from './NewsArticle.model';
 const PURCHASING_CHANNEL: string = process.env.PURCHASING_CHANNEL;
 const EXECUTITIVE_IDS: string[] = String(process.env.EXECUTITIVES_IDS).split(',');
@@ -14,11 +14,11 @@ const URL: string = process.env.LOCAL_URL;
 
 
 const OrderMessageSchema = new Schema({
-    slackTS: {type:String},
+    slackTS: { type: String },
     replies: {},
-    order: {type: Schema.Types.ObjectId, required: [true, 'OrderMessage must be created with Order']},
+    order: { type: Schema.Types.ObjectId, required: [true, 'OrderMessage must be created with Order'] },
     reactions: {},
-    message: {type: String}
+    message: { type: String }
 });
 
 interface IOrderMessageSchema extends Document {
@@ -28,31 +28,31 @@ interface IOrderMessageSchema extends Document {
     reactions: JSON;
 }
 
-export interface IOrderMessage extends IUserSchema {
+export interface IOrderMessage extends IOrderMessageSchema {
     checkApproved(): void;
-    approveCorrespondingOrder(): void; 
+    approveCorrespondingOrder(): void;
+    editStatus(status: string, approvingUserID: string): void;
 }
 
-OrderMessageSchema.statics.createFromOrder = async function(order): Promise<IOrderMessage> {
+OrderMessageSchema.statics.createFromOrder = async function (order): Promise<IOrderMessage> {
     let user: IUserSchema = await Users.findByName(order.requestor);
     let userID: string = user.slackID;
     let message: string = createMessageFromOrder(order, userID);
     try {
-    let newMsg = new OrderMessage({
-        order: order,
-        message: message
-    });
-    let savedMessage: IOrderMessage = await newMsg.save();
-    console.log(savedMessage);
-    return savedMessage;
-} catch(err) {
-    console.log('[ERROR] Can not save OrderMessage' + err.message);
-    throw err;
-}
+        let newMsg = new OrderMessage({
+            order: order,
+            message: message
+        });
+        await newMsg.save();
+        return newMsg;
+    } catch (err) {
+        console.log('[ERROR] Can not save OrderMessage' + err.message);
+        throw err;
+    }
 }
 
 function createMessageFromOrder(order: any, userSlackID: string): string {
-return `====${order.subteam}====
+    return `====${order.subteam}====
 *Requestor*: <@${userSlackID}>
 *Items*: ${order.title}
 *Cost*: $${order.totalCost}
@@ -77,11 +77,11 @@ OrderMessageSchema.methods.checkApproved = function (): void {
     })
 }
 
-OrderMessageSchema.pre('save', async function(next) {
-    SlackService.sendMessage(process.env.PURCHASING_CHANNEL, this.message, null,  (body) => {
+OrderMessageSchema.pre('save', async function (next) {
+    SlackService.sendMessage(process.env.PURCHASING_CHANNEL, this.message, null, (body) => {
         this.slackTS = body.ts;
         next();
-        
+
     })
 })
 
@@ -103,45 +103,32 @@ OrderMessageSchema.methods.approveCorrespondingOrder = function (userID: number)
 }
 
 OrderMessageSchema.methods.editStatus = function (status: string, authorizingUser: any) {
-    Orders.findById(this.order, (err, order) => {
-        if (err) throw err;
-        if (order.reimbusement) return;
-        Users.findOne({ name: order.requestor }, (err, user) => {
-            if (err) throw err;
-            let currentMsg =
-                `====${order.subteam}====
-    *Requestor*: <@${user.slackID}>
-    *Items*: ${order.item}
-    *Cost*: $${order.totalCost}
-    *Link*: http://${URL}/orders/edit/${order.id}
-==== ==== ====`;
-            let newMsg = currentMsg + `\n *Status: ${status}*`
-            SlackService.editMessage(PURCHASING_CHANNEL, this.slackTS, newMsg, null);
-            let threadedMsg = `<@${user.slackID}>, your order has been ${status}`;
-            if (authorizingUser) threadedMsg += ` by <@${authorizingUser}>`;
-            if (status === "Approved") threadedMsg += `CC: <@${process.env.FSC_LEAD}>`
-            let attachments = null;
-            if (status === "Ordered") attachments = [
+    let msg = this.message;
+    msg += "\n *Status*: " + status + " on " + new Date().getUTCDate();
+    SlackService.editMessage(PURCHASING_CHANNEL, this.slackTS, msg, null);
+    let threadedMsg = `<@${authorizingUser}>, your order has been ${status}`;
+    if (authorizingUser) threadedMsg += ` by <@${authorizingUser}>`;
+    if (status === "Approved") threadedMsg += `CC: <@${process.env.FSC_LEAD}>`
+    let attachments = null;
+    if (status === "Ordered") attachments = [
+        {
+            "fallback": "Please log into finance.badgerloop.com to mark delivered",
+            "actions": [
                 {
-                    "fallback": "Please log into finance.badgerloop.com to mark delivered",
-                    "actions": [
-                        {
-                            "text": "Mark as Delivered",
-                            "type": "button",
-                            "url": `http://${URL}/orders/delivered/${order.id}`
-                        }
-                    ]
+                    "text": "Mark as Delivered",
+                    "type": "button",
+                    "url": `http://${URL}/orders/delivered/${this.order}`
                 }
             ]
-            SlackService.sendThread(PURCHASING_CHANNEL, threadedMsg, attachments, this.slackTS, null);
-        });
-    });
+        }
+    ]
+    SlackService.sendThread(PURCHASING_CHANNEL, threadedMsg, attachments, this.slackTS, null);
 }
 
-OrderMessageSchema.statics.checkAllMessages = function() {
+OrderMessageSchema.statics.checkAllMessages = function () {
     this.find({}, (err, messages) => {
         if (err) console.log("[Error] Error finding Order Messages: " + err);
         messages.forEach(message => message.checkApproved());
     })
 }
-export const OrderMessage =  bomDB.model<IOrderMessage, IOrderMessageModel>('OrderMessages', OrderMessageSchema);
+export const OrderMessage = bomDB.model<IOrderMessage, IOrderMessageModel>('OrderMessages', OrderMessageSchema);
