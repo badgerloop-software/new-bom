@@ -102,11 +102,13 @@ OrderMessageSchema.methods.approveCorrespondingOrder = function (userID: number)
     });
 }
 
-OrderMessageSchema.methods.editStatus = function (status: string, authorizingUser: any) {
+OrderMessageSchema.methods.editStatus = async function (status: string, authorizingUser: any, requestingUser: string) {
+    let requestingUserModel: IUserSchema = await Users.findByName(requestingUser);
+    let requestingUserID: string = requestingUserModel.slackID;
     let msg = this.message;
     msg += "\n *Status*: " + status + " on " + new Date().getUTCDate();
     SlackService.editMessage(PURCHASING_CHANNEL, this.slackTS, msg, null);
-    let threadedMsg = `<@${authorizingUser}>, your order has been ${status}`;
+    let threadedMsg = `<@${requestingUserID}>, your order has been ${status}`;
     if (authorizingUser) threadedMsg += ` by <@${authorizingUser}>`;
     if (status === "Approved") threadedMsg += `CC: <@${process.env.FSC_LEAD}>`
     let attachments = null;

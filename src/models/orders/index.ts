@@ -26,9 +26,9 @@ OrderFunctionsSchema.statics.approveOrderByID = function (orderID, approvingUser
     return new Promise(function (resolve, reject) {
         Order.queryApproval(orderID, approvingUser.name).then((order) => {
             console.log(order);
-            OrderMessage.findOne({ _id: order.slackMessage }, (err, slackMessage) => {
+            OrderMessage.findOne({ _id: order.slackMessage }, async (err, slackMessage) => {
                 if (err) reject(err);
-                slackMessage.editStatus('Approved', approvingUser.slackID);
+                await slackMessage.editStatus('Approved', approvingUser.slackID, order.requestor);
                 resolve(1);
             });
         }).catch((err) => {
@@ -37,23 +37,29 @@ OrderFunctionsSchema.statics.approveOrderByID = function (orderID, approvingUser
     });
 }
 
+OrderFunctionsSchema.statics.queryApproval = async function (orderID: string, approvingUserName: string): Promise<any> {
+    return await this.updateOrder(orderID, { isApproved: true, approvedBy: approvingUserName });
+}
+
+OrderFunctionsSchema.statics.queryOrdering = async function (orderID: string, orderingUserName: string): Promise<any> {
+    return await this.updateOrder(orderID, { isOrdered: true, orderedBy: orderingUserName });
+}
+
 /**
  * Must use native MongoDB here likely due to an issue with Mongoose, I can not for the fucking
  * life of me get an order to update via mongoose. If someone can fix it, more power to ya.
  * @param orderID The ID of the order
+ * @param update An object containing the fields and values to modify
+ * @returns A promise that will resolve into the newly updated order
  */
-OrderFunctionsSchema.statics.queryApproval = async function (orderID: string, approvingUserName: string): Promise<any> {
-    return await this.updateOrder(orderID, {isApproved: true, approvedBy: approvingUserName});
-}
-
 OrderFunctionsSchema.statics.updateOrder = function (orderID: string, update: any): Promise<any> {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         MongoClient.connect(mongoConfig.BASE_URL, (err, db) => {
             if (err) reject(err);
             var dbo = db.db('devBLBOM');
             let query = { _id: new ObjectId(orderID) };
-            let modify = { $set: update};
-            dbo.collection('orders').findOneAndUpdate(query, modify, { returnNewDocument: true }, (err, res) => {
+            let modify = { $set: update };
+            dbo.collection('orders').findOneAndUpdate(query, modify, { upsert: true, returnNewDocument: true }, (err, res) => {
                 if (err) reject(err);
                 dbo.collection('orders').findOne(query, (err, order) => {
                     if (err) reject(err)
@@ -62,7 +68,7 @@ OrderFunctionsSchema.statics.updateOrder = function (orderID: string, update: an
                 });
             });
         });
-    }
+    });
 }
 
 OrderFunctionsSchema.statics.IDexists = function (orderID): Promise<boolean> {
