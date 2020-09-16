@@ -67,7 +67,7 @@ OrderMessageSchema.methods.editStatus = function (status, authorizingUser) {
             let attachments = null;
             if (status === "Ordered") attachments = [
                 {
-                    "fallback": "Please log into finance.badgerloop.com to mark delivered",
+                    "fallback": "Please log into apps.badgerloop.org to mark delivered",
                     "actions": [
                         {
                             "text": "Mark as Delivered",

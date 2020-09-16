@@ -9,6 +9,7 @@ function getNumOrders(totalOrders) {
 function getNumUsers(totalUsers) {
   return totalUsers.length;
 }
+
 function setTable(budgets) {
   let budget = budgets[0];
   let table = [];

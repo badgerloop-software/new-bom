@@ -1,4 +1,4 @@
-# My Badgerloop (apps.badgerloop.com) &nbsp; ![GitHub Logo](https://raw.githubusercontent.com/badgerloop-software/pod-dashboard/master/src/public/images/icon.png)
+# My Badgerloop (apps.badgerloop.org) &nbsp; ![GitHub Logo](https://raw.githubusercontent.com/badgerloop-software/pod-dashboard/master/src/public/images/icon.png)
 *Authors: Eric Udlis, Luke Houge*
 
 The new Badgerloops apps site! This web app combines the BOM (bill of materials), website CRUD (create, read, update, and delete) app, and other useful links in one place, behind one sign-in which we use slack for authenticating.
