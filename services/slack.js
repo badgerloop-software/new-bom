@@ -57,7 +57,6 @@ exports.sendThread = function (channel, msg, attachments, ts, cb) {
 async function getOneReactions(channel, ts) {
   return rp(`https://slack.com/api/reactions.get?token=${URL}&channel=${channel}&timestamp=${ts}&pretty=1`).then((htmlString) => {
     let json = JSON.parse(htmlString);
-    console.log(json);
 	  if (!json.ok) throw "Bad Request";
     if (json.message.reactions === undefined) return null;
     else {

@@ -13,12 +13,13 @@ const URL = process.env.LOCAL_URL;
 const OrderMessageSchema = new mongoose.Schema({
     slackTS: String,
     replies: {},
+    approvedStatusSent: {type: Boolean, default: false},
+    orderedStatusSent: {type: Boolean, default: false},
     order: mongoose.ObjectId,
     reactions: {}
 });
 
 OrderMessageSchema.methods.checkApproved = function () {
-    console.log(EXECUTITIVE_IDS);
     slackService.checkOneThumbsUp(PURCHASING_CHANNEL, this.slackTS, EXECUTITIVE_IDS).then((user) => {
         if (user == -1) return //console.log(`${this.slackTS} doesn't have any reactions`);
         if (user == -2) return //console.log(`${this.slackTS} has not been reacted by an authorized user`);
@@ -30,9 +31,16 @@ OrderMessageSchema.methods.checkApproved = function () {
 }
 
 OrderMessageSchema.methods.approveCorrespondingOrder = function (userID) {
-    Orders.findById(this.order, (err, order) => {
+	let msg = this;
+	Orders.findById(this.order, (err, order) => {
         if (err) throw err;
-        if (order.isApproved) return;
+	if (!order) {
+		return -1;
+	}
+	if (order.isReimbursement && !msg.approvedStatusSent){
+		this.editStatus("Approved", userID);
+	}
+	if (order.isApproved || msg.approvedStatusSent) return;
         order.isApproved = true;
         Users.findOne({ slackID: userID }, (err, user) => {
             if (err) throw err;
@@ -47,9 +55,9 @@ OrderMessageSchema.methods.approveCorrespondingOrder = function (userID) {
 }
 
 OrderMessageSchema.methods.editStatus = function (status, authorizingUser) {
-    Orders.findById(this.order, (err, order) => {
+	Orders.findById(this.order, (err, order) => {
         if (err) throw err;
-        if (order.reimbusement) return;
+        if (order.isReimbusement) console.log("This is a reimbursement");
         Users.findOne({ name: order.requestor }, (err, user) => {
             if (err) throw err;
             let currentMsg =
@@ -63,9 +71,16 @@ OrderMessageSchema.methods.editStatus = function (status, authorizingUser) {
             slackService.editMessage(PURCHASING_CHANNEL, this.slackTS, newMsg);
             let threadedMsg = `<@${user.slackID}>, your order has been ${status}`;
             if (authorizingUser) threadedMsg += ` by <@${authorizingUser}>`;
-            if (status === "Approved") threadedMsg += `CC: <@${process.env.FSC_LEAD}>`
+            if (status === "Approved"){
+		    threadedMsg += `CC: <@${process.env.FSC_LEAD}>`;
+		    this.approvedStatusSent = true;
+		    this.save((err) => {
+			    if(err) throw err;
+	    });
+	    }
             let attachments = null;
-            if (status === "Ordered") attachments = [
+            if (status === "Ordered") {
+		    attachments = [
                 {
                     "fallback": "Please log into apps.badgerloop.org to mark delivered",
                     "actions": [
@@ -77,6 +92,11 @@ OrderMessageSchema.methods.editStatus = function (status, authorizingUser) {
                     ]
                 }
             ]
+		    this.orderedStatusSent = true;
+		    this.save((err) => {
+			    if (err) throw err;
+		    });
+	    }
             slackService.sendThread(PURCHASING_CHANNEL, threadedMsg, attachments, this.slackTS);
         });
     });

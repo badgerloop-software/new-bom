@@ -36,6 +36,7 @@ exports.postMakeOrder = (req, res, next) => {
   if (req.body.podCost === 'on') {
     podCost = true
   }
+  if (req.body.notARequest === "on") notARequest = true;
   let needDate = req.body.date.toString();
   let isDigikey = false; // Innocent until proven guilty
   let indvPrice = req.body.cost;
@@ -64,6 +65,7 @@ exports.postMakeOrder = (req, res, next) => {
   });
 
   if (notARequest) {
+    order.isReimbursement = true;
     order.purchaser = req.body.requestor;
     order.dateOrdered = new Date();
     order.isApproved = true;
@@ -83,7 +85,8 @@ exports.postMakeOrder = (req, res, next) => {
       item: req.body.item,
       subteam: req.body.subteam,
       cost: totalCost,
-      id: order._id
+      id: order._id,
+      reimbursement: notARequest      
     }
     sendOrderMessage(orderObj, req.user);
     req.flash('success', {
@@ -239,6 +242,10 @@ exports.getCancelOrder = (req, res) => {
     }
     Order.findById(req.query.q, (err, order) => {
       if (err) throw err;
+	OrderMessage.findByIdAndDelete(order.messageID, () => {
+		console.log("Message Deleted");
+	});
+	    
       if (order.isOrdered) {
         Budget.find({}, (err, list) => {
           deleteOrderFromBudget(list[0], order, () => {
