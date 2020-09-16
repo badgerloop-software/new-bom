@@ -224,7 +224,7 @@ app.post('/teamleads/upload', uploadTeamlead.single('teamleadImg'), (req, res) =
 app.post('/news/upload', uploadNews.single('newsImg'), (req, res) => {
   if (req.file) {
     console.log('Uploading file...');
-    fs.rename('uploads/news/' + req.file.filename, process.env.IMAGES_FOLDER + '/' + req.file.originalname, function (err) {
+    fs.rename('uploads/news/' + req.file.filename, process.env.IMAGES_FOLDER + '/news/' + req.file.originalname, function (err) {
       if (err) console.log('ERROR: ' + err);
     });
     // shell.mv('uploads/sponsors/' + req.file.filename', 'file2', 'dir/');
