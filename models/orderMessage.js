@@ -31,17 +31,14 @@ OrderMessageSchema.methods.checkApproved = function () {
 }
 
 OrderMessageSchema.methods.approveCorrespondingOrder = function (userID) {
-    	console.log(`OrderID ${this.order}`);
 	let msg = this;
 	Orders.findById(this.order, (err, order) => {
         if (err) throw err;
 	if (!order) {
-		console.log("This order does not exist");
 		return -1;
 	}
 	if (order.isReimbursement && !msg.approvedStatusSent){
 		this.editStatus("Approved", userID);
-		console.log("HERERERERE");
 	}
 	if (order.isApproved || msg.approvedStatusSent) return;
         order.isApproved = true;
