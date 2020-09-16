@@ -25,6 +25,7 @@ const utilsController = require('./controllers/utils');
 const vendorsController = require('./controllers/vendors');
 const criticalPathsController = require('./controllers/criticalPaths');
 const cpbController = require('./controllers/cpb');
+const commandsController = require('./controllers/commands');
 
 const passportConfig = require('./config/passport');
 
