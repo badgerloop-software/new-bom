@@ -3,6 +3,8 @@
 
 The new Badgerloops apps site! This web app combines the BOM (bill of materials), website CRUD (create, read, update, and delete) app, and other useful links in one place, behind one sign-in which we use slack for authenticating.
 
+*Written in Node.js, Handlebars and SCSS the webapp contained herein is a perfect example of organic growth unihibited by the shackles of design. Months of expedient ad-hoc patching have produced a chimeric Cronenbergian horror to remind us that the universe yet holds secrets that we should not attempt to understand lest we become unanchored from our fragile realities and be set adrift upon a sea of madness.*
+
 ## Platform/Technologies:
 - [Node.js](https://nodejs.org/en/) (our javascript runtime)
 - [Express](https://expressjs.com/) (our Node.js web application framework)
