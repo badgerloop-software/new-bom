@@ -3,7 +3,8 @@ const Teamleads = require('../models/teamlead');
 const News = require('../models/news');
 
 exports.getCrud = (req, res) => {
-    if (!req.user || !req.user.isTeamLead) {
+    // temporarily changing to admins can access until teamleads issue sorted
+    if (!req.user || !req.user.isAdmin) {
         req.flash('errors', { msg: 'You are not authorized to view that!' });
         return res.redirect('back');
     }
