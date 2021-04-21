@@ -27,7 +27,7 @@ exports.getTableView = (req, res) => {
         });
       });
     } else {
-      Orders.find({ isOrdered: true }, null, { sort: { subteam: 1 } }, (err, orders) => {
+      Orders.find({ isOrdered: true }, null, { sort: { dateOrdered: -1 } }, (err, orders) => {
         if (err) throw err;
         res.render('bom/tableView', {
           user: req.user,
